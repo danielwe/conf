@@ -1,0 +1,454 @@
+" vim: foldmethod=marker
+
+set nocompatible              " Be iMproved
+let mapleader = ','           " Set <Leader>
+
+" Plugin configuration {{{1
+call plug#begin('~/.vim/plugged')
+
+" tpope-suite {{{2
+"Plug 'tpope/vim-dispatch'
+Plug 'tpope/vim-endwise'
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-sensible'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-vinegar'
+" Load sensible first, so options can be overridden
+runtime! plugin/sensible.vim
+
+" Git integration {{{2
+Plug 'tpope/vim-fugitive' | Plug 'gregsexton/gitv'
+nmap <silent> <Leader>gs :Gstatus<CR>
+nmap <silent> <Leader>gd :Gdiff<CR> "~1
+nmap <silent> <Leader>gl :Gitv<CR>
+nmap <silent> <Leader>gL :Gitv!<CR>
+
+" Gundo {{{2
+Plug 'sjl/gundo.vim'
+nmap <silent> <Leader>u :GundoToggle<CR>
+
+" YankRing {{{2
+Plug 'vim-scripts/YankRing.vim'
+let g:yankring_history_dir = '~/.vim/yankhistory'
+if !isdirectory(expand(g:yankring_history_dir))
+  call mkdir(expand(g:yankring_history_dir))
+endif
+nmap <silent> <Leader>y :YRShow<CR>
+
+" TaskList {{{2
+Plug 'vim-scripts/TaskList.vim'
+let g:tlTokenList = ['FIXME', 'TODO', 'XXX', '@todo']
+nmap <Leader>to <Plug>TaskList
+
+" ack {{{2
+Plug 'mileszs/ack.vim'
+let g:ackprg = "ag --vimgrep --smart-case"
+let g:ackhighlight = 1
+"let g:ack_qhandler = 'botright copen'
+"let g:ack_lhandler = 'botright lopen'
+
+" command-t {{{2
+Plug 'wincent/command-t',
+      \ {'do': 'cd ruby/command-t/ext/command-t && ruby extconf.rb && make'}
+let g:CommandTMaxFiles = 50000
+nmap <silent> <Leader>ff :CommandT<CR>
+nmap <silent> <Leader>fa :CommandT $HOME<CR>
+nmap <silent> <Leader>fd :CommandT $HOME/Documents<CR>
+nmap <silent> <Leader>fr :CommandTMRU<CR>
+nmap <silent> <Leader>fb :CommandTBuffer<CR>
+nmap <silent> <Leader>fj :CommandTJump<CR>
+nmap <silent> <Leader>ft :CommandTTag<CR>
+nmap <silent> <Leader>fv :CommandT $HOME/.vim<CR>
+
+" Smart-Tabs {{{2
+Plug 'vim-scripts/Smart-Tabs', {'for': ['c', 'cpp', 'objc', 'objcpp', 'cs']}
+
+" tcomment {{{2
+Plug 'tomtom/tcomment_vim'
+let g:tcommentOptions = {'whitespace' : 'no'}
+
+" snippets {{{2
+Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
+"let g:UltiSnipsListSnippets = '<C-TAB>'
+let g:UltiSnipsExpandTrigger = '<C-CR>'
+let g:UltiSnipsJumpForwardTrigger  ='<C-CR>'
+let g:UltiSnipsJumpBackwardTrigger = '<C-S-CR>'
+"let g:UltiSnipsSnippetDirectories = []
+
+" YouCompleteMe {{{2
+Plug 'Valloric/YouCompleteMe',
+      \ {'do': './install.py --clang-completer > ~/ycm.log'}
+"let g:ycm_global_ycm_extra_conf = '~/.ycm_extra_conf.py'
+let g:ycm_goto_buffer_command = 'horizontal-split'
+"let g:ycm_min_num_identifier_candidate_chars = 4
+"let g:ycm_min_num_of_chars_for_completion = 3
+"let g:ycm_autoclose_preview_window_after_insertion = 0
+"let g:ycm_autoclose_preview_window_after_completion = 0
+"let g:ycm_key_detailed_diagnostics = '<Leader>d'
+"let g:ycm_filetype_whitelist = {
+"      \ 'c' : 1,
+"      \ 'cpp' : 1,
+"      \ 'objc' : 1,
+"      \ 'objcpp' : 1,
+"      \ 'cs' : 1,
+"      \ }
+
+map <silent> <buffer> <Leader>td :YcmCompleter GoTo<Cr>
+
+" SimpylFold {{{2
+Plug 'tmhedberg/SimpylFold', {'for': 'python'}
+"let g:SimpylFold_docstring_preview = 1
+"let g:SimpylFold_fold_docstring = 0
+augroup SimpylFold
+  autocmd!
+  autocmd BufWinEnter *.py setlocal foldexpr=SimpylFold(v:lnum) foldmethod=expr
+  autocmd BufWinLeave *.py setlocal foldexpr< foldmethod<
+augroup END
+
+" syntastic {{{2
+Plug 'scrooloose/syntastic'
+let g:syntastic_auto_loc_list = 1
+"let g:syntastic_loc_list_height = 5
+
+let g:syntastic_mode_map = {
+      \ 'mode': 'active',
+      \ 'passive_filetypes': ['tex']
+      \ }
+
+if executable('flake8')
+  let g:syntastic_python_checkers = [
+        \ 'flake8',
+        \ ]
+  let g:syntastic_python_flake8_args = '--ignore=E262,E265,E266'
+else
+  let g:syntastic_python_checkers = [
+        \ 'pyflakes',
+        \ 'pep8',
+        \ ]
+  let g:syntastic_python_pep8_args = '--ignore=E262,E265,E266'
+endif
+      "\ 'pylint', " too strict and stupid
+      "\ 'pep257', " not available through apt-get
+      "\ 'mccabe', " covered by flake8
+      "\ 'python',
+
+nmap <silent> <Leader>e :Errors<CR>
+
+" vimtex {{{2
+Plug 'lervag/vimtex', {'for': 'tex'}
+"Plug '~/code/vimtex', {'for': 'tex'}
+let g:vimtex_fold_enabled = 1
+"let g:vimtex_quickfix_latexlog = {
+"      \ 'underfull' : 0,
+"      \ 'overfull' : 0,
+"      \ 'specifier changed to' : 0,
+"      \ 'xparse/redefine-command' : 0,
+"      \ "preliminary 'polyglossia'" : 0,
+"      \ }
+      "\ 'only floats' : 0,
+
+let g:vimtex_complete_enabled = 1
+let g:vimtex_complete_close_braces = 0
+if !exists('g:ycm_semantic_triggers')
+  let g:ycm_semantic_triggers = {}
+endif
+let g:ycm_semantic_triggers.tex = [
+        \ 're!\\[A-Za-z]*cite[A-Za-z]*(\[[^]]*\]){0,2}{[^}]*',
+        \ 're!\\[A-Za-z]*ref({[^}]*|range{([^,{}]*(}{)?))',
+        \ 're!\\hyperref\[[^]]*',
+        \ 're!\\includegraphics\*?(\[[^]]*\]){0,2}{[^}]*',
+        \ 're!\\(include(only)?|input){[^}]*',
+        \ 're!\\\a*(gls|Gls|GLS)(pl)?\a*(\s*\[[^]]*\]){0,2}\s*\{[^}]*',
+        \ 're!\\includepdf(\s*\[[^]]*\])?\s*\{[^}]*',
+        \ 're!\\includestandalone(\s*\[[^]]*\])?\s*\{[^}]*',
+        \ 're!\\usepackage(\s*\[[^]]*\])?\s*\{[^}]*',
+        \ 're!\\documentclass(\s*\[[^]]*\])?\s*\{[^}]*',
+        \ 're!\\[A-Za-z]*',
+        \ ]
+
+" vim-airline {{{2
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+set laststatus=2
+let g:airline#extensions#tabline#enabled = 1
+
+" solarized {{{2
+Plug 'altercation/vim-colors-solarized'
+
+" FastFold {{{2
+Plug 'Konfekt/FastFold'
+
+" Plugins to check out {{{2
+"" jedi-vim {{{3
+"Plug 'davidhalter/jedi-vim', {'for': 'python'}
+"function! JediSetup()
+"  let g:jedi#auto_initialization = 1
+"  let g:jedi#auto_vim_configuration = 0
+"  let g:jedi#completions_enabled = 0
+"  let g:jedi#smart_auto_mappings = 0
+"  "let g:jedi#popup_on_dot = 0
+"  "let g:jedi#popup_select_first = 0
+"
+"  let g:jedi#use_tabs_not_buffers = 0
+"  let g:jedi#use_splits_not_buffers = "top"
+"  let g:jedi#auto_close_doc = 0
+"  let g:jedi#show_call_signatures = "1"
+"
+"  let g:jedi#documentation_command = "K"
+"  let g:jedi#goto_assignments_command = "<Leader>ta"
+"  let g:jedi#goto_definitions_command = "<Leader>td"
+"  let g:jedi#usages_command = "<Leader>tu"
+"  let g:jedi#rename_command = "<Leader>tr"
+"  "let g:jedi#completions_command = "<C-space>"
+"endfunction
+"
+"augroup jedi
+"  autocmd!
+"  autocmd FileType python call JediSetup()
+"augroup END
+
+"" vim-easy-align {{{3
+"Plug 'junegunn/vim-easy-align'
+"let g:easy_align_bypass_fold = 1
+"map ga <Plug>(EasyAlign)
+"map gA <Plug>(LiveEasyAlign)
+
+"" Tagbar {{{3
+"Plug 'majutsushi/tagbar'
+"nmap <silent> <Leader>tb :TagbarToggle<CR>
+"nmap <silent> <Leader>tp :TagbarTogglePause<CR>
+"let g:tagbar_autopreview = 0
+"let g:tagbar_expand = 2
+
+"" CCTree {{{3
+"Plug 'hari-rangarajan/CCTree'
+
+" }}}2
+
+call plug#end()
+
+" General settings {{{1
+
+"set encoding=utf-8       " Set encoding used by Vim for buffers etc.
+set autochdir            " Change working directory to file directory
+set autowrite            " Save before commands like :next and :make
+set hidden               " Hide buffers when they are abandoned
+set noswapfile           " Do not use swap file
+set wildmode=longest:full " Set autocomplete command behavior
+set mouse=a              " Enable mouse usage (all modes)
+set complete+=i          " Set completion modes
+set completeopt=menuone,longest,preview " Set completion options
+set showcmd              " Show number of selected lines ++ in the bottom line
+
+augroup general
+  autocmd!
+  " Save when Vim loses focus
+  autocmd FocusLost * :wa
+  " Jump to the last active position when opening a file
+  autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") |
+        \                 exe "normal! g'\"" |
+        \               endif
+augroup END
+
+" Enable persistent undo
+set undofile
+set undolevels=1000
+set undoreload=10000
+set undodir=$HOME/.vim/undo
+if !isdirectory(&undodir)
+  call mkdir(&undodir)
+endif
+
+" Insert behavior
+set autoindent           " Copy indent from previous line
+set copyindent           " Don't replace tabs with spaces when copying indent
+set preserveindent       " Don't replace tabs with spaces when adjusting indent
+"set smartindent          " Be smart when indenting. Use with care.
+"set cindent              " Be c-smart when indenting. Use with care.
+set expandtab            " Expand tabs as spaces
+set softtabstop=4        " Set width of soft tabstops
+set shiftwidth=4         " Set width of autoindentation
+set textwidth=79         " Hard-wrap lines at this width (0: disable)
+set formatoptions+=rq1jw " Set auto-format options
+set formatoptions-=atcn
+
+" Search behavior
+set ignorecase           " Do case insensitive matching
+set smartcase            " Do smart case matching
+set hlsearch             " Highlight search
+" Search using normal (not Vim) regexes
+"nnoremap / /\v
+"vnoremap / /\v
+
+" Display settings {{{1
+
+"set scrolloff=2          " Set vertical space between cursor and edges
+"set sidescrolloff=2      " Set horizontal space between cursor and edges
+"set wrap                 " Wrap lines for display
+set nowrap               " Do not wrap lines for display
+set linebreak            " If turning wrap back on, wrap at a whitespace
+set relativenumber       " Show relative line numbers
+set number               " Show line numbers (relative + absolute => hybrid)
+set colorcolumn=80,81,82 " Highlight column 80-82
+set showmatch            " Show matching brackets.
+set tabstop=4            " Set width of tabstops
+
+" Set whitespace characters in list mode
+set listchars=tab:»\ ,trail:~,extends:>,precedes:<,nbsp:+,eol:¬
+
+" Initialize font and window size
+if has('vim_starting')
+  set guifont=DejaVu\ Sans\ Mono\ 13
+  if has('gui_running')
+    set guioptions+=f        " Dont detach from shell
+    set guioptions+=P        " Enable autoselect using the "+-register
+    set guioptions-=a        " Disable autoselect using the "*-register
+    set guioptions-=T        " Disable toolbar
+    set guioptions-=m        " Disable menubar
+    set guioptions-=r        " Disable right-hand scrollbar
+    "set lines=50 columns=95
+    set background=light
+  else
+    "set lines=58 columns=105
+    set background=dark
+  endif
+endif
+
+" Select colorscheme
+colorscheme solarized | call togglebg#map("<F5>")
+
+" Key mappings {{{1
+
+"" Enter :-commands using -
+"nmap - :
+"vmap - :
+"" Search with f and F
+"nnoremap f /
+"nnoremap F ?
+"" Get back to normal without <ESC>
+""inoremap <ESC> <nop>
+"inoremap jjjj <ESC>
+"inoremap kkkk <ESC>
+"" Navigate easily to home and end
+"nnoremap H ^
+"vnoremap H ^
+"nnoremap L $
+"vnoremap L $
+" Scroll screen-based instead of line-based
+nnoremap k gk
+vnoremap k gk
+nnoremap j gj
+vnoremap j gj
+" Navigate splits easily
+nnoremap <Leader>v <C-W>v<CR><C-W>l
+nnoremap <Leader>s <C-W>s<C-W>j
+nnoremap <Leader>h <C-W>h
+nnoremap <Leader>j <C-W>j
+nnoremap <Leader>k <C-W>k
+nnoremap <Leader>l <C-W>l
+nnoremap <Leader>q <C-W>q
+" Close quickfix window, location list and preview window
+nmap <silent> <Leader>z :cclose<CR>:lclose<CR>:pclose<CR>
+" Navigate buffers easily
+nmap <silent> <Right> :bn<CR>
+nmap <silent> <Left> :bp<CR>
+nmap <silent> <Leader>n :enew<CR>
+nmap <silent> <Leader>c :bp\|bd #<CR>
+" Navigate the popup menu with <TAB> and <S-TAB>
+imap <expr> <TAB>
+      \ pumvisible() ?
+      \ "\<C-N>" :
+      \ "\<TAB>"
+smap <expr> <TAB>
+      \ pumvisible() ?
+      \ "\<C-N>" :
+      \ "\<TAB>"
+imap <expr> <S-TAB>
+      \ pumvisible() ?
+      \ "\<C-P>" :
+      \ "\<S-TAB>"
+smap <expr> <S-TAB>
+      \ pumvisible() ?
+      \ "\<C-P>" :
+      \ "\<S-TAB>"
+" Toggle folds with <Space>
+nnoremap <expr> <Space>
+      \ foldlevel('.') ?
+      \ 'za' :
+      \ "\<Space>"
+vnoremap <Space> zf
+" Clear highlighting with <Leader><space>
+nmap <silent> <Leader><space> :noh<CR>
+" Toggle list mode (display of whitespace) using <Leader>i
+nmap <silent> <Leader>i :set list!<CR>
+" Hit <LocalLeader>ve/vs to open or navigate to, and re-source, $MYVIMRC
+nmap <silent> <LocalLeader>ve :edit $MYVIMRC<CR>
+if has('gui_running') && filereadable($MYGVIMRC)
+    nmap <silent> <LocalLeader>vs :source $MYVIMRC<CR>:source $MYGVIMRC<CR>
+else
+    nmap <silent> <LocalLeader>vs :source $MYVIMRC<CR>
+endif
+
+" Filetype specific settings {{{1
+
+" python {{{2
+"augroup python
+"  autocmd!
+"  autocmd FileType python setlocal foldmethod=indent foldnestmax=2
+"        \ foldminlines=2
+"augroup END
+
+" tex {{{2
+let g:tex_flavor = 'latex'
+"function! TexCustomCompile()
+"  map <silent> <buffer> <LocalLeader>lp :w<CR>:!latexmk -pdf
+"        \ -pdflatex=pdflatex %<CR><CR>
+"  map <silent> <buffer> <LocalLeader>lx :w<CR>:!latexmk -pdf
+"        \ -pdflatex=xelatex %<CR><CR>
+"  map <silent> <buffer> <LocalLeader>lu :w<CR>:!latexmk -pdf
+"        \ -pdflatex=lualatex %<CR><CR>
+"  map <silent> <buffer> <LocalLeader>lv :!xdg-open expand(%:t:r).pdf &<CR><CR>
+"  map <silent> <buffer> <LocalLeader>lc :!latexmk -c<CR><CR>
+"endfunction
+
+augroup tex
+  autocmd!
+  autocmd FileType tex,bib setlocal softtabstop=2 shiftwidth=2
+  autocmd FileType tex setlocal spell formatoptions+=a
+        "\| call TexCustomCompile()
+augroup END
+
+" lilypond {{{2
+let g:lilypond_vim_dir = split(expand('/usr/share/lilypond/*/vim/'))[-1]
+if isdirectory(g:lilypond_vim_dir)
+  filetype off
+  set rtp+=g:lilypond_vim_dir
+  filetype on
+  map <silent> <buffer> <LocalLeader>ly :w<CR>:!lilypond %<CR>
+endif
+
+augroup lilypond
+  autocmd!
+  autocmd FileType lilypond setlocal softtabstop=2 shiftwidth=2
+augroup END
+
+" gitcommit {{{2
+augroup gitcommit
+  autocmd!
+  autocmd FileType gitcommit setlocal spell textwidth=72
+augroup END
+
+" vimscript {{{2
+augroup vimscript
+  autocmd!
+  autocmd FileType vim setlocal softtabstop=2 shiftwidth=2
+augroup END
+
+" c-family {{{2
+augroup c_family
+  autocmd!
+  autocmd FileType c,cpp,objc,objcpp,cs setlocal cinoptions=:0,(0,u0
+        \ noexpandtab tabstop=8 softtabstop=0 shiftwidth=8 foldmethod=syntax
+        \ foldnestmax=2
+augroup END
+
