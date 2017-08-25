@@ -31,6 +31,10 @@ gsettings set org.gnome.desktop.peripherals.touchpad natural-scroll true
 gsettings set org.gnome.desktop.peripherals.touchpad tap-to-click true
 #gsettings set org.gnome.desktop.peripherals.touchpad horiz-scroll-enabled false
 
+# Location services {{{1
+gsettings set org.gnome.system.location max-accuracy-level city
+gsettings set org.gnome.system.location enabled true
+
 ## Onboard touch keyboard {{{1
 #gsettings set org.gnome.desktop.a11y.applications screen-keyboard-enabled true
 #gsettings set org.onboard start-minimized true
