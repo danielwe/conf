@@ -23,7 +23,7 @@ cd ..
 rm -rf ${SOURCE}
 
 # Insert binaries in PATH
-DESTS=( ${HOME}/texlive/20*/ )
+DESTS=( ${HOME}/local/texlive/20*/ )
 DEST="${DESTS[-1]}"
 BASHRC="${HOME}/.profile"
 

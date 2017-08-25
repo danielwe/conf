@@ -18,8 +18,8 @@ tar -xf "${ARCHIVE}"
 rm "${ARCHIVE}"
 
 # Update link in home directory
-LINK_NAME="${HOME}/julia"
-TARGET="$(pwd)/julia-*/"
+LINK_NAME="${HOME}/local/julia"
+TARGET="${HOME}/local/julia-*/"
 ln -sTf ${TARGET} ${LINK_NAME}
 
 # Restore old installations
