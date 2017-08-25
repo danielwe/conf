@@ -414,7 +414,7 @@ let g:tex_flavor = 'latex'
 augroup tex
   autocmd!
   autocmd FileType tex,bib setlocal softtabstop=2 shiftwidth=2
-  autocmd FileType tex setlocal spell formatoptions+=a
+  autocmd FileType tex setlocal spell "formatoptions+=a
         "\| call TexCustomCompile()
 augroup END
 
