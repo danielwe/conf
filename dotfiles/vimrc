@@ -236,7 +236,7 @@ set hidden               " Hide buffers when they are abandoned
 set noswapfile           " Do not use swap file
 set wildmode=longest:full " Set autocomplete command behavior
 set mouse=a              " Enable mouse usage (all modes)
-set complete+=i          " Set completion modes
+"set complete+=i          " Set completion modes
 set completeopt=menuone,longest,preview " Set completion options
 set showcmd              " Show number of selected lines ++ in the bottom line
 
@@ -269,8 +269,8 @@ set expandtab            " Expand tabs as spaces
 set softtabstop=4        " Set width of soft tabstops
 set shiftwidth=4         " Set width of autoindentation
 set textwidth=79         " Hard-wrap lines at this width (0: disable)
-set formatoptions+=rq1jw " Set auto-format options
-set formatoptions-=atcn
+set formatoptions+=rq1j " Set auto-format options
+set formatoptions-=tacnw
 
 " Search behavior
 set ignorecase           " Do case insensitive matching
