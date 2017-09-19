@@ -57,6 +57,11 @@ sudo apt install \
     vim-gtk3 \
     curl \
     linux-tools-common \
+    powertop \
+    tlp \
+    tlp-rdw \
+    cpufrequtils \
+    #acpi-call-dkms \  # Thinkpads only
     #gimp \
     #inkscape \
     #vlc \
