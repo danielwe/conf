@@ -1,0 +1,94 @@
+"*":
+  "atom-clock":
+    dateFormat: "HH:mm"
+  "atom-latex":
+    file_ext_to_clean: "*.aux, *.bbl, *.blg, *.idx, *.ind, *.lof, *.lot, *.out, *.toc, *.acn, *.acr, *.alg, *.glg, *.glo, *.gls, *.ist, *.fls, *.log, *.fdb_latexmk, *Notes.bib"
+  "autocomplete-plus":
+    confirmCompletion: "tab always, enter when suggestion explicitly selected"
+  "bracket-matcher":
+    autocompleteBrackets: false
+  core:
+    projectHome: "/home/daniel/packages"
+    telemetryConsent: "no"
+    themes: [
+      "one-light-ui"
+      "solarized-light-syntax"
+    ]
+  editor:
+    fontSize: 16
+    softWrapAtPreferredLineLength: true
+    softWrapHangingIndent: 2
+  "exception-reporting":
+    userId: "8e273645-338a-453a-a9d9-254e9ee6de72"
+  "linter-chktex":
+    chktexArgs: [
+      "-wall"
+      "-n22"
+      "-n30"
+      "-e16"
+      "-n1"
+      "-n8"
+      "-n21"
+    ]
+  "linter-ui-default":
+    showPanel: true
+  minimap:
+    moveCursorOnMinimapClick: true
+    plugins:
+      "find-and-replace": true
+      "find-and-replaceDecorationsZIndex": 0
+      "git-diff": true
+      "git-diffDecorationsZIndex": 0
+      "highlight-selected": true
+      "highlight-selectedDecorationsZIndex": 0
+      linter: true
+      linterDecorationsZIndex: 0
+      pigments: true
+      pigmentsDecorationsZIndex: 0
+      "split-diff": true
+      "split-diffDecorationsZIndex": 0
+  "one-light-ui":
+    fontSize: 14
+  "platformio-ide-terminal":
+    ansiColors:
+      normal:
+        black: "#073642"
+        blue: "#268bd2"
+        cyan: "#2aa198"
+        green: "#859900"
+        magenta: "#d33682"
+        red: "#dc322f"
+        white: "#eee8d5"
+        yellow: "#b58900"
+      zBright:
+        brightBlack: "#002b36"
+        brightBlue: "#839496"
+        brightCyan: "#93a1a1"
+        brightGreen: "#586e75"
+        brightMagenta: "#6c71c4"
+        brightRed: "#cb4b16"
+        brightWhite: "#fdf6e3"
+        brightYellow: "#657b83"
+    core:
+      mapTerminalsTo: "Folder"
+      mapTerminalsToAutoOpen: true
+    style:
+      animationSpeed: 0
+      theme: "solarized-dark"
+  "relative-numbers":
+    softWrapsCount: false
+  "spell-check":
+    grammars: [
+      "source.asciidoc"
+      "source.gfm"
+      "text.git-commit"
+      "text.plain"
+      "text.plain.null-grammar"
+      "text.tex.latex"
+    ]
+  "tool-bar":
+    position: "Left"
+  "uber-juno":
+    disable: true
+  welcome:
+    showOnStartup: false

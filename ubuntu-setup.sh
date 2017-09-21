@@ -54,6 +54,7 @@ sudo apt install \
     python3-dev \
     python3-jedi \
     python3-flake8 \
+    shellcheck \
     exuberant-ctags \
     silversearcher-ag \
     vim-gtk3 \

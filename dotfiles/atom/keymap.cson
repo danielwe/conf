@@ -1,0 +1,33 @@
+# Tweak vim-mode-plus motions
+'atom-text-editor.vim-mode-plus:not(.insert-mode)':
+  'j': 'vim-mode-plus:move-down-screen'
+  'k': 'vim-mode-plus:move-up-screen'
+
+  'g j': 'vim-mode-plus:move-down'
+  'g k': 'vim-mode-plus:move-up'
+
+  'left': 'vim-mode-plus:previous-tab'
+  'right': 'vim-mode-plus:next-tab'
+
+  ', h': 'window:focus-pane-on-left'
+  ', j': 'window:focus-pane-below'
+  ', k': 'window:focus-pane-above'
+  ', l': 'window:focus-pane-on-right'
+  ', s': 'pane:split-down-and-copy-active-item'
+  ', v': 'pane:split-right-and-copy-active-item'
+  ', c': 'pane:close'
+  ', q': 'core:close'
+  ', =': 'vim-mode-plus:equalize-panes'
+  ', p': 'window:focus-previous-pane'
+  ', w': 'window:focus-next-pane'
+  ', x': 'vim-mode-plus:exchange-pane'
+  ', z': 'vim-mode-plus:maximize-pane'
+  ', H': 'window:move-pane-to-very-left'
+  ', J': 'window:move-pane-to-very-bottom'
+  ', K': 'window:move-pane-to-very-top'
+  ', L': 'window:move-pane-to-very-right'
+  ', Z': 'window:maximize-pane-without-center'
+  ', left': 'window:focus-pane-on-left'
+  ', down': 'window:focus-pane-below'
+  ', up': 'window:focus-pane-above'
+  ', right': 'window:focus-pane-on-right'
