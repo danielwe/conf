@@ -23,7 +23,11 @@ tar -xf "${ARCHIVE}"
 rm "${ARCHIVE}"
 
 # Update link
+ALT_LINK_NAME="julia-alt"
 LINK_NAME="julia"
+rm -f ${ALT_LINK_NAME}
+mv ${LINK_NAME} ${ALT_LINK_NAME}
+
 TARGET="julia-*/"
 ln -sTf ${TARGET} ${LINK_NAME}
 
