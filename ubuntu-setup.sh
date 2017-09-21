@@ -44,6 +44,8 @@ sudo apt install \
     git \
     cmake \
     clang \
+    openmpi-bin \
+    libopenmpi-dev \
     ruby-dev \
     python-dev \
     python-jedi \
