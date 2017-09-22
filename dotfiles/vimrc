@@ -319,41 +319,39 @@ colorscheme solarized | call togglebg#map("<F5>")
 
 " Key mappings {{{1
 
-"" Enter :-commands using -
-"nmap - :
-"vmap - :
-"" Search with f and F
-"nnoremap f /
-"nnoremap F ?
-"" Get back to normal without <ESC>
-""inoremap <ESC> <nop>
-"inoremap jjjj <ESC>
-"inoremap kkkk <ESC>
-"" Navigate easily to home and end
-"nnoremap H ^
-"vnoremap H ^
-"nnoremap L $
-"vnoremap L $
 " Scroll screen-based instead of line-based
 nnoremap k gk
 vnoremap k gk
 nnoremap j gj
 vnoremap j gj
 " Navigate splits easily
-nnoremap <Leader>v <C-W>v<CR><C-W>l
-nnoremap <Leader>s <C-W>s<C-W>j
 nnoremap <Leader>h <C-W>h
 nnoremap <Leader>j <C-W>j
 nnoremap <Leader>k <C-W>k
 nnoremap <Leader>l <C-W>l
+nnoremap <Leader>v <C-W>v
+nnoremap <Leader>s <C-W>s
+nnoremap <Leader>c <C-W>c
 nnoremap <Leader>q <C-W>q
-" Close quickfix window, location list and preview window
-nmap <silent> <Leader>z :cclose<CR>:lclose<CR>:pclose<CR>
+nnoremap <Leader>= <C-W>=
+nnoremap <Leader>p <C-W>p
+nnoremap <Leader>w <C-W>w
+nnoremap <Leader>x <C-W>x
+nnoremap <Leader>z <C-W>z
+nnoremap <Leader>H <C-W>H
+nnoremap <Leader>J <C-W>J
+nnoremap <Leader>K <C-W>K
+nnoremap <Leader>L <C-W>L
+nnoremap <Leader>Z <C-W>Z
+nnoremap <Leader><Left> <C-W><Left>
+nnoremap <Leader><Down> <C-W><Down>
+nnoremap <Leader><Up> <C-W><Up>
+nnoremap <Leader><Right> <C-W><Right>
 " Navigate buffers easily
-nmap <silent> <Right> :bn<CR>
 nmap <silent> <Left> :bp<CR>
-nmap <silent> <Leader>n :enew<CR>
-nmap <silent> <Leader>c :bp\|bd #<CR>
+nmap <silent> <Down> :bl<CR>
+nmap <silent> <Up> :bf<CR>
+nmap <silent> <Right> :bn<CR>
 " Navigate the popup menu with <TAB> and <S-TAB>
 imap <expr> <TAB>
       \ pumvisible() ?
@@ -451,4 +449,3 @@ augroup c_family
         \ noexpandtab tabstop=8 softtabstop=0 shiftwidth=8 foldmethod=syntax
         \ foldnestmax=2
 augroup END
-
