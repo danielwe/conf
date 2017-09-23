@@ -1,10 +1,10 @@
 "*":
   "atom-clock":
     dateFormat: "HH:mm"
-  "atom-latex":
-    file_ext_to_clean: "*.aux, *.bbl, *.blg, *.idx, *.ind, *.lof, *.lot, *.out, *.toc, *.acn, *.acr, *.alg, *.glg, *.glo, *.gls, *.ist, *.fls, *.log, *.fdb_latexmk, *Notes.bib"
   "autocomplete-plus":
-    confirmCompletion: "tab always, enter when suggestion explicitly selected"
+    backspaceTriggersAutocomplete: true
+    confirmCompletion: "enter"
+    useCoreMovementCommands: false
   "bracket-matcher":
     autocompleteBrackets: false
   core:
@@ -20,6 +20,48 @@
     softWrapHangingIndent: 2
   "exception-reporting":
     userId: "8e273645-338a-453a-a9d9-254e9ee6de72"
+  latex:
+    buildOnSave: true
+    cleanPatterns: [
+      "**/*.aux"
+      "**/*.aux.bak"
+      "**/*.bbl"
+      "**/*.bcf"
+      "**/*.blg"
+      "**/*.dvi"
+      "**/*.fdb_latexmk"
+      "**/*.fls"
+      "**/*.idx"
+      "**/*.idx.bak"
+      "**/*.ilg"
+      "**/*.ind"
+      "**/*.lof"
+      "**/*.log"
+      "**/*.lol"
+      "**/*.lot"
+      "**/*.nav"
+      "**/*.out"
+      "**/*.pdf"
+      "**/*.ps"
+      "**/*.snm"
+      "**/*.synctex.gz"
+      "**/*.toc"
+      "/**/_minted-{jobname}"
+      "/{output_dir}/sage-plots-for-{jobname}.tex"
+      "/missfont.log"
+      "/texput.log"
+      "/texput.aux"
+      "**/*Notes.bib"
+    ]
+    opener: "zathura"
+  latexer:
+    autocomplete_environments: false
+    parameters_to_search_citations_by: [
+      "key"
+      "author"
+      "year"
+      "title"
+    ]
   "linter-chktex":
     chktexArgs: [
       "-wall"
@@ -31,6 +73,7 @@
       "-n21"
     ]
   "linter-ui-default":
+    panelHeight: 150
     showPanel: true
   minimap:
     moveCursorOnMinimapClick: true
@@ -92,3 +135,6 @@
     disable: true
   welcome:
     showOnStartup: false
+".latex.tex.text":
+  editor:
+    softWrap: true

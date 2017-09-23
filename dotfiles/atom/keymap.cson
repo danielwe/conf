@@ -1,14 +1,10 @@
-# Tweak vim-mode-plus motions
 'atom-text-editor.vim-mode-plus:not(.insert-mode)':
   'j': 'vim-mode-plus:move-down-screen'
   'k': 'vim-mode-plus:move-up-screen'
-
   'g j': 'vim-mode-plus:move-down'
   'g k': 'vim-mode-plus:move-up'
-
   'left': 'vim-mode-plus:previous-tab'
   'right': 'vim-mode-plus:next-tab'
-
   ', h': 'window:focus-pane-on-left'
   ', j': 'window:focus-pane-below'
   ', k': 'window:focus-pane-above'
@@ -31,3 +27,14 @@
   ', down': 'window:focus-pane-below'
   ', up': 'window:focus-pane-above'
   ', right': 'window:focus-pane-on-right'
+'body atom-text-editor.autocomplete-active':
+  'tab': 'autocomplete-plus:move-down'
+  'shift-tab': 'autocomplete-plus:move-up'
+  'down': 'autocomplete-plus:move-down'
+  'up': 'autocomplete-plus:move-up'
+'.select-list atom-text-editor[mini]':
+  'tab': 'core:move-down'
+  'shift-tab': 'core:move-up'
+'.corrections atom-text-editor[mini]':
+  'tab': 'core:move-down'
+  'shift-tab': 'core:move-up'

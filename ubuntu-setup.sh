@@ -40,6 +40,8 @@ sudo apt install \
     redshift-gtk \
     chromium-browser \
     lilypond \
+    zathura \
+    xdotools \
     cifs-utils \
     git \
     cmake \
