@@ -131,6 +131,8 @@
     ]
   "tool-bar":
     position: "Left"
+  "tree-view":
+    hideVcsIgnoredFiles: true
   "uber-juno":
     disable: true
   welcome:
