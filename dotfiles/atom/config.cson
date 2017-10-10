@@ -73,7 +73,6 @@
     ]
   "linter-ui-default":
     panelHeight: 150
-    showPanel: true
   minimap:
     moveCursorOnMinimapClick: true
     plugins:
@@ -134,6 +133,8 @@
     hideVcsIgnoredFiles: true
   "uber-juno":
     disable: true
+  "vim-mode-plus":
+    notifiedCoffeeScriptNoLongerSupportedToExtendVMP: true
   welcome:
     showOnStartup: false
 ".latex.tex.text":
