@@ -53,6 +53,7 @@
       "**/*Notes.bib"
     ]
     opener: "zathura"
+    zathuraPath: "/home/daniel/bin/zathura"
   latexer:
     autocomplete_environments: false
     parameters_to_search_citations_by: [
