@@ -35,8 +35,8 @@ pigments@0.40.2
 platformio-ide-terminal@2.7.0
 python-indent@1.1.2
 python-tools@0.6.9
-relative-numbers-plus@1.0.5
-script@3.18.0
+relative-numbers@0.8.0
+script@3.17.1
 split-diff@1.5.1
 tool-bar@1.1.0
 uber-juno@0.1.2

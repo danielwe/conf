@@ -120,7 +120,7 @@
     style:
       animationSpeed: 0
       theme: "solarized-dark"
-  "relative-numbers-plus":
+  "relative-numbers":
     softWrapsCount: false
   "spell-check":
     grammars: [
