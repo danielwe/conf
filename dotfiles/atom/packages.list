@@ -3,7 +3,7 @@ atom-clock@0.1.15
 autocomplete-python@1.10.3
 busy-signal@1.4.3
 ex-mode@0.18.0
-file-icons@2.1.12
+file-icons@2.1.13
 highlight-selected@0.13.1
 hydrogen-launcher@1.2.1
 indent-detective@0.1.1
@@ -35,8 +35,8 @@ pigments@0.40.2
 platformio-ide-terminal@2.7.0
 python-indent@1.1.2
 python-tools@0.6.9
-relative-numbers@0.8.0
-script@3.16.0
+relative-numbers-plus@1.0.5
+script@3.18.0
 split-diff@1.5.1
 tool-bar@1.1.0
 uber-juno@0.1.2
