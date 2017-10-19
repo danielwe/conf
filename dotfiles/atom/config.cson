@@ -51,6 +51,7 @@
       "/texput.log"
       "/texput.aux"
       "**/*Notes.bib"
+      "**/*.run.xml"
     ]
     opener: "zathura"
     zathuraPath: "/home/daniel/bin/zathura"
@@ -75,6 +76,8 @@
       "-n17"
       "-n21"
     ]
+  "linter-pylama":
+    ignoreErrorsAndWarnings: "D203,D212,D213,D404,D100,D103,E265"
   "linter-ui-default":
     panelHeight: 150
   minimap:
