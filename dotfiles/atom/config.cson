@@ -8,6 +8,9 @@
   "bracket-matcher":
     autocompleteBrackets: false
   core:
+    disabledPackages: [
+      "linter-julia"
+    ]
     projectHome: "/home/daniel/packages"
     telemetryConsent: "no"
     themes: [
