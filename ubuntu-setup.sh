@@ -61,6 +61,7 @@ sudo apt install \
     silversearcher-ag \
     vim-gtk3 \
     curl \
+    csh \
     linux-tools-common \
     powertop \
     tlp \
@@ -112,8 +113,8 @@ source "${DIR}/system-config.sh"
 # binary, not the one in the Ubuntu repos, and b) to add your user to the
 # vboxusers group! Required for USB filtering etc.
 
-# If computer refuses to stay asleep in standby, the wakeup signal may be 
-# coming from the USB 3 bus. One cure is to add the following line to 
+# If computer refuses to stay asleep in standby, the wakeup signal may be
+# coming from the USB 3 bus. One cure is to add the following line to
 # /etc/rc.local, _before_ the `exit 0`-line:
 #echo XHC > /proc/acpi/wakeup
 
