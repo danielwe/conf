@@ -7,5 +7,5 @@ set highlight-color "#eee8d5"
 set highlight-active-color "#b58900"
 set highlight-transparency 0.2
 set recolor "true"
-set recolor-darkcolor "#586e75"
-set recolor-lightcolor "#fdf6e3"
+set recolor-darkcolor "#073642"
+set recolor-lightcolor "#eee8d5"
