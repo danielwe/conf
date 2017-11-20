@@ -43,6 +43,7 @@ sudo apt install \
     zathura \
     xdotools \
     cifs-utils \
+    tree \
     git \
     cmake \
     clang \
