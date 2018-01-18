@@ -14,8 +14,8 @@
     projectHome: "/home/daniel/packages"
     telemetryConsent: "no"
     themes: [
-      "one-light-ui"
-      "solarized-light-syntax"
+      "one-dark-ui"
+      "solarized-dark-syntax"
     ]
   editor:
     softWrapAtPreferredLineLength: true
@@ -56,6 +56,7 @@
       "**/*Notes.bib"
       "**/*.run.xml"
     ]
+    enableExtendedBuildMode: false
     opener: "zathura"
     zathuraPath: "/home/daniel/bin/zathura"
   latexer:
