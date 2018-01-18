@@ -300,7 +300,7 @@ set listchars=tab:»\ ,trail:~,extends:>,precedes:<,nbsp:+,eol:¬
 
 " Initialize font and window size
 if has('vim_starting')
-  set guifont=DejaVu\ Sans\ Mono\ 13
+  set guifont=DejaVu\ Sans\ Mono\ 12
   if has('gui_running')
     set guioptions+=f        " Dont detach from shell
     set guioptions+=P        " Enable autoselect using the "+-register
