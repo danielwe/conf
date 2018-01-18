@@ -3,7 +3,7 @@
 # Upgrade julia
 
 MAJOR_VERSION="0.6"
-FULL_VERSION="0.6.0"
+FULL_VERSION="0.6.2"
 ARCHIVE="julia-${FULL_VERSION}-linux-x86_64.tar.gz"
 
 # Move to installation directory
@@ -23,10 +23,10 @@ tar -xf "${ARCHIVE}"
 rm "${ARCHIVE}"
 
 # Update link
-ALT_LINK_NAME="julia-alt"
+OLD_LINK_NAME="julia-old"
 LINK_NAME="julia"
-rm -f ${ALT_LINK_NAME}
-mv ${LINK_NAME} ${ALT_LINK_NAME}
+rm -f ${OLD_LINK_NAME}
+mv ${LINK_NAME} ${OLD_LINK_NAME}
 
 TARGET="julia-*/"
 ln -sTf ${TARGET} ${LINK_NAME}
