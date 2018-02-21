@@ -11,7 +11,8 @@
 #    ~/.vim/neobundle/neobundle.vim
 #vim +NeoBundleInstall +qall
 
-# using vim-plug
-curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
-    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-vim +PlugInstall +qall
+## using vim-plug
+#curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+#    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+#vim +PlugInstall +qall
+vim +qall  # Start vim once, then close -- all the setup is now in vimrc
