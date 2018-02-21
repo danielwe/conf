@@ -3,8 +3,7 @@
     dateFormat: "HH:mm"
   "autocomplete-plus":
     backspaceTriggersAutocomplete: true
-    confirmCompletion: "enter"
-    useCoreMovementCommands: false
+    confirmCompletion: "tab always, enter when suggestion explicitly selected"
   "bracket-matcher":
     autocompleteBrackets: false
   core:
@@ -22,6 +21,8 @@
     softWrapHangingIndent: 2
   "exception-reporting":
     userId: "8e273645-338a-453a-a9d9-254e9ee6de72"
+  "julia-client":
+    firstBoot: false
   latex:
     buildOnSave: true
     cleanPatterns: [
@@ -83,7 +84,7 @@
   "linter-pylama":
     ignoreErrorsAndWarnings: "D203,D212,D213,D404,D100,D103,E265"
   "linter-ui-default":
-    panelHeight: 150
+    panelHeight: 300
     showPanel: true
   minimap:
     moveCursorOnMinimapClick: true
@@ -147,8 +148,7 @@
     hideVcsIgnoredFiles: true
   "uber-juno":
     disable: true
-  "vim-mode-plus":
-    notifiedCoffeeScriptNoLongerSupportedToExtendVMP: true
+  "vim-mode-plus": {}
   welcome:
     showOnStartup: false
 ".latex.tex.text":

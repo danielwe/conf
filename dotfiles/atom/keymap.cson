@@ -27,14 +27,14 @@
   ', down': 'window:focus-pane-below'
   ', up': 'window:focus-pane-above'
   ', right': 'window:focus-pane-on-right'
-'body atom-text-editor.autocomplete-active':
-  'tab': 'autocomplete-plus:move-down'
-  'shift-tab': 'autocomplete-plus:move-up'
-  'down': 'autocomplete-plus:move-down'
-  'up': 'autocomplete-plus:move-up'
-'.select-list atom-text-editor[mini]':
-  'tab': 'core:move-down'
-  'shift-tab': 'core:move-up'
-'.corrections atom-text-editor[mini]':
-  'tab': 'core:move-down'
-  'shift-tab': 'core:move-up'
+# 'body atom-text-editor.autocomplete-active':
+#   'tab': 'autocomplete-plus:move-down'
+#   'shift-tab': 'autocomplete-plus:move-up'
+#   'down': 'autocomplete-plus:move-down'
+#   'up': 'autocomplete-plus:move-up'
+# '.select-list atom-text-editor[mini]':
+#   'tab': 'core:move-down'
+#   'shift-tab': 'core:move-up'
+# '.corrections atom-text-editor[mini]':
+#   'tab': 'core:move-down'
+#   'shift-tab': 'core:move-up'
