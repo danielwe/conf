@@ -110,6 +110,14 @@ source "${DIR}/system-config.sh"
 
 # Other setup tips {{{1
 
+### Make a remapped mono sink for the master sink in pulseaudio
+### i) find the name of the sink:
+# $ pacmd list-sinks | grep name:
+### ii) add the following line to /etc/pulse/default.pa
+#load-module module-remap-sink sink_name=mono master=<master_sink_name> channels=4 channel_map=left,right,left,right master_channel_map=left,left,right,right
+### Alternatively (one-off solution): run the command
+# $ pacmd <statement above>
+
 # When installing virtualbox, remember a) to install the official Oracle
 # binary, not the one in the Ubuntu repos, and b) to add your user to the
 # vboxusers group! Required for USB filtering etc.
