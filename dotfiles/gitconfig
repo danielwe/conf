@@ -1,0 +1,7 @@
+[user]
+	name = Daniel Wennberg
+	email = daniel.wennberg@gmail.com
+[color]
+	ui = true
+[credential]
+	helper = cache
