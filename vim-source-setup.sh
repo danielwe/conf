@@ -3,17 +3,11 @@
 # Compile the most recent version of Vim from source
 
 sudo apt-get -y install \
-    build-essential \
     cmake \
     clang \
     ruby-dev \
     python-dev \
-    python-jedi \
-    pylint \
-    python-flake8 \
     python3-dev \
-    python3-jedi \
-    python3-flake8 \
     exuberant-ctags \
     silversearcher-ag \
     lua5.2 \
@@ -44,7 +38,6 @@ cd vim/src
     --enable-perlinterp \
     --enable-luainterp \
     --enable-tclinterp \
-    --enable-gui=gnome2 \
     --enable-cscope
 make
 sudo checkinstall

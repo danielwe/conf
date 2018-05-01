@@ -20,6 +20,16 @@
 #spotify:         Separate repository. Consider using Spotify Web instead.
 #glances:         Terminal performance monitor with client-server mode
 #PySensors (pip): Python bindings for libsensors.so
+#redshift-gtk:    Save your eyes---but obsolete in 18.04
+#xdotools:        Simulate mouse&key input etc.
+#cifs-utils:      Mount cross-platform network filesystems (samba)
+#gimp:            photoshop
+#inkscape:        vector graphics
+#vlc:             any media file
+#xournal:         handwriting support
+#openconnect:     vpn
+#libopenblas-base
+#libopenblas-dev
 
 # Get directory containing this script {{{1
 
@@ -37,12 +47,10 @@ sudo add-apt-repository -y ppa:peterlevi/ppa
 sudo apt update
 sudo apt install \
     variety \
-    redshift-gtk \
+    nautilus-dropbox \
     chromium-browser \
     lilypond \
     zathura \
-    xdotools \
-    cifs-utils \
     tree \
     git \
     cmake \
@@ -51,40 +59,18 @@ sudo apt install \
     libopenmpi-dev \
     ruby-dev \
     python-dev \
-    python-jedi \
-    pylint \
-    python-flake8 \
     python3-dev \
-    python3-jedi \
-    python3-flake8 \
     shellcheck \
     exuberant-ctags \
     silversearcher-ag \
-    vim-gtk3 \
+    vim \
     curl \
-    csh \
     linux-tools-common \
     powertop \
     tlp \
     tlp-rdw \
     cpufrequtils \
     #acpi-call-dkms \  # Thinkpads only
-    #gimp \
-    #inkscape \
-    #vlc \
-    #dconf-editor \
-    #nautilus-dropbox \
-    #xournal \
-    #openconnect \
-    #texlive-full \
-    #biber \
-    #texmaker \
-    #build-essential \  # Included in Ubuntu by default
-    #ack-grep \
-    #libopenblas-base \
-    #libopenblas-dev \
-    #libatlas3-base \
-    #libatlas-dev \
 
 ## Install mendeley {{{2
 #source "${DIR}/mendeley-setup.sh"
@@ -97,9 +83,6 @@ sudo apt install \
 
 # Link configuration dotfiles {{{1
 source "${DIR}/link-dotfiles.sh"
-
-# Configure git {{{1
-source "${DIR}/git-config.sh"
 
 # Set execute permissions in local bin folder {{{1
 
