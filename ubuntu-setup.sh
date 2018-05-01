@@ -6,7 +6,6 @@
 # Potentially useful packages not installed by this script {{{1
 #anaconda:        Scientific Python environment
 #gparted:         Manage disk partitions.
-#unetbootin:      Create bootable live USB sticks.
 #unison-gtk:      Syncronize files/folders.
 #boinc-manager:   Manage participation in BOINC-based projects.
 #jhead:           Rename jpeg files using exif data.
@@ -16,8 +15,8 @@
 #flightgear:      Flight Simulator!!
 #oracle-java:     Official Java implementation. PPA: webupd8team/java
 #pipelight:       Run silverlight plugin etc. via wine. PPA: pipelight/stable
-#skype:           Canonical partner repositories.
-#spotify:         Separate repository. Consider using Spotify Web instead.
+#skype:           Now a snap!
+#spotify:         Now a snap!
 #glances:         Terminal performance monitor with client-server mode
 #PySensors (pip): Python bindings for libsensors.so
 #redshift-gtk:    Save your eyes---but obsolete in 18.04
@@ -26,8 +25,10 @@
 #gimp:            photoshop
 #inkscape:        vector graphics
 #vlc:             any media file
-#xournal:         handwriting support
+#xournal:         document processor for stylus handwriting
 #openconnect:     vpn
+#virtualbox:      get from Oracle, remember to add user to vboxusers group
+#pianoteq:        download from modartt
 #libopenblas-base
 #libopenblas-dev
 
