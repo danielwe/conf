@@ -253,7 +253,7 @@ set showcmd              " Show number of selected lines ++ in the bottom line
 augroup general
   autocmd!
   " Save when Vim loses focus
-  autocmd FocusLost * :wa
+  autocmd FocusLost /* silent wall
   " Jump to the last active position when opening a file
   autocmd BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") |
         \                 exe "normal! g'\"" |
