@@ -5,6 +5,7 @@
   'g k': 'vim-mode-plus:move-up'
   'left': 'vim-mode-plus:previous-tab'
   'right': 'vim-mode-plus:next-tab'
+  ', i': 'window:toggle-invisibles'
   ', h': 'window:focus-pane-on-left'
   ', j': 'window:focus-pane-below'
   ', k': 'window:focus-pane-above'
@@ -27,6 +28,8 @@
   ', down': 'window:focus-pane-below'
   ', up': 'window:focus-pane-above'
   ', right': 'window:focus-pane-on-right'
+'atom-text-editor.vim-mode-plus:not(.insert-mode):not(.operator-pending-mode)':
+  'space': 'vim-mode-plus:toggle-fold'
 # 'body atom-text-editor.autocomplete-active':
 #   'tab': 'autocomplete-plus:move-down'
 #   'shift-tab': 'autocomplete-plus:move-up'
