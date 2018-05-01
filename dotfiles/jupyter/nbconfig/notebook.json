@@ -1,0 +1,23 @@
+{
+  "load_extensions": {
+    "execute_time/ExecuteTime": true,
+    "code_font_size/code_font_size": true,
+    "select_keymap/main": true,
+    "scratchpad/main": true,
+    "ruler/main": true,
+    "codefolding/main": true,
+    "notify/notify": true,
+  },
+  "Cell": {
+    "cm_config": {
+      "lineNumbers": true
+    }
+  },
+  "ruler_column": [
+    "79"
+  ],
+  "ExecuteTime": {
+    "clear_timings_on_clear_output": true
+  },
+  "select_keymap_line_wrap": false
+}
