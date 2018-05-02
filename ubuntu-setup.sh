@@ -26,6 +26,7 @@
 #inkscape:        vector graphics
 #vlc:             any media file
 #xournal:         document processor for stylus handwriting
+#lilypond:        latex for sheet music
 #openconnect:     vpn
 #virtualbox:      get from Oracle, remember to add user to vboxusers group
 #pianoteq:        download from modartt
@@ -50,7 +51,6 @@ sudo apt install \
     variety \
     nautilus-dropbox \
     chromium-browser \
-    lilypond \
     zathura \
     tree \
     git \
@@ -86,8 +86,7 @@ sudo apt install \
 source "${DIR}/link-dotfiles.sh"
 
 # Set execute permissions in local bin folder {{{1
-
-chmod +x "${HOME}/bin/"*  # The glob skips hidden files by default, yay
+#chmod +x "${HOME}/bin/"*  # The glob skips hidden files by default, yay
 
 # Configure system settings {{{1
 source "${DIR}/system-config.sh"
