@@ -2,7 +2,7 @@
 
 # Install Anaconda
 
-VERSION="4.4.0"
+VERSION="5.1.0"
 
 wget -O "anaconda.sh" "https://repo.continuum.io/archive/Anaconda3-${VERSION}-Linux-x86_64.sh"
 bash "anaconda.sh"
