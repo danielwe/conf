@@ -7,4 +7,4 @@ wget -O "atom.deb" "https://atom.io/download/deb"
 sudo dpkg -i "atom.deb"
 rm "atom.deb"
 
-apm install --packages-file "~/.atom/packages.list"
+apm install --packages-file "$HOME/.atom/packages.list"
