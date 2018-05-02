@@ -64,7 +64,7 @@ sudo apt install \
     shellcheck \
     exuberant-ctags \
     silversearcher-ag \
-    vim \
+    vim-gtk3 \
     curl \
     linux-tools-common \
     powertop \
