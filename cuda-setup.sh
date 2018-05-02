@@ -1,21 +1,23 @@
 #!/bin/bash
 
-BASHRC="${HOME}/.bashrc"
+# In 18.04 all bets are off.
 
+# BASHRC="${HOME}/.bashrc"
 # Prepare any nvidia driver for use with a cuda installed from e.g. anaconda:
 
 # add nvidia driver to linker path if not the selected graphics card
-echo >> ${BASHRC}
-echo 'if [ "'"$( prime-select query )"'" == "'"intel"'" ]' >> ${BASHRC}
-echo "then" >> ${BASHRC}
-echo "    nvdir=( /usr/lib/nvidia-??? )" >> ${BASHRC}
-echo "    if [ ${#nvdir[@]} -ge 0 ]" >> ${BASHRC}
-echo "    then" >> ${BASHRC}
-echo '        export PATH="'"${nvdir[-1]}/bin${PATH:+:${PATH}}"'"' >> ${BASHRC}
-echo '        export LD_LIBRARY_PATH="'"${nvdir[-1]}${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}"'"' >> ${BASHRC}
-echo "    fi" >> ${BASHRC}
-echo "    unset nvdir" >> ${BASHRC}
-echo "fi 2>/dev/null" >> ${BASHRC}
+# echo >> ${BASHRC}
+# echo '# Add nvidia binaries and libraries to path if offline, for CUDA' >> ${BASHRC}
+# echo 'if [ "'"$( prime-select query )"'" == "'"intel"'" ]' >> ${BASHRC}
+# echo 'then' >> ${BASHRC}
+# echo '    nvdir=( /usr/lib/nvidia-??? )' >> ${BASHRC}
+# echo '    if [ ${#nvdir[@]} -ge 0 ]' >> ${BASHRC}
+# echo '    then' >> ${BASHRC}
+# echo '        export PATH="${nvdir[-1]}/bin${PATH:+:${PATH}}"' >> ${BASHRC}
+# echo '        export LD_LIBRARY_PATH="${nvdir[-1]}${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}"' >> ${BASHRC}
+# echo '    fi' >> ${BASHRC}
+# echo '    unset nvdir' >> ${BASHRC}
+# echo 'fi 2>/dev/null' >> ${BASHRC}
 
 
 # Manual CUDA install: lots of hoops to jump through, but in the end you want

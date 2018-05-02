@@ -22,6 +22,7 @@
 #redshift-gtk:    Save your eyes---but obsolete in 18.04
 #xdotools:        Simulate mouse&key input etc.
 #cifs-utils:      Mount cross-platform network filesystems (samba)
+#mesa-utils:      List OpenGL info
 #gimp:            photoshop
 #inkscape:        vector graphics
 #vlc:             any media file
