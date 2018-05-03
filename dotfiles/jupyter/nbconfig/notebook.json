@@ -7,6 +7,7 @@
     "ruler/main": true,
     "codefolding/main": true,
     "notify/notify": true,
+    "hide_header/main": true
   },
   "Cell": {
     "cm_config": {
