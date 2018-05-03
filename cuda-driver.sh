@@ -1,9 +1,24 @@
 #!/bin/bash
 
-# In 18.04 all bets are off.
+# Prepare the nvidia driver for use with a cuda installed from e.g. anaconda:
+
+# 18.04 assuming the nvidia driver and nvidia-prime is installed. Note that
+# nvidia-headless is perfectly adequate for cuda, but leaves system unbootable
+# if nvidia is not blacklisted, so stay with prime-select intel at all times.
+sudo prime-select intel  # Turn off nvidia at boot
+sudo systemctl disable nvidia-fallback.service  # Would load blacklisted and off-aliased nouveau
+sudo sed -i 's/^alias/#alias/' /etc/modprobe.d/blacklist-nvidia.conf  # Remove off-aliasing of nvidia to make it loadable
+sudo update-initramfs -u
+# Restart.
+#
+# Before starting a cuda application do:
+# sudo modprobe nvidia
+# That's all!
+
+
+# Older versions:
 
 # BASHRC="${HOME}/.bashrc"
-# Prepare any nvidia driver for use with a cuda installed from e.g. anaconda:
 
 # add nvidia driver to linker path if not the selected graphics card
 # echo >> ${BASHRC}
