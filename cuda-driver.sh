@@ -8,7 +8,7 @@
 sudo prime-select intel  # Turn off nvidia at boot
 sudo systemctl disable nvidia-fallback.service  # Would load blacklisted and off-aliased nouveau
 sudo sed -i 's/^alias/#alias/' /etc/modprobe.d/blacklist-nvidia.conf  # Remove off-aliasing of nvidia to make it loadable
-sudo update-initramfs -u
+sudo update-initramfs -u -k all
 # Restart.
 #
 # Before starting a cuda application do:
