@@ -24,7 +24,7 @@ ln -sTf ${TARGET} ${LINK_NAME}
 # Insert binaries in PATH
 BASHRC="${HOME}/.profile"
 
-BIN="${LINK_NAME}/bin"
+BIN="${DIR}/${LINK_NAME}/bin"
 echo >> ${BASHRC}
 echo "# set PATH so it includes julia binaries" >> ${BASHRC}
 echo 'if [ -d "'"${BIN}"'" ] ; then' >> ${BASHRC}
