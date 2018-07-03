@@ -73,7 +73,7 @@ Plug 'vim-scripts/Smart-Tabs', {'for': ['c', 'cpp', 'objc', 'objcpp', 'cs']}
 
 " tcomment {{{2
 Plug 'tomtom/tcomment_vim'
-let g:tcommentOptions = {'whitespace' : 'no'}
+let g:tcomment#options = {'whitespace' : 'no'}
 
 " snippets {{{2
 Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
