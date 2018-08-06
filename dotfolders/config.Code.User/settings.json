@@ -1,0 +1,134 @@
+{
+    "workbench.colorTheme": "Solarized Light",
+    "python.pythonPath": "/home/daniel/local/anaconda3/bin/python",
+    "vim.leader": ",",
+    "vim.easymotion": true,
+    "vim.hlsearch": true,
+    "vim.debug.loggingLevel": "error",
+    "vim.normalModeKeyBindings": [
+        {
+            "before": ["<left>"],
+            "commands": ["workbench.action.previousEditorInGroup"]
+        },
+        {
+            "before": ["<down>"],
+            "commands": ["workbench.action.lastEditorInGroup"]
+        },
+        {
+            "before": ["<up>"],
+            "commands": ["workbench.action.firstEditorInGroup"]
+        },
+        {
+            "before": ["<right>"],
+            "commands": ["workbench.action.nextEditorInGroup"]
+        },
+        {
+            "before": ["<leader>", "<left>"],
+            "commands": ["workbench.action.focusLeftGroup"]
+        },
+        {
+            "before": ["<leader>", "<down>"],
+            "commands": ["workbench.action.focusBelowGroup"]
+        },
+        {
+            "before": ["<leader>", "<up>"],
+            "commands": ["workbench.action.focusAboveGroup"]
+        },
+        {
+            "before": ["<leader>", "<right>"],
+            "commands": ["workbench.action.focusRightGroup"]
+        },
+        {
+            "before": ["<leader>", "h"],
+            "commands": ["workbench.action.focusLeftGroup"]
+        },
+        {
+            "before": ["<leader>", "j"],
+            "commands": ["workbench.action.focusBelowGroup"]
+        },
+        {
+            "before": ["<leader>", "k"],
+            "commands": ["workbench.action.focusAboveGroup"]
+        },
+        {
+            "before": ["<leader>", "l"],
+            "commands": ["workbench.action.focusRightGroup"]
+        },
+        {
+            "before": ["<leader>", "p"],
+            "commands": ["workbench.action.focusPreviousGroup"]
+        },
+        {
+            "before": ["<leader>", "w"],
+            "commands": ["workbench.action.focusNextGroup"]
+        },
+        {
+            "before": ["<leader>", "s"],
+            "commands": ["workbench.action.splitEditorDown"]
+        },
+        {
+            "before": ["<leader>", "v"],
+            "commands": ["workbench.action.splitEditorRight"]
+        },
+        {
+            "before": ["<leader>", "c"],
+            "commands": ["workbench.action.closeEditorsInGroup"]
+        },
+        {
+            "before": ["<leader>", "="],
+            "commands": ["workbench.action.evenEditorWidths"]
+        },
+        {
+            "before": ["<leader>", "z"],
+            "commands": ["workbench.action.toggleZenMode"]
+        },
+        {
+            "before": ["<leader>", "i"],
+            "commands": ["editor.action.toggleRenderWhitespace"]
+        },
+        {
+            "before": ["<leader>", "q"],
+            "commands": ["workbench.action.closeActiveEditor"]
+        },
+    ],
+    "vim.normalModeKeyBindingsNonRecursive": [
+        {
+            "before": ["j"],
+            "after": ["g", "j"]
+        },
+        {
+            "before": ["k"],
+            "after": ["g", "k"]
+        },
+        {
+            "before": ["g", "j"],
+            "after": ["j"]
+        },
+        {
+            "before": ["g", "k"],
+            "after": ["k"]
+        },
+    ],
+    "vim.visualModeKeyBindingsNonRecursive": [
+        {
+            "before": ["j"],
+            "after": ["g", "j"]
+        },
+        {
+            "before": ["k"],
+            "after": ["g", "k"]
+        },
+        {
+            "before": ["g", "j"],
+            "after": ["j"]
+        },
+        {
+            "before": ["g", "k"],
+            "after": ["k"]
+        },
+    ],
+    "gitlens.advanced.messages": {
+        "suppressShowKeyBindingsNotice": true
+    },
+    "editor.renderWhitespace": "none",
+}
