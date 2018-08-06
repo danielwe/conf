@@ -1,5 +1,6 @@
 {
     "editor.renderWhitespace": "none",
+    "editor.lineNumbers": "relative",
     "workbench.colorTheme": "Solarized Light",
     "python.pythonPath": "/home/daniel/local/anaconda3/bin/python",
     "vim.leader": ",",
@@ -181,5 +182,5 @@
         "editor.wordWrap": "on",
         "editor.wrappingIndent": "indent",
         "editor.tabSize": 2,
-    }
+    },
 }
