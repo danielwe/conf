@@ -1,4 +1,5 @@
 {
+    "editor.renderWhitespace": "none",
     "workbench.colorTheme": "Solarized Light",
     "python.pythonPath": "/home/daniel/local/anaconda3/bin/python",
     "vim.leader": ",",
@@ -130,5 +131,55 @@
     "gitlens.advanced.messages": {
         "suppressShowKeyBindingsNotice": true
     },
-    "editor.renderWhitespace": "none",
+    "latex-workshop.view.pdf.viewer": "external",
+    "latex-workshop.view.pdf.external.command": {
+        "command": "zathura",
+        "args": [
+            "%PDF%"
+        ]
+    },
+    "latex-workshop.view.pdf.external.synctex": {
+        "command": "zathura",
+        "args": [
+            "--synctex-forward=%LINE%:0:%TEX%",
+            "-x",
+            "code -g %{input}:%{line}",
+            "%PDF%",
+        ]
+    },
+    "latex-workshop.latex.clean.fileTypes": [
+        "*.acn",
+        "*.acr",
+        "*.alg",
+        "*.aux",
+        "*.aux.bak",
+        "*.bbl",
+        "*.bcf",
+        "*.blg",
+        "*.fdb_latexmk",
+        "*.fls",
+        "*.glg",
+        "*.glo",
+        "*.gls",
+        "*.idx",
+        "*.idx.bak",
+        "*.ind",
+        "*.ist",
+        "*.lof",
+        "*.log",
+        "*.lol",
+        "*.lot",
+        "*.nav",
+        "*.out",
+        "*.run.xml",
+        "*.snm",
+        "*.synctex.gz",
+        "*.toc",
+        "*Notes.bib",
+    ],
+    "[latex]": {
+        "editor.wordWrap": "on",
+        "editor.wrappingIndent": "indent",
+        "editor.tabSize": 2,
+    }
 }
