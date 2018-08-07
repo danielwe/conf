@@ -1,0 +1,6 @@
+try:
+    # use themed plotting style if available
+    from jupyterthemes import jtplot
+    jtplot.style()
+except:
+    pass
