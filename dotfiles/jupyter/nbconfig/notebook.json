@@ -7,7 +7,9 @@
     "ruler/main": true,
     "codefolding/main": true,
     "notify/notify": true,
-    "hide_header/main": true
+    "hide_header/main": false,
+    "runtools/main": true,
+    "toc2/main": true
   },
   "Cell": {
     "cm_config": {

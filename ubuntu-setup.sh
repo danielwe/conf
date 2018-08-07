@@ -43,7 +43,8 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Add third-party repositories {{{2
 
-sudo add-apt-repository -y ppa:peterlevi/ppa
+sudo add-apt-repository -y ppa:peterlevi/ppa  # variety
+sudo add-apt-repository -y ppa:jonathonf/vim  # more recent vim dodges bugs
 
 # Install regular packages {{{2
 
@@ -64,8 +65,9 @@ sudo apt install \
     python3-dev \
     shellcheck \
     exuberant-ctags \
-    silversearcher-ag \
-    vim-gtk3 \
+    cscope \
+    ack-grep \
+    vim-gtk \  # vim-gnome/vim-gtk3 is not compiled with ruby support
     curl \
     linux-tools-common \
     powertop \
@@ -74,25 +76,16 @@ sudo apt install \
     cpufrequtils \
     #acpi-call-dkms \  # Thinkpads only
 
-## Install mendeley {{{2
-#source "${DIR}/mendeley-setup.sh"
-
-## Install vim from source {{{2
-#source "${DIR}/vim-source-setup.sh"
-
-## Install most recent TeX Live {{{2
-#source "${DIR}/texlive-setup.sh"
-
 # Link configuration dotfiles {{{1
 source "${DIR}/link-dotfiles.sh"
 
 # Set execute permissions in local bin folder {{{1
-#chmod +x "${HOME}/bin/"*  # The glob skips hidden files by default, yay
+chmod +x "${HOME}/bin/"*  # The glob skips hidden files by default, yay
 
 # Configure system settings {{{1
 source "${DIR}/system-config.sh"
 
-# Other setup tips {{{1
+# Miscellaneous tips {{{1
 
 ### Make a remapped mono sink for the master sink in pulseaudio
 ### i) find the name of the sink:

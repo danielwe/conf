@@ -4,6 +4,9 @@
 			"path": "/home/daniel/Documents/Stanford/PH212/paper/final-paper"
 		},
 		{
+			"path": "/home/daniel/Documents/Stanford/Mabuchilab/arl/sensor_network"
+		},
+		{
 			"path": "/home/daniel/packages/QNET"
 		},
 		{
@@ -15,5 +18,5 @@
 		{
 			"path": "/home/daniel/bin"
 		}
-    ],
+	],
 }

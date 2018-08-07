@@ -26,14 +26,9 @@
   ', q': 'core:close'
 'atom-text-editor.vim-mode-plus:not(.insert-mode):not(.operator-pending-mode)':
   'space': 'vim-mode-plus:toggle-fold'
-# 'body atom-text-editor.autocomplete-active':
-#   'tab': 'autocomplete-plus:move-down'
-#   'shift-tab': 'autocomplete-plus:move-up'
-#   'down': 'autocomplete-plus:move-down'
-#   'up': 'autocomplete-plus:move-up'
-# '.select-list atom-text-editor[mini]':
-#   'tab': 'core:move-down'
-#   'shift-tab': 'core:move-up'
-# '.corrections atom-text-editor[mini]':
-#   'tab': 'core:move-down'
-#   'shift-tab': 'core:move-up'
+'atom-text-editor[data-grammar~="latex"]':
+  'ctrl-alt-s': 'unset!'
+  'ctrl-alt-v': 'latex:sync'
+'atom-workspace':
+  'ctrl-alt-m': 'unset!'
+  'ctrl-alt-l': 'latex-tree:toggle-tree-view'
