@@ -235,6 +235,10 @@ nnoremap k gk
 vnoremap k gk
 nnoremap j gj
 vnoremap j gj
+nnoremap gk k
+vnoremap gk k
+nnoremap gj j
+vnoremap gj j
 " Navigate splits easily
 nnoremap <Leader>h <C-W>h
 nnoremap <Leader>j <C-W>j
