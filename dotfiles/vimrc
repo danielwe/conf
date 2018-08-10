@@ -125,9 +125,12 @@ if !exists('g:ycm_semantic_triggers')
 endif
 
 "let g:vimtex_quickfix_latexlog = {
-"      \ 'underfull' : 0,
 "      \ 'overfull' : 0,
-"      \ }
+"      \ 'underfull' : 0,
+"      \ 'packages' : {
+"      \   'default' : 0,
+"      \ },
+"      \}
 
 " vim-airline {{{2
 Plug 'vim-airline/vim-airline'
@@ -186,13 +189,14 @@ if !isdirectory(&undodir)
   call mkdir(&undodir)
 endif
 
-" Insert behavior
+" Editing behavior
 set copyindent           " Don't replace tabs with spaces when copying indent
 set preserveindent       " Don't replace tabs with spaces when adjusting indent
 set expandtab            " Expand tabs as spaces
 set shiftwidth=4         " Set width of autoindentation
 set textwidth=79         " Auto-format, e.g., gq, wraps here (0: disable)
 set formatoptions=cql1j  " Set auto-format options
+set nojoinspaces         " Don't have <S-J> (joining) insert double spaces.
 
 " Search behavior
 set ignorecase           " Do case insensitive matching
