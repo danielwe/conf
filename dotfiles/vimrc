@@ -154,7 +154,7 @@ call plug#end()
 
 " Post-plug configuration {{{1
 " vim-stay {{{2
-set viewoptions=cursor,folds " Adjust :mkview to make vim-stay work
+set viewoptions=cursor,slash,unix " Set persistence options used by vim-stay
 
 " vimtex {{{2
 let g:ycm_semantic_triggers.tex = g:vimtex#re#youcompleteme
