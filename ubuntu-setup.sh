@@ -79,6 +79,11 @@ sudo apt install \
 # Link configuration dotfiles {{{1
 source "${DIR}/link-dotfiles.sh"
 
+# Source custom bashrc {{{1
+echo >> ~/.bashrc
+echo '# Source custom options' >> ~/.bashrc
+echo 'source .bashrc_custom' >> ~/.bashrc
+
 # Set execute permissions in local bin folder {{{1
 chmod +x "${HOME}/bin/"*  # The glob skips hidden files by default, yay
 
