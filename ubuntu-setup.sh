@@ -68,6 +68,7 @@ sudo apt install \
     cscope \
     ack-grep \
     vim-gtk \  # vim-gnome/vim-gtk3 is not compiled with ruby support
+    libcanberra-gtk-module \
     ncurses-term \
     curl \
     linux-tools-common \
