@@ -28,10 +28,14 @@ runtime! plugin/sensible.vim
 Plug 'tpope/vim-fugitive'
 Plug 'gregsexton/gitv', {'on': ['Gitv']}
 Plug 'airblade/vim-gitgutter'
-nmap <silent> <Leader>gs :Gstatus<CR>
+let g:gitgutter_map_keys = 0
+nmap <silent> <Leader>gg :Gstatus<CR>
 nmap <silent> <Leader>gd :Gdiff<CR>
 nmap <silent> <Leader>gl :Gitv<CR>
 nmap <silent> <Leader>gL :Gitv!<CR>
+nmap <silent> <Leader>gp <Plug>GitGutterPreviewHunk
+nmap <silent> <Leader>gs <Plug>GitGutterStageHunk
+nmap <silent> <Leader>gu <Plug>GitGutterUndoHunk
 
 " undotree {{{2
 Plug 'mbbill/undotree'
@@ -40,7 +44,8 @@ nmap <silent> <Leader>u :UndotreeToggle<CR>
 " TaskList {{{2
 Plug 'vim-scripts/TaskList.vim'
 let g:tlTokenList = ['FIXME', 'TODO', 'fixme', 'todo', 'FixMe', 'ToDo']
-nmap <silent> <Leader>tl <Plug>TaskList
+nmap <silent> <Leader>a <Plug>TaskList
+" Think 'a' for 'agenda'
 
 " ack {{{2
 Plug 'mileszs/ack.vim'
@@ -49,7 +54,8 @@ let g:ackhighlight = 1
 " command-t {{{2
 Plug 'wincent/command-t',
       \ {'do': 'cd ruby/command-t/ext/command-t && ruby extconf.rb && make'}
-nmap <silent> <Leader>tv :CommandT $HOME/.vim<CR>
+nmap <silent> <Leader>r :CommandT $HOME/.vim<CR>
+" Think 'r' for 'repo'
 
 " Smart-Tabs {{{2
 Plug 'vim-scripts/Smart-Tabs', {'for': ['c', 'cpp', 'objc', 'objcpp', 'cs']}
@@ -60,9 +66,7 @@ let g:tcomment#options = {'whitespace' : 'no'}
 
 " snippets {{{2
 Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
-let g:UltiSnipsExpandTrigger = '<C-CR>'
-let g:UltiSnipsJumpForwardTrigger  ='<C-CR>'
-let g:UltiSnipsJumpBackwardTrigger = '<C-S-CR>'
+let g:UltiSnipsExpandTrigger = '<c-j>'
 
 " YouCompleteMe {{{2
 Plug 'Valloric/YouCompleteMe',
@@ -97,6 +101,7 @@ Plug 'tmhedberg/SimpylFold'
 " Tagbar {{{2
 Plug 'majutsushi/tagbar'
 nmap <silent> <Leader>o :TagbarToggle<CR>
+" Think 'o' for 'object'
 
 " CCTree {{{2
 Plug 'hari-rangarajan/CCTree', {'for': ['c', 'cpp', 'java']}
@@ -218,7 +223,7 @@ set showmatch            " Show matching brackets.
 set tabstop=4            " Set width of tabstops
 
 " Set whitespace characters in list mode
-set listchars=tab:»\ ,trail:-,extends:>,precedes:<,nbsp:+,eol:¬
+set listchars=eol:$,tab:\|\ ,trail:-,space:.,extends:>,precedes:<,conceal:*,nbsp:~
 
 " Set gui specific options
 if has('vim_starting') && has('gui_running')
@@ -275,15 +280,16 @@ nnoremap <expr> <Space>
       \ foldlevel('.') ?
       \ 'za' :
       \ "\<Space>"
-" Toggle list mode (display of whitespace) using <Leader>i
-nmap <silent> <Leader>i :set list!<CR>
-" Hit <LocalLeader>ve/vs to open or navigate to, and re-source, $MYVIMRC
-nmap <silent> <LocalLeader>ve :edit $MYVIMRC<CR>
+" Hit <Leader>/ to toggle list mode
+nmap <silent> <Leader>\ :set list!<CR>
+" Hit <Leader>, to open or navigate to $MYVIMRC, and <Leader>. to source
+nmap <silent> <Leader>, :edit $MYVIMRC<CR>
 if has('gui_running') && filereadable($MYGVIMRC)
-    nmap <silent> <LocalLeader>vs :source $MYVIMRC<CR>:source $MYGVIMRC<CR>
+    nmap <silent> <Leader>. :source $MYVIMRC<CR>:source $MYGVIMRC<CR>
 else
-    nmap <silent> <LocalLeader>vs :source $MYVIMRC<CR>
+    nmap <silent> <Leader>. :source $MYVIMRC<CR>
 endif
+" Available keys for leader prefix: fimny/;'[]-0123456789`
 
 " Filetype specific settings {{{1
 
