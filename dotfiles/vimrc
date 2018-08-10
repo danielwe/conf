@@ -280,6 +280,8 @@ nnoremap <expr> <Space>
       \ foldlevel('.') ?
       \ 'za' :
       \ "\<Space>"
+" Hit <Leader><Space> to clear search highlighting
+nmap <silent> <Leader><Space> :noh<CR>
 " Hit <Leader>/ to toggle list mode
 nmap <silent> <Leader>\ :set list!<CR>
 " Hit <Leader>, to open or navigate to $MYVIMRC, and <Leader>. to source
@@ -289,6 +291,7 @@ if has('gui_running') && filereadable($MYGVIMRC)
 else
     nmap <silent> <Leader>. :source $MYVIMRC<CR>
 endif
+
 " Available keys for leader prefix: fimny/;'[]-0123456789`
 
 " Filetype specific settings {{{1
