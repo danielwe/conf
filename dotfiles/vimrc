@@ -105,6 +105,8 @@ Plug 'tmhedberg/SimpylFold'
 "  autocmd BufWinLeave *.py setlocal foldexpr< foldmethod<
 "augroup END
 
+" python-pep8-indent (((2
+Plug 'Vimjas/vim-python-pep8-indent'
 " Tagbar {{{2
 Plug 'majutsushi/tagbar'
 nmap <silent> <Leader>o :TagbarToggle<CR>
@@ -115,7 +117,10 @@ Plug 'hari-rangarajan/CCTree', {'for': ['c', 'cpp', 'java']}
 
 " ALE {{{2
 Plug 'w0rp/ale'
-let g:ale_echo_msg_format = '%severity%: %s (%linter% %code%)'
+let g:ale_echo_msg_error_str = 'E'
+let g:ale_echo_msg_info_str = 'I'
+let g:ale_echo_msg_warning_str = 'W'
+let g:ale_echo_msg_format = '%linter% %severity%: %s (%code%)'
 
 " ListToggle {{{2
 Plug 'Valloric/ListToggle'
@@ -182,6 +187,7 @@ let g:airline_theme='base16'
 call plug#end()
 
 " Post-plug configuration {{{1
+
 " vim-stay {{{2
 set viewoptions=cursor,slash,unix " Set persistence options used by vim-stay
 
@@ -224,8 +230,13 @@ set preserveindent       " Don't replace tabs with spaces when adjusting indent
 set expandtab            " Expand tabs as spaces
 set shiftwidth=4         " Set width of autoindentation
 set textwidth=79         " Auto-format, e.g., gq, wraps here (0: disable)
-set formatoptions=cql1j  " Set auto-format options
 set nojoinspaces         " Don't have <S-J> (joining) insert double spaces.
+set formatoptions=cql1j  " Set auto-format options
+augroup autoformat       " Bring out the big guns to override ftplugins
+  autocmd!
+  autocmd FileType * set fo-=r fo-=o
+augroup END
+
 
 " Search behavior
 set ignorecase           " Do case insensitive matching
