@@ -56,6 +56,13 @@ Plug 'wincent/command-t',
       \ {'do': 'cd ruby/command-t/ext/command-t && ruby extconf.rb && make'}
 nmap <silent> <Leader>r :CommandT $HOME/.vim<CR>
 " Think 'r' for 'repo'
+" tmux compatibility:
+if &term =~# 'screen' || &term =~# 'tmux' || &term =~# 'xterm'
+  let g:CommandTSelectNextMap = ['<C-n>', '<C-j>', '<Down>', '<ESC>OB']
+  let g:CommandTSelectPrevMap = ['<C-p>', '<C-k>', '<Up>', '<ESC>OA']
+  let g:CommandTSelectLeftMap = ['<Left>', '<C-h>', '<ESC>OD']
+  let g:CommandTSelectRightMap = ['<Right>', '<C-l>', '<ESC>OC']
+endif
 
 " Smart-Tabs {{{2
 Plug 'vim-scripts/Smart-Tabs', {'for': ['c', 'cpp', 'objc', 'objcpp', 'cs']}
@@ -142,6 +149,24 @@ Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
 let g:airline#extensions#tabline#enabled = 1
 
+" vim-slime {{{2
+Plug 'jpalardy/vim-slime'
+if &term =~# 'tmux'
+  let g:slime_target = "tmux"
+  let g:slime_default_config = {
+        \ "socket_name": split($TMUX, ",")[0],
+        \ "target_pane": ":.1"
+        \ }
+else
+  let g:slime_target = "vimterminal"
+  let g:slime_vimterminal_config = {"term_finish": "close"}
+endif
+let g:slime_paste_file = tempname()
+let g:slime_python_ipython = 1
+let g:slime_no_mappings = 1
+nmap <silent> grip <Plug>SlimeParagraphSend
+nmap <silent> grr <Plug>SlimeLineSend
+xmap <silent> gr <Plug>SlimeRegionSend
 
 " base16 {{{2
 Plug 'chriskempson/base16-vim'
