@@ -207,6 +207,9 @@ set ignorecase           " Do case insensitive matching
 set smartcase            " Do smart case matching
 set hlsearch             " Highlight search
 
+" Configure defaults for built-in terminal
+set termwinsize=8x0
+
 " Always start a server
 if empty(v:servername) && exists('*remote_startserver')
   call remote_startserver('VIM')
@@ -284,6 +287,8 @@ nnoremap <expr> <Space>
 nmap <silent> <Leader><Space> :noh<CR>
 " Hit <Leader>/ to toggle list mode
 nmap <silent> <Leader>\ :set list!<CR>
+"Hit <Leader>- to open a terminal in a bottom window
+nmap <silent> <Leader>- :botright terminal<CR>
 " Hit <Leader>, to open or navigate to $MYVIMRC, and <Leader>. to source
 nmap <silent> <Leader>, :edit $MYVIMRC<CR>
 if has('gui_running') && filereadable($MYGVIMRC)
