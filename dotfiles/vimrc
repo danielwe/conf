@@ -15,14 +15,17 @@ endif
 call plug#begin('~/.vim/plugged')
 
 " tpope-suite {{{2
-"Plug 'tpope/vim-dispatch'
+" Load sensible first, so options can be overridden
+Plug 'tpope/vim-sensible'
+runtime! plugin/sensible.vim
+
 Plug 'tpope/vim-endwise'
 Plug 'tpope/vim-repeat'
-Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-surround'
-Plug 'tpope/vim-vinegar'
-" Load sensible first, so options can be overridden
-runtime! plugin/sensible.vim
+Plug 'tpope/vim-eunuch'
+
+" dirvish {{{2
+Plug 'justinmk/vim-dirvish' | Plug 'kristijanhusak/vim-dirvish-git'
 
 " Git integration {{{2
 Plug 'tpope/vim-fugitive' | Plug 'gregsexton/gitv', {'on': ['Gitv']}
@@ -42,15 +45,10 @@ nmap <silent> <Leader>gp <Plug>GitGutterPrevHunk
 Plug 'mbbill/undotree'
 nmap <silent> <Leader>u :UndotreeToggle<CR>
 
-" TaskList {{{2
-Plug 'vim-scripts/TaskList.vim'
-let g:tlTokenList = ['FIXME', 'TODO', 'fixme', 'todo', 'FixMe', 'ToDo']
-nmap <silent> <Leader>a <Plug>TaskList
-" Think 'a' for 'agenda'
-
-" ack {{{2
-Plug 'mileszs/ack.vim'
-let g:ackhighlight = 1
+" vim-grepper {{{2
+Plug 'mhinz/vim-grepper'
+nmap gs <plug>(GrepperOperator)
+xmap gs <plug>(GrepperOperator)
 
 " command-t {{{2
 Plug 'wincent/command-t',
@@ -67,6 +65,10 @@ endif
 
 " Smart-Tabs {{{2
 Plug 'vim-scripts/Smart-Tabs', {'for': ['c', 'cpp', 'objc', 'objcpp', 'cs']}
+
+" loupe {{{2
+Plug 'wincent/loupe'
+nmap <silent> <Leader><Space> <Plug>(LoupeClearHighlight)
 
 " tcomment {{{2
 Plug 'tomtom/tcomment_vim'
@@ -205,7 +207,6 @@ let g:airline_theme='base16'
 
 " General settings {{{1
 
-set autochdir            " Change working directory to file directory
 set autowrite            " Save before commands like :next and :make
 set hidden               " Keep abandoned buffers around in the background
 set noswapfile           " Do not use swap file
@@ -342,7 +343,6 @@ nnoremap <expr> <Space>
       \ foldlevel('.') ?
       \ 'za' :
       \ "\<Space>"
-" Hit <Leader><Space> to clear search highlighting
 nmap <silent> <Leader><Space> :noh<CR>
 " Hit <Leader>/ to toggle list mode
 nmap <silent> <Leader>\ :set list!<CR>
