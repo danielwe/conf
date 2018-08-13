@@ -25,17 +25,18 @@ Plug 'tpope/vim-vinegar'
 runtime! plugin/sensible.vim
 
 " Git integration {{{2
-Plug 'tpope/vim-fugitive'
-Plug 'gregsexton/gitv', {'on': ['Gitv']}
+Plug 'tpope/vim-fugitive' | Plug 'gregsexton/gitv', {'on': ['Gitv']}
 Plug 'airblade/vim-gitgutter'
 let g:gitgutter_map_keys = 0
 nmap <silent> <Leader>gg :Gstatus<CR>
 nmap <silent> <Leader>gd :Gdiff<CR>
-nmap <silent> <Leader>gl :Gitv<CR>
-nmap <silent> <Leader>gL :Gitv!<CR>
-nmap <silent> <Leader>gp <Plug>GitGutterPreviewHunk
+nmap <silent> <Leader>gv :Gitv<CR>
+nmap <silent> <Leader>gV :Gitv!<CR>
+nmap <silent> <Leader>gP <Plug>GitGutterPreviewHunk
 nmap <silent> <Leader>gs <Plug>GitGutterStageHunk
 nmap <silent> <Leader>gu <Plug>GitGutterUndoHunk
+nmap <silent> <Leader>gn <Plug>GitGutterNextHunk
+nmap <silent> <Leader>gp <Plug>GitGutterPrevHunk
 
 " undotree {{{2
 Plug 'mbbill/undotree'
@@ -54,8 +55,8 @@ let g:ackhighlight = 1
 " command-t {{{2
 Plug 'wincent/command-t',
       \ {'do': 'cd ruby/command-t/ext/command-t && ruby extconf.rb && make'}
-nmap <silent> <Leader>r :CommandT $HOME/.vim<CR>
-" Think 'r' for 'repo'
+nmap <silent> <C-t> <Plug>(CommandT)
+nmap <silent> <C-b> <Plug>(CommandTBuffer)
 " tmux compatibility:
 if !empty($TMUX)
   let g:CommandTSelectNextMap = ['<C-n>', '<C-j>', '<Down>', '<ESC>OB']
@@ -69,11 +70,13 @@ Plug 'vim-scripts/Smart-Tabs', {'for': ['c', 'cpp', 'objc', 'objcpp', 'cs']}
 
 " tcomment {{{2
 Plug 'tomtom/tcomment_vim'
+let g:tcomment_mapleader1 = "<C-/>"
+let g:tcomment_mapleader2 = "g/"
 let g:tcomment#options = {'whitespace' : 'no'}
 
 " snippets {{{2
 Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
-let g:UltiSnipsExpandTrigger = '<c-j>'
+let g:UltiSnipsExpandTrigger = '<C-j>'
 
 " YouCompleteMe {{{2
 Plug 'Valloric/YouCompleteMe',
@@ -105,12 +108,14 @@ Plug 'tmhedberg/SimpylFold'
 "  autocmd BufWinLeave *.py setlocal foldexpr< foldmethod<
 "augroup END
 
-" python-pep8-indent (((2
+" python-pep8-indent {{{2
 Plug 'Vimjas/vim-python-pep8-indent'
+
 " Tagbar {{{2
 Plug 'majutsushi/tagbar'
-nmap <silent> <Leader>o :TagbarToggle<CR>
-" Think 'o' for 'object'
+let g:tagbar_map_showproto = 'd'
+let g:tagbar_map_togglefold = ['o', 'za', '<Space>']
+nmap <silent> <Leader>' :TagbarToggle<CR>
 
 " CCTree {{{2
 Plug 'hari-rangarajan/CCTree', {'for': ['c', 'cpp', 'java']}
@@ -129,18 +134,11 @@ let g:lt_quickfix_list_toggle_map = '<Leader>eq'
 
 " vimtex {{{2
 Plug 'lervag/vimtex'
-"Plug '~/packages/vimtex'
 let g:vimtex_view_automatic = 0
 let g:vimtex_view_method = 'zathura'
-
 let g:vimtex_fold_enabled = 1
-
 let g:vimtex_complete_enabled = 1
 let g:vimtex_complete_close_braces = 0
-if !exists('g:ycm_semantic_triggers')
-  let g:ycm_semantic_triggers = {}
-endif
-
 "let g:vimtex_quickfix_latexlog = {
 "      \ 'overfull' : 0,
 "      \ 'underfull' : 0,
@@ -150,8 +148,7 @@ endif
 "      \}
 
 " vim-airline {{{2
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
+Plug 'vim-airline/vim-airline' | Plug 'vim-airline/vim-airline-themes'
 let g:airline#extensions#tabline#enabled = 1
 
 " vim-slime {{{2
@@ -175,12 +172,10 @@ xmap <silent> gr <Plug>SlimeRegionSend
 
 " base16 {{{2
 Plug 'chriskempson/base16-vim'
-let g:airline_theme='base16'
 
 " Currently unused plugins {{{2
 "" solarized {{{3
 "Plug 'altercation/vim-colors-solarized'
-"let g:airline_theme='solarized'
 
 " }}}2
 
@@ -192,23 +187,27 @@ call plug#end()
 set viewoptions=cursor,slash,unix " Set persistence options used by vim-stay
 
 " vimtex {{{2
+if !exists('g:ycm_semantic_triggers')
+  let g:ycm_semantic_triggers = {}
+endif
 let g:ycm_semantic_triggers.tex = g:vimtex#re#youcompleteme
 
 " colorscheme {{{2
+"colorscheme solarized | call togglebg#map("<F5>")
+"let g:airline_theme='solarized'
 if filereadable(expand("~/.vimrc_background"))
   let base16colorspace=256
   source ~/.vimrc_background
 else
   colorscheme base16-default-dark
 endif
-
-"colorscheme solarized | call togglebg#map("<F5>")
+let g:airline_theme='base16'
 
 " General settings {{{1
 
 set autochdir            " Change working directory to file directory
 set autowrite            " Save before commands like :next and :make
-set hidden               " Hide buffers when they are abandoned
+set hidden               " Keep abandoned buffers around in the background
 set noswapfile           " Do not use swap file
 set wildmode=longest:full " Set autocomplete command behavior
 set mouse=a              " Enable mouse usage (all modes)
@@ -243,9 +242,6 @@ set ignorecase           " Do case insensitive matching
 set smartcase            " Do smart case matching
 set hlsearch             " Highlight search
 
-" Configure defaults for built-in terminal
-set termwinsize=8x0
-
 " Always start a server
 if empty(v:servername) && exists('*remote_startserver')
   call remote_startserver('VIM')
@@ -263,6 +259,14 @@ set tabstop=4            " Set width of tabstops
 
 " Set whitespace characters in list mode
 set listchars=eol:$,tab:\|\ ,trail:-,space:.,extends:>,precedes:<,conceal:*,nbsp:~
+
+" Configure defaults for built-in terminal
+set termwinsize=10x0
+augroup terminal
+  autocmd!
+  " Terminal has absolutely no business on the buffer list
+  autocmd TerminalOpen * setlocal nobuflisted
+augroup END
 
 " Set gui specific options
 if has('vim_starting') && has('gui_running')
@@ -286,29 +290,48 @@ nnoremap gk k
 vnoremap gk k
 nnoremap gj j
 vnoremap gj j
-" Navigate splits easily
-nnoremap <Leader>h <C-W>h
-nnoremap <Leader>j <C-W>j
-nnoremap <Leader>k <C-W>k
-nnoremap <Leader>l <C-W>l
-nnoremap <Leader>v <C-W>v
+
+" Navigate windows easily; <Leader> as <C-W>. See :h opening-window.
 nnoremap <Leader>s <C-W>s
-nnoremap <Leader>c <C-W>c
+nnoremap <Leader>v <C-W>v
+nnoremap <Leader>n <C-W>n
+nnoremap <Leader>^ <C-W>^
 nnoremap <Leader>q <C-W>q
-nnoremap <Leader>= <C-W>=
-nnoremap <Leader>p <C-W>p
-nnoremap <Leader>w <C-W>w
-nnoremap <Leader>x <C-W>x
-nnoremap <Leader>z <C-W>z
-nnoremap <Leader>H <C-W>H
-nnoremap <Leader>J <C-W>J
-nnoremap <Leader>K <C-W>K
-nnoremap <Leader>L <C-W>L
-nnoremap <Leader>Z <C-W>Z
-nnoremap <Leader><Left> <C-W><Left>
+nnoremap <Leader>c <C-W>c
+nnoremap <Leader>o <C-W>o
 nnoremap <Leader><Down> <C-W><Down>
 nnoremap <Leader><Up> <C-W><Up>
+nnoremap <Leader><Left> <C-W><Left>
 nnoremap <Leader><Right> <C-W><Right>
+nnoremap <Leader>j <C-W>j
+nnoremap <Leader>k <C-W>k
+nnoremap <Leader>h <C-W>h
+nnoremap <Leader>l <C-W>l
+nnoremap <Leader><BS> <C-W><BS>
+nnoremap <Leader>w <C-W>w
+nnoremap <Leader>W <C-W>W
+nnoremap <Leader>t <C-W>t
+nnoremap <Leader>b <C-W>b
+nnoremap <Leader>p <C-W>p
+nnoremap <Leader>P <C-W>P
+nnoremap <Leader>r <C-W>r
+nnoremap <Leader>R <C-W>R
+nnoremap <Leader>x <C-W>x
+nnoremap <Leader>K <C-W>K
+nnoremap <Leader>J <C-W>J
+nnoremap <Leader>H <C-W>H
+nnoremap <Leader>L <C-W>L
+nnoremap <Leader>T <C-W>T
+nnoremap <Leader>= <C-W>=
+nnoremap <Leader>- <C-W>-
+nnoremap <Leader>+ <C-W>+
+nnoremap <Leader>_ <C-W>_
+nnoremap <Leader>< <C-W><
+nnoremap <Leader>> <C-W>>
+nnoremap <Leader><Bar> <C-W><Bar>
+nnoremap <Leader>f <C-W>f
+nnoremap <Leader>F <C-W>F
+nnoremap <Leader>z <C-W>z
 " Navigate buffers easily
 nmap <silent> <Left> :bp<CR>
 nmap <silent> <Down> :bl<CR>
@@ -333,7 +356,11 @@ else
     nmap <silent> <Leader>. :source $MYVIMRC<CR>
 endif
 
-" Available keys for leader prefix: fimny/;'[]-0123456789`
+" Change the (local) directory to that of current file with :Cd (:Lcd)
+command! Cd cd %:h
+command! Lcd lcd %:h
+
+" Available unmodified keys to follow leader: imy;/[]0123456789`
 
 " Filetype specific settings {{{1
 
@@ -353,12 +380,13 @@ if isdirectory(g:lilypond_vim_dir)
   filetype off
   set rtp+=g:lilypond_vim_dir
   filetype on
-  map <silent> <buffer> <LocalLeader>ly :w<CR>:!lilypond %<CR>
 endif
 
 augroup lilypond
   autocmd!
   autocmd FileType lilypond setlocal tabstop=2 shiftwidth=2
+  autocmd FileType lilypond
+        \ nmap <silent> <buffer> <LocalLeader>ly :!lilypond %<CR>
 augroup END
 
 " gitcommit {{{2
@@ -367,7 +395,7 @@ augroup gitcommit
   autocmd FileType gitcommit setlocal spell textwidth=72 formatoptions+=t
 augroup END
 
-" scripts {{{2
+" script languages {{{2
 augroup scripts
   autocmd!
   autocmd FileType vim,javascript,typescript setlocal tabstop=2 shiftwidth=2
