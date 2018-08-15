@@ -22,5 +22,9 @@
   "ExecuteTime": {
     "clear_timings_on_clear_output": true
   },
-  "select_keymap_line_wrap": false
+  "select_keymap_line_wrap": false,
+  "Notebook": {
+    "Toolbar": true,
+    "Header": false
+  }
 }
