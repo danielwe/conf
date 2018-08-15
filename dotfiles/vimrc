@@ -56,7 +56,7 @@ Plug 'wincent/command-t',
 nmap <silent> <C-t> <Plug>(CommandT)
 nmap <silent> <C-b> <Plug>(CommandTBuffer)
 " tmux compatibility:
-if !empty($TMUX)
+if &term =~# "tmux"
   let g:CommandTSelectNextMap = ['<C-n>', '<C-j>', '<Down>', '<ESC>OB']
   let g:CommandTSelectPrevMap = ['<C-p>', '<C-k>', '<Up>', '<ESC>OA']
   let g:CommandTSelectLeftMap = ['<Left>', '<C-h>', '<ESC>OD']
@@ -155,7 +155,7 @@ let g:airline#extensions#tabline#enabled = 1
 
 " vim-slime {{{2
 Plug 'jpalardy/vim-slime'
-if !empty($TMUX)
+if &term =~# "tmux"
   let g:slime_target = "tmux"
   let g:slime_default_config = {
         \ "socket_name": split($TMUX, ",")[0],
