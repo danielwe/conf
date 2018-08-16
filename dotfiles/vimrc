@@ -262,7 +262,7 @@ set tabstop=4            " Set width of tabstops
 set listchars=eol:$,tab:\|\ ,trail:-,space:.,extends:>,precedes:<,conceal:*,nbsp:~
 
 " Configure defaults for built-in terminal
-set termwinsize=10x0
+set termwinsize=6x0
 augroup terminal
   autocmd!
   " Terminal has absolutely no business on the buffer list
