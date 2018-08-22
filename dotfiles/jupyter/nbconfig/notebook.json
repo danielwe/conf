@@ -1,14 +1,11 @@
 {
   "load_extensions": {
     "execute_time/ExecuteTime": true,
-    "code_font_size/code_font_size": true,
     "select_keymap/main": true,
     "scratchpad/main": true,
     "ruler/main": true,
     "codefolding/main": true,
     "notify/notify": true,
-    "hide_header/main": false,
-    "runtools/main": true,
     "toc2/main": true
   },
   "Cell": {
