@@ -215,11 +215,11 @@ let g:airline_theme='base16'
 
 set autowrite            " Save before commands like :next and :make
 set hidden               " Keep abandoned buffers around in the background
-set noswapfile           " Do not use swap file
-set wildmode=longest:full " Set autocomplete command behavior
-set mouse=a              " Enable mouse usage (all modes)
-set completeopt=menuone,preview " Set completion options
 set showcmd              " Show number of selected lines ++ in the bottom line
+set noswapfile           " Do not use swap file
+set wildmode=list:longest " Set autocomplete command behavior
+set completeopt=menuone,preview " Set completion options
+set mouse=a              " Enable mouse usage (all modes)
 
 " Enable persistent undo
 set undofile
