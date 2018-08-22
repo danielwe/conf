@@ -175,6 +175,12 @@ xmap <silent> gr <Plug>SlimeRegionSend
 " base16 {{{2
 Plug 'chriskempson/base16-vim'
 
+" vim-elixir {{{2
+Plug 'elixir-editors/vim-elixir'
+
+" alchemist.vim {{{2
+Plug 'slashmili/alchemist.vim'
+
 " Currently unused plugins {{{2
 "" solarized {{{3
 "Plug 'altercation/vim-colors-solarized'
