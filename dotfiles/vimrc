@@ -1,7 +1,7 @@
 " vim: foldmethod=marker
 
-set nocompatible              " Be iMproved
-let mapleader = ','           " Set <Leader>
+set nocompatible       " Be iMproved
+let g:mapleader = ','  " Set <Leader>
 
 " Plugin configuration {{{1
 
@@ -14,22 +14,26 @@ endif
 
 call plug#begin('~/.vim/plugged')
 
-" tpope-suite {{{2
+" General functionality {{{2
+
+" tpope tools {{{3
 " Load sensible first, so options can be overridden
-Plug 'tpope/vim-sensible'
+Plug 'tpope/vim-sensible'  " sensible config starting point
 runtime! plugin/sensible.vim
 
-Plug 'tpope/vim-endwise'
-Plug 'tpope/vim-repeat'
-Plug 'tpope/vim-surround'
-Plug 'tpope/vim-eunuch'
+Plug 'tpope/vim-endwise'   " automatically and wisely close environments
+Plug 'tpope/vim-repeat'    " improve `.'
+Plug 'tpope/vim-surround'  " play with brackets, quotes etc.
+Plug 'tpope/vim-eunuch'    " integrate shell commands like mv, rm etc.
 
-" dirvish {{{2
-Plug 'justinmk/vim-dirvish' | Plug 'kristijanhusak/vim-dirvish-git'
+" dirvish {{{3
+Plug 'justinmk/vim-dirvish'            " browse directories and files
+Plug 'kristijanhusak/vim-dirvish-git'  " annotate dirvish with git status
 
-" Git integration {{{2
-Plug 'tpope/vim-fugitive' | Plug 'gregsexton/gitv', {'on': ['Gitv']}
-Plug 'airblade/vim-gitgutter'
+" git integration {{{3
+Plug 'tpope/vim-fugitive'                 " git status, commit, diff etc.
+Plug 'gregsexton/gitv', {'on': ['Gitv']}  " view git history
+Plug 'airblade/vim-gitgutter'             " see git diff in gutter, stage hunks
 let g:gitgutter_map_keys = 0
 nmap <silent> <Leader>gg :Gstatus<CR>
 nmap <silent> <Leader>gd :Gdiff<CR>
@@ -41,17 +45,13 @@ nmap <silent> <Leader>gu <Plug>GitGutterUndoHunk
 nmap <silent> <Leader>gn <Plug>GitGutterNextHunk
 nmap <silent> <Leader>gp <Plug>GitGutterPrevHunk
 
-" undotree {{{2
-Plug 'mbbill/undotree'
-nmap <silent> <Leader>u :UndotreeToggle<CR>
-
-" vim-grepper {{{2
-Plug 'mhinz/vim-grepper'
+" vim-grepper {{{3
+Plug 'mhinz/vim-grepper'  " grep inside vim
 nmap gs <plug>(GrepperOperator)
 xmap gs <plug>(GrepperOperator)
 
-" command-t {{{2
-Plug 'wincent/command-t',
+" command-t {{{3
+Plug 'wincent/command-t',  " file and buffer name fuzzy search
       \ {'do': 'cd ruby/command-t/ext/command-t && ruby extconf.rb && make'}
 nmap <silent> <C-t> <Plug>(CommandT)
 nmap <silent> <C-b> <Plug>(CommandTBuffer)
@@ -63,27 +63,34 @@ if &term =~# "tmux"
   let g:CommandTSelectRightMap = ['<Right>', '<C-l>', '<ESC>OC']
 endif
 
-" Smart-Tabs {{{2
-Plug 'vim-scripts/Smart-Tabs', {'for': ['c', 'cpp', 'objc', 'objcpp', 'cs']}
-
-" loupe {{{2
-Plug 'wincent/loupe'
+" loupe {{{3
+Plug 'wincent/loupe'  " improve vim search and highlighting
 nmap <silent> <Leader><Space> <Plug>(LoupeClearHighlight)
 
-" tcomment {{{2
-Plug 'tomtom/tcomment_vim'
-let g:tcomment_mapleader1 = "<C-/>"
-let g:tcomment_mapleader2 = "g/"
-let g:tcomment#options = {'whitespace' : 'no'}
+" undotree {{{3
+Plug 'mbbill/undotree'  " navigate undo tree
+nmap <silent> <Leader>u :UndotreeToggle<CR>
 
-" snippets {{{2
-Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
-let g:UltiSnipsExpandTrigger = '<C-j>'
+" vim-stay {{{3
+Plug 'zhimsel/vim-stay'  " don't lose place in buffer
 
-" YouCompleteMe {{{2
-Plug 'Valloric/YouCompleteMe',
+" FastFold {{{3
+Plug 'Konfekt/FastFold'  " speed up folds
+
+" ListToggle {{{3
+Plug 'Valloric/ListToggle'  " toggle location list and quickfix list
+let g:lt_location_list_toggle_map = '<Leader>el'
+let g:lt_quickfix_list_toggle_map = '<Leader>eq'
+
+" Smart-Tabs {{{3
+Plug 'vim-scripts/Smart-Tabs',  " use tabs for indent, spaces for alignment
+      \ {'for': ['c', 'cpp', 'objc', 'objcpp', 'cs']}
+
+" IDE-like functionality {{{2
+
+" YouCompleteMe {{{3
+Plug 'Valloric/YouCompleteMe',  " autocomplete
       \ {'do': './install.py --clang-completer > ~/ycm.log'}
-let g:ycm_autoclose_preview_window_after_insertion = 1
 let g:ycm_goto_buffer_command = 'split-or-existing-window'
 
 augroup ycm-mappings
@@ -96,65 +103,32 @@ augroup ycm-mappings
         \ nmap <silent> <buffer>K :YcmCompleter GetDoc<Cr>
 augroup END
 
-" vim-stay {{{2
-Plug 'zhimsel/vim-stay'
-
-" FastFold {{{2
-Plug 'Konfekt/FastFold'
-
-" SimpylFold {{{2
-Plug 'tmhedberg/SimpylFold'
-"augroup SimpylFold
-"  autocmd!
-"  autocmd BufWinEnter *.py setlocal foldexpr=SimpylFold(v:lnum) foldmethod=expr
-"  autocmd BufWinLeave *.py setlocal foldexpr< foldmethod<
-"augroup END
-
-" python-pep8-indent {{{2
-Plug 'Vimjas/vim-python-pep8-indent'
-
-" Tagbar {{{2
-Plug 'majutsushi/tagbar'
-let g:tagbar_map_showproto = 'd'
-let g:tagbar_map_togglefold = ['o', 'za', '<Space>']
-nmap <silent> <Leader>' :TagbarToggle<CR>
-
-" CCTree {{{2
-Plug 'hari-rangarajan/CCTree', {'for': ['c', 'cpp', 'java']}
-
-" ALE {{{2
-Plug 'w0rp/ale'
+" ALE {{{3
+Plug 'w0rp/ale'  " autolint
 let g:ale_echo_msg_error_str = 'E'
 let g:ale_echo_msg_info_str = 'I'
 let g:ale_echo_msg_warning_str = 'W'
 let g:ale_echo_msg_format = '%linter% %severity%: %s (%code%)'
 
-" ListToggle {{{2
-Plug 'Valloric/ListToggle'
-let g:lt_location_list_toggle_map = '<Leader>el'
-let g:lt_quickfix_list_toggle_map = '<Leader>eq'
+" snippets {{{3
+Plug 'SirVer/ultisnips'    " sippet engine
+Plug 'honza/vim-snippets'  " snippets
+let g:UltiSnipsExpandTrigger = '<C-j>'
 
-" vimtex {{{2
-Plug 'lervag/vimtex'
-let g:vimtex_view_automatic = 0
-let g:vimtex_view_method = 'zathura'
-let g:vimtex_fold_enabled = 1
-let g:vimtex_complete_enabled = 1
-let g:vimtex_complete_close_braces = 0
-"let g:vimtex_quickfix_latexlog = {
-"      \ 'overfull' : 0,
-"      \ 'underfull' : 0,
-"      \ 'packages' : {
-"      \   'default' : 0,
-"      \ },
-"      \}
+" tcomment {{{3
+Plug 'tomtom/tcomment_vim'  " toggle comments
+let g:tcomment_mapleader1 = "<C-/>"
+let g:tcomment_mapleader2 = "g/"
+let g:tcomment#options = {'whitespace' : 'no'}
 
-" vim-airline {{{2
-Plug 'vim-airline/vim-airline' | Plug 'vim-airline/vim-airline-themes'
-let g:airline#extensions#tabline#enabled = 1
+" Tagbar {{{3
+Plug 'majutsushi/tagbar'  " browse tags by scope
+let g:tagbar_map_showproto = 'd'
+let g:tagbar_map_togglefold = ['o', 'za', '<Space>']
+nmap <silent> <Leader>' :TagbarToggle<CR>
 
-" vim-slime {{{2
-Plug 'jpalardy/vim-slime'
+" vim-slime {{{3
+Plug 'jpalardy/vim-slime'  " send text from buffer to terminal process
 if &term =~# "tmux"
   let g:slime_target = "tmux"
   let g:slime_default_config = {
@@ -172,12 +146,43 @@ nmap <silent> grip <Plug>SlimeParagraphSend
 nmap <silent> grr <Plug>SlimeLineSend
 xmap <silent> gr <Plug>SlimeRegionSend
 
-" base16 {{{2
-Plug 'chriskempson/base16-vim'
+" Language specific plugins {{{2
+
+" python {{{3
+Plug 'tmhedberg/SimpylFold'           " fold python correctly
+Plug 'Vimjas/vim-python-pep8-indent'  " indent python correctly
+
+" latex {{{3
+Plug 'lervag/vimtex'  " complete, compile, view output, parse errors
+let g:vimtex_view_automatic = 0
+let g:vimtex_view_method = 'zathura'
+let g:vimtex_fold_enabled = 1
+let g:vimtex_complete_enabled = 1
+let g:vimtex_complete_close_braces = 0
+"let g:vimtex_quickfix_latexlog = {
+"      \ 'overfull' : 0,
+"      \ 'underfull' : 0,
+"      \ 'packages' : {
+"      \   'default' : 0,
+"      \ },
+"      \}
+
+" Display options: colorschemes, status lines etc. {{{2
+" vim-airline {{{3
+Plug 'vim-airline/vim-airline'         " improved status line and buffer line
+Plug 'vim-airline/vim-airline-themes'  " colorscheme-specific line themes
+let g:airline#extensions#tabline#enabled = 1
+
+" base16 {{{3
+Plug 'chriskempson/base16-vim'  " base16 colorschemes
 
 " Currently unused plugins {{{2
+"" CCTree {{{3
+"Plug 'hari-rangarajan/CCTree',  " build and show call tree in C
+"      \ {'for': ['c', 'cpp', 'java']}
+
 "" solarized {{{3
-"Plug 'altercation/vim-colors-solarized'
+"Plug 'altercation/vim-colors-solarized'  " solarized colorscheme
 
 " }}}2
 
@@ -186,7 +191,7 @@ call plug#end()
 " Post-plug configuration {{{1
 
 " vim-stay {{{2
-set viewoptions=cursor,slash,unix " Set persistence options used by vim-stay
+set viewoptions=cursor,slash,unix
 
 " vimtex {{{2
 if !exists('g:ycm_semantic_triggers')
@@ -194,16 +199,26 @@ if !exists('g:ycm_semantic_triggers')
 endif
 let g:ycm_semantic_triggers.tex = g:vimtex#re#youcompleteme
 
-" colorscheme {{{2
-"colorscheme solarized | call togglebg#map("<F5>")
-"let g:airline_theme='solarized'
-if filereadable(expand("~/.vimrc_background"))
-  let base16colorspace=256
-  source ~/.vimrc_background
+" base16 {{{2
+let s:base16_config_file = expand("~/.vimrc_background")
+if !has('gui_running')
+  if filereadable(s:base16_config_file)
+    let g:base16colorspace = 256
+    execute 'source ' . s:base16_config_file
+    let g:airline_theme = 'base16_shell'
+  else
+    set termguicolors
+    colorscheme base16-ocean
+    let g:airline_theme = 'base16_ocean'
+  endif
 else
-  colorscheme base16-default-dark
+  colorscheme base16-solarized-light
 endif
-let g:airline_theme='base16'
+
+"" solarized {{{2
+"colorscheme solarized
+"call togglebg#map("<F5>")
+"let g:airline_theme = 'solarized'
 
 " General settings {{{1
 
@@ -412,7 +427,7 @@ function! <SID>Bufremove(cmd, bang, range, line1, line2, ...)
       let buflist = copy(a:000)
     endif
   elseif a:range == 2
-    let buflist = range(a:line1,a:line2)
+    let buflist = range(a:line1, a:line2)
   else
     let buflist = [a:line1]
   endif
@@ -435,7 +450,7 @@ function! <SID>BufremoveIndex(cmd, bang, bufindex)
   let thiswinid = win_getid(winnr())
   for winid in win_findbuf(a:bufindex)
     call win_gotoid(winid)
-    execute 'Bnext' . a:bang
+    call <SID>Bufgo(a:bang, <SID>Bufprev(1), '')
   endfor
   call win_gotoid(thiswinid)
   " Buffer might have self-destructed upon being hidden
@@ -529,7 +544,7 @@ nmap <silent> <C-c> :Bdelete<CR>
 
 " Define a command that opens a file like :drop, but splits the window if the
 " buffer in focus is of a special buftype to avoid displacing it.
-function! Drop(args)
+function! <SID>Drop(args)
   let bufindex = bufnr('%')
   let btype = getbufvar(bufindex, '&buftype')
   let special = (btype !=# "")
@@ -550,7 +565,7 @@ function! Drop(args)
   endif
 endfunction
 
-command! -nargs=+ -complete=file Drop call Drop(<q-args>)
+command! -nargs=+ -complete=file Drop call <SID>Drop(<q-args>)
 
 " Hit <Leader>, to Drop $MYVIMRC, and <Leader>. to source
 nmap <silent> <Leader>, :Drop $MYVIMRC<CR>
