@@ -1,36 +1,36 @@
 #!/bin/bash
 # vim: foldmethod=marker
 
-# Install necessary/useful packages and configure a fresh Ubuntu install
+# Install packages and configure a fresh Ubuntu install
 
 # Potentially useful packages not installed by this script {{{1
 #anaconda:        Scientific Python environment
-#gparted:         Manage disk partitions.
-#unison-gtk:      Syncronize files/folders.
-#boinc-manager:   Manage participation in BOINC-based projects.
-#jhead:           Rename jpeg files using exif data.
-#timidity:        Play midi files.
-#wine:            Run windows software.
-#matlab-support:  Improve MATLAB. Only relevant when MATLAB installed.
-#flightgear:      Flight Simulator!!
+#gparted:         Manage disk partitions
+#unison-gtk:      Syncronize files/folders
+#boinc-manager:   Manage participation in BOINC-based projects
+#jhead:           Rename jpeg files using exif data
+#timidity:        Play midi files
+#wine:            Run windows software
+#matlab-support:  Improve MATLAB; only relevant when MATLAB installed
+#flightgear:      Flight Simulator
 #oracle-java:     Official Java implementation. PPA: webupd8team/java
 #pipelight:       Run silverlight plugin etc. via wine. PPA: pipelight/stable
-#skype:           Now a snap!
-#spotify:         Now a snap!
+#skype:           Now a snap; also works in browser
+#spotify:         Now a snap; also works in browser
 #glances:         Terminal performance monitor with client-server mode
-#PySensors (pip): Python bindings for libsensors.so
-#redshift-gtk:    Save your eyes---but obsolete in 18.04
+#PySensors:       Python bindings for libsensors.so
+#redshift-gtk:    Save your eyes; obsolete in 18.04
 #xdotools:        Simulate mouse&key input etc.
 #cifs-utils:      Mount cross-platform network filesystems (samba)
 #mesa-utils:      List OpenGL info
-#gimp:            photoshop
+#gimp:            ~photoshop
 #inkscape:        vector graphics
-#vlc:             any media file
+#vlc:             play any media file
 #xournal:         document processor for stylus handwriting
-#lilypond:        latex for sheet music
+#lilypond:        latex-like for sheet music typesetting
 #openconnect:     vpn
-#virtualbox:      get from Oracle, remember to add user to vboxusers group
-#pianoteq:        download from modartt
+#virtualbox:      install from Oracle repo; add user to vboxusers group
+#pianoteq:        install from modartt
 #libopenblas-base
 #libopenblas-dev
 
@@ -44,47 +44,49 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 # Add third-party repositories {{{2
 
 sudo add-apt-repository -y ppa:peterlevi/ppa  # variety
-sudo add-apt-repository -y ppa:jonathonf/vim  # more recent vim dodges bugs
+sudo add-apt-repository -y ppa:jonathonf/vim  # up-to-date vim dodges bugs
 
 # Install regular packages {{{2
 
 sudo apt update
 sudo apt install \
-    variety \
-    nautilus-dropbox \
+    \ # backgrounds and themes {{{3
+    variety \  # download and cycle desktop backgrounds
+    \ # essential applications  {{{3
     chromium-browser \
-    zathura \
-    tree \
+    nautilus-dropbox \
+    zathura \                 # pdf viewer with recoloring
+    vim-gtk \                 # vim-gnome/vim-gtk3 is has no ruby support
+    libcanberra-gtk-module \  # sounds for for gvim
+    \ # command line and config tools {{{3
+    ncurses-term \        # terminal type definitions
+    curl \                # transfer data to/from URL (download files etc.)
+    trash-cli \           # rm to trash
+    tree \                # like ls -R but readable
+    silversearcher-ag \   # search like grep but better
+    linux-tools-common \  # kernel tools for etc.
+    powertop \            # power monitoring and diagnosis
+    tlp \                 # power settings for laptops
+    tlp-rdw \             # power settings for wireless devices
+    cpufrequtils \        # cpu frequency scaling utilities
+    \ #acpi-call-dkms \      # extra power tools for thinkpads
+    \ # development tools {{{3
     git \
-    cmake \
-    clang \
-    openmpi-bin \
-    libopenmpi-dev \
-    ruby-dev \
-    python-dev \
-    python3-dev \
-    shellcheck \
-    exuberant-ctags \
-    cscope \
-    ack-grep \
-    vim-gtk \  # vim-gnome/vim-gtk3 is not compiled with ruby support
-    libcanberra-gtk-module \
-    ncurses-term \
-    curl \
-    linux-tools-common \
-    powertop \
-    tlp \
-    tlp-rdw \
-    cpufrequtils \
-    #acpi-call-dkms \  # Thinkpads only
+    exuberant-ctags \  # generate tags
+    cmake \            # build process manager
+    clang \            # C-family LLVM frontend (compiler etc.)
+    openmpi-bin \      # MPI binaries
+    libopenmpi-dev \   # MPI headers
+    ruby-dev \         # ruby headers
+    shellcheck \       # static analysis/linting for shell scripts
 
 # Link configuration dotfiles {{{1
 source "${DIR}/link-dotfiles.sh"
 
 # Source custom bashrc {{{1
 echo >> ~/.bashrc
-echo '# Source custom options' >> ~/.bashrc
-echo 'source "$HOME/.bashrc_custom"' >> ~/.bashrc
+echo '# Source custom config' >> ~/.bashrc
+echo 'source "$HOME/.bashrc.custom"' >> ~/.bashrc
 
 # Set execute permissions in local bin folder {{{1
 chmod +x "${HOME}/bin/"*  # The glob skips hidden files by default, yay
