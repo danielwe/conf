@@ -161,6 +161,21 @@ xmap <silent> gr <Plug>SlimeRegionSend
 Plug 'tmhedberg/SimpylFold'           " fold python correctly
 Plug 'Vimjas/vim-python-pep8-indent'  " indent python correctly
 
+" julia {{{3
+Plug '~/packages/julia-vim'    " julia unicode, motions, and docs
+Plug 'AtsushiSakai/julia.vim'  " julia linting
+let g:latex_to_unicode_tab = 0
+let g:latex_to_unicode_eager = 0
+"let g:latex_to_unicode_auto = 1
+augroup julia
+  autocmd!
+  autocmd FileType julia imap <silent> <buffer> <expr> <C-Y> LaTeXtoUnicode#AutoSub()
+augroup END
+if !exists('g:ycm_semantic_triggers')
+  let g:ycm_semantic_triggers = {}
+endif
+let g:ycm_semantic_triggers.julia = ['re!\\\S+']
+
 " latex {{{3
 Plug 'lervag/vimtex'  " complete, compile, view output, parse errors
 let g:vimtex_view_automatic = 0
