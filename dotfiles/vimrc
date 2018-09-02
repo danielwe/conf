@@ -14,7 +14,7 @@ endif
 
 call plug#begin('~/.vim/plugged')
 
-" General functionality {{{2
+" Editor enhancements {{{2
 
 " tpope tools {{{3
 " Load sensible first, so options can be overridden
@@ -25,6 +25,58 @@ Plug 'tpope/vim-endwise'   " automatically and wisely close environments
 Plug 'tpope/vim-repeat'    " improve `.'
 Plug 'tpope/vim-surround'  " play with brackets, quotes etc.
 Plug 'tpope/vim-eunuch'    " integrate shell commands like mv, rm etc.
+
+" tcomment {{{3
+Plug 'tomtom/tcomment_vim'  " toggle comments
+let g:tcomment_mapleader1 = "<C-/>"
+let g:tcomment_mapleader2 = "g/"
+let g:tcomment#options = {'whitespace' : 'no'}
+
+" loupe {{{3
+Plug 'wincent/loupe'  " improve vim search and highlighting
+nmap <silent> <Leader><Space> <Plug>(LoupeClearHighlight)
+
+" vim-grepper {{{3
+Plug 'mhinz/vim-grepper'  " grep inside vim
+
+if !exists('g:grepper')
+  let g:grepper = {}
+endif
+let g:grepper.highlight = 1
+nmap gs <plug>(GrepperOperator)
+xmap gs <plug>(GrepperOperator)
+
+" undotree {{{3
+Plug 'mbbill/undotree'  " navigate undo tree
+nmap <silent> <Leader>u :UndotreeToggle<CR>
+
+" vim-stay {{{3
+Plug 'zhimsel/vim-stay'  " don't lose place in buffer
+
+" FastFold {{{3
+Plug 'Konfekt/FastFold'  " speed up folds
+
+" ListToggle {{{3
+Plug 'Valloric/ListToggle'  " toggle location list and quickfix list
+let g:lt_location_list_toggle_map = '<Leader>el'
+let g:lt_quickfix_list_toggle_map = '<Leader>eq'
+
+" IDE-like functionality {{{2
+
+" command-t {{{3
+" file and buffer name fuzzy search
+Plug 'wincent/command-t',
+      \ {'do': 'cd ruby/command-t/ext/command-t && ruby extconf.rb && make'}
+nmap <silent> <C-T> <Plug>(CommandT)
+nmap <silent> <C-B> <Plug>(CommandTBuffer)
+nmap <silent> <C-J> <Plug>(CommandTJump)
+" tmux compatibility:
+if &term =~# "tmux"
+  let g:CommandTSelectNextMap = ['<C-N>', '<C-J>', '<Down>', '<ESC>OB']
+  let g:CommandTSelectPrevMap = ['<C-P>', '<C-K>', '<Up>', '<ESC>OA']
+  let g:CommandTSelectLeftMap = ['<Left>', '<C-H>', '<ESC>OD']
+  let g:CommandTSelectRightMap = ['<Right>', '<C-L>', '<ESC>OC']
+endif
 
 " dirvish {{{3
 Plug 'justinmk/vim-dirvish'            " browse directories and files
@@ -45,62 +97,23 @@ nmap <silent> <Leader>gu <Plug>GitGutterUndoHunk
 nmap <silent> <Leader>gn <Plug>GitGutterNextHunk
 nmap <silent> <Leader>gp <Plug>GitGutterPrevHunk
 
-" vim-grepper {{{3
-Plug 'mhinz/vim-grepper'  " grep inside vim
-nmap gs <plug>(GrepperOperator)
-xmap gs <plug>(GrepperOperator)
-
-" command-t {{{3
-Plug 'wincent/command-t',  " file and buffer name fuzzy search
-      \ {'do': 'cd ruby/command-t/ext/command-t && ruby extconf.rb && make'}
-nmap <silent> <C-t> <Plug>(CommandT)
-nmap <silent> <C-b> <Plug>(CommandTBuffer)
-" tmux compatibility:
-if &term =~# "tmux"
-  let g:CommandTSelectNextMap = ['<C-n>', '<C-j>', '<Down>', '<ESC>OB']
-  let g:CommandTSelectPrevMap = ['<C-p>', '<C-k>', '<Up>', '<ESC>OA']
-  let g:CommandTSelectLeftMap = ['<Left>', '<C-h>', '<ESC>OD']
-  let g:CommandTSelectRightMap = ['<Right>', '<C-l>', '<ESC>OC']
-endif
-
-" loupe {{{3
-Plug 'wincent/loupe'  " improve vim search and highlighting
-nmap <silent> <Leader><Space> <Plug>(LoupeClearHighlight)
-
-" undotree {{{3
-Plug 'mbbill/undotree'  " navigate undo tree
-nmap <silent> <Leader>u :UndotreeToggle<CR>
-
-" vim-stay {{{3
-Plug 'zhimsel/vim-stay'  " don't lose place in buffer
-
-" FastFold {{{3
-Plug 'Konfekt/FastFold'  " speed up folds
-
-" ListToggle {{{3
-Plug 'Valloric/ListToggle'  " toggle location list and quickfix list
-let g:lt_location_list_toggle_map = '<Leader>el'
-let g:lt_quickfix_list_toggle_map = '<Leader>eq'
-
-" Smart-Tabs {{{3
-Plug 'vim-scripts/Smart-Tabs',  " use tabs for indent, spaces for alignment
-      \ {'for': ['c', 'cpp', 'objc', 'objcpp', 'cs']}
-
-" IDE-like functionality {{{2
-
 " YouCompleteMe {{{3
-Plug 'Valloric/YouCompleteMe',  " autocomplete
+" autocomplete
+Plug 'Valloric/YouCompleteMe',
       \ {'do': './install.py --clang-completer > ~/ycm.log'}
 let g:ycm_goto_buffer_command = 'split-or-existing-window'
+let g:ycm_key_detailed_diagnostics = ''
 
 augroup ycm-mappings
   autocmd!
   autocmd FileType
         \ c,cpp,objc,objcpp,cuda,cs,go,java,javascript,python,rust,typescript
         \ nmap <silent> <buffer>go :YcmCompleter GoTo<Cr>
+        \ | vmap <silent> <buffer>go :YcmCompleter GoTo<Cr>
   autocmd FileType
         \ c,cpp,objc,objcpp,cuda,cs,java,javascript,python,typescript,rust
         \ nmap <silent> <buffer>K :YcmCompleter GetDoc<Cr>
+        \ | vmap <silent> <buffer>K :YcmCompleter GetDoc<Cr>
 augroup END
 
 " ALE {{{3
@@ -111,15 +124,11 @@ let g:ale_echo_msg_warning_str = 'W'
 let g:ale_echo_msg_format = '%linter% %severity%: %s (%code%)'
 
 " snippets {{{3
-Plug 'SirVer/ultisnips'    " sippet engine
+Plug 'SirVer/ultisnips'    " snippet engine
 Plug 'honza/vim-snippets'  " snippets
-let g:UltiSnipsExpandTrigger = '<C-j>'
-
-" tcomment {{{3
-Plug 'tomtom/tcomment_vim'  " toggle comments
-let g:tcomment_mapleader1 = "<C-/>"
-let g:tcomment_mapleader2 = "g/"
-let g:tcomment#options = {'whitespace' : 'no'}
+let g:UltiSnipsExpandTrigger = '<C-]>'
+let g:UltiSnipsJumpForwardTrigger = '<C-]>'
+let g:UltiSnipsJumpBackwardTrigger = '<C-[>'
 
 " Tagbar {{{3
 Plug 'majutsushi/tagbar'  " browse tags by scope
@@ -168,6 +177,7 @@ let g:vimtex_complete_close_braces = 0
 "      \}
 
 " Display options: colorschemes, status lines etc. {{{2
+
 " vim-airline {{{3
 Plug 'vim-airline/vim-airline'         " improved status line and buffer line
 Plug 'vim-airline/vim-airline-themes'  " colorscheme-specific line themes
@@ -177,9 +187,10 @@ let g:airline#extensions#tabline#enabled = 1
 Plug 'chriskempson/base16-vim'  " base16 colorschemes
 
 " Currently unused plugins {{{2
+
 "" CCTree {{{3
-"Plug 'hari-rangarajan/CCTree',  " build and show call tree in C
-"      \ {'for': ['c', 'cpp', 'java']}
+"" build and show call tree in C
+"Plug 'hari-rangarajan/CCTree', \ {'for': ['c', 'cpp', 'java']}
 
 "" solarized {{{3
 "Plug 'altercation/vim-colors-solarized'  " solarized colorscheme
@@ -193,7 +204,7 @@ call plug#end()
 " vim-stay {{{2
 set viewoptions=cursor,slash,unix
 
-" vimtex {{{2
+" latex {{{2
 if !exists('g:ycm_semantic_triggers')
   let g:ycm_semantic_triggers = {}
 endif
@@ -269,7 +280,7 @@ set nowrap               " Do not wrap lines for display
 set linebreak            " If turning wrap back on, wrap at a whitespace
 set relativenumber       " Show relative line numbers
 set number               " Show line numbers (relative + absolute => hybrid)
-set colorcolumn=80,81,82 " Highlight column 80-82
+set colorcolumn=+1,+2,+3 " Highlight columns after textwidth
 set showmatch            " Show matching brackets.
 set tabstop=4            " Set width of tabstops
 
@@ -308,46 +319,7 @@ nnoremap gj j
 vnoremap gj j
 
 " Navigate windows easily; <Leader> as <C-W>. See :h opening-window.
-nnoremap <Leader>s <C-W>s
-nnoremap <Leader>v <C-W>v
-nnoremap <Leader>n <C-W>n
-nnoremap <Leader>^ <C-W>^
-nnoremap <Leader>q <C-W>q
-nnoremap <Leader>c <C-W>c
-nnoremap <Leader>o <C-W>o
-nnoremap <Leader><Down> <C-W><Down>
-nnoremap <Leader><Up> <C-W><Up>
-nnoremap <Leader><Left> <C-W><Left>
-nnoremap <Leader><Right> <C-W><Right>
-nnoremap <Leader>j <C-W>j
-nnoremap <Leader>k <C-W>k
-nnoremap <Leader>h <C-W>h
-nnoremap <Leader>l <C-W>l
-nnoremap <Leader><BS> <C-W><BS>
-nnoremap <Leader>w <C-W>w
-nnoremap <Leader>W <C-W>W
-nnoremap <Leader>t <C-W>t
-nnoremap <Leader>b <C-W>b
-nnoremap <Leader>p <C-W>p
-nnoremap <Leader>P <C-W>P
-nnoremap <Leader>r <C-W>r
-nnoremap <Leader>R <C-W>R
-nnoremap <Leader>x <C-W>x
-nnoremap <Leader>K <C-W>K
-nnoremap <Leader>J <C-W>J
-nnoremap <Leader>H <C-W>H
-nnoremap <Leader>L <C-W>L
-nnoremap <Leader>T <C-W>T
-nnoremap <Leader>= <C-W>=
-nnoremap <Leader>- <C-W>-
-nnoremap <Leader>+ <C-W>+
-nnoremap <Leader>_ <C-W>_
-nnoremap <Leader>< <C-W><
-nnoremap <Leader>> <C-W>>
-nnoremap <Leader><Bar> <C-W><Bar>
-nnoremap <Leader>f <C-W>f
-nnoremap <Leader>F <C-W>F
-nnoremap <Leader>z <C-W>z
+nnoremap <Leader> <C-W>
 
 " Navigate buffers easily
 function! <SID>Bufgo(bang, bufindex, args)
@@ -540,7 +512,7 @@ nmap <silent> <Down> :Blast<CR>
 nmap <silent> <Up> :Bfirst<CR>
 nmap <silent> <Left> :Bprev<CR>
 nmap <silent> <Right> :Bnext<CR>
-nmap <silent> <C-c> :Bdelete<CR>
+nmap <silent> <C-C> :Bdelete<CR>
 
 " Define a command that opens a file like :drop, but splits the window if the
 " buffer in focus is of a special buftype to avoid displacing it.
@@ -590,7 +562,7 @@ command! Lcd lcd %:h
 
 " Available unmodified keys to follow leader: imy;/[]0123456789`
 
-" Filetype specific settings {{{1
+" File/buffer/window type specific settings {{{1
 
 " tex {{{2
 "let g:tex_flavor = 'latex'  " Let's see if leaving this out works
@@ -635,4 +607,17 @@ augroup c_family
   autocmd FileType c,cpp,objc,objcpp,cuda,cs,go,java setlocal cindent
         \ cinoptions=(0,u0 noexpandtab tabstop=8 shiftwidth=8 foldmethod=syntax
         \ foldnestmax=2
+augroup END
+
+" special windows or buffers {{{2
+function! <SID>BufferOrWindowIsSpecial()
+  return (&buftype !=# "" || &previewwindow)
+endfunction
+
+augroup special
+  autocmd!
+  autocmd BufWinEnter *
+        \ if <SID>BufferOrWindowIsSpecial()
+        \ | setlocal textwidth=0
+        \ | endif
 augroup END
