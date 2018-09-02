@@ -151,7 +151,9 @@ endif
 let g:slime_paste_file = tempname()
 let g:slime_python_ipython = 1
 let g:slime_no_mappings = 1
-nmap <silent> grip <Plug>SlimeParagraphSend
+nmap <silent> <Plug>NoSlimeParagraphSend <Plug>SlimeParagraphSend
+nmap <silent> <Plug>NoSlimeConfig <Plug>SlimeLineSend
+nmap <silent> gr <Plug>SlimeMotionSend
 nmap <silent> grr <Plug>SlimeLineSend
 xmap <silent> gr <Plug>SlimeRegionSend
 
