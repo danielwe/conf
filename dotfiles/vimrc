@@ -169,9 +169,10 @@ Plug 'AtsushiSakai/julia.vim'  " julia linting
 let g:latex_to_unicode_tab = 0
 let g:latex_to_unicode_eager = 0
 "let g:latex_to_unicode_auto = 1
-augroup julia
+augroup unicode
   autocmd!
-  autocmd FileType julia imap <silent> <buffer> <expr> <C-Y> LaTeXtoUnicode#AutoSub()
+  autocmd FileType julia
+        \ imap <silent> <buffer> <expr> <C-Y> LaTeXtoUnicode#AutoSub()
 augroup END
 if !exists('g:ycm_semantic_triggers')
   let g:ycm_semantic_triggers = {}
