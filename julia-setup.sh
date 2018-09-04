@@ -2,8 +2,8 @@
 
 # Install julia
 
-MAJOR_VERSION="0.6"
-FULL_VERSION="0.6.2"
+MAJOR_VERSION="1.0"
+FULL_VERSION="1.0.0"
 ARCHIVE="julia-${FULL_VERSION}-linux-x86_64.tar.gz"
 
 # Move to installation directory

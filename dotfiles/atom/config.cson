@@ -95,7 +95,6 @@
     useIsort: true
   "linter-ui-default":
     panelHeight: 120
-    showPanel: true
   minimap:
     moveCursorOnMinimapClick: true
     plugins:
