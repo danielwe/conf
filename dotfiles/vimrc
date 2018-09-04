@@ -145,6 +145,7 @@ let g:ale_echo_msg_format = '%linter% %severity%: %s (%code%)'
 " snippets {{{3
 Plug 'SirVer/ultisnips'    " snippet engine
 Plug 'honza/vim-snippets'  " snippets
+Plug '~/packages/vim-unicode-snippets'  " unicode snippets with latex triggers
 let g:UltiSnipsExpandTrigger = '<C-]>'
 
 " Tagbar {{{3
@@ -180,20 +181,8 @@ Plug 'tmhedberg/SimpylFold'           " fold python correctly
 Plug 'Vimjas/vim-python-pep8-indent'  " indent python correctly
 
 " julia {{{3
-Plug '~/packages/julia-vim'    " julia unicode, motions, and docs
+Plug '~/packages/julia-vim'    " julia syntax, motions and docs
 Plug 'AtsushiSakai/julia.vim'  " julia linting
-let g:latex_to_unicode_tab = 0
-let g:latex_to_unicode_eager = 0
-"let g:latex_to_unicode_auto = 1
-augroup unicode
-  autocmd!
-  autocmd FileType julia
-        \ imap <silent> <buffer> <expr> <C-Y> LaTeXtoUnicode#AutoSub()
-augroup END
-if !exists('g:ycm_semantic_triggers')
-  let g:ycm_semantic_triggers = {}
-endif
-let g:ycm_semantic_triggers.julia = ['re!\\\S+']
 
 " latex {{{3
 Plug 'lervag/vimtex'  " complete, compile, view output, parse errors
