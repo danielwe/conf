@@ -109,9 +109,9 @@ Plug 'airblade/vim-gitgutter'             " see git diff in gutter, stage hunks
 let g:gitgutter_map_keys = 0
 nmap <silent> <Leader>gg :Gstatus<CR>
 nmap <silent> <Leader>gd :Gdiff<CR>
-nmap <silent> <Leader>gv :Gitv<CR>
-nmap <silent> <Leader>gV :Gitv!<CR>
-nmap <silent> <Leader>gP <Plug>GitGutterPreviewHunk
+nmap <silent> <Leader>gl :Gitv<CR>
+nmap <silent> <Leader>gf :Gitv!<CR>
+nmap <silent> <Leader>gh <Plug>GitGutterPreviewHunk
 nmap <silent> <Leader>gs <Plug>GitGutterStageHunk
 nmap <silent> <Leader>gu <Plug>GitGutterUndoHunk
 nmap <silent> <Leader>gn <Plug>GitGutterNextHunk
@@ -121,7 +121,6 @@ nmap <silent> <Leader>gp <Plug>GitGutterPrevHunk
 " autocomplete
 Plug 'Valloric/YouCompleteMe',
       \ {'do': './install.py --clang-completer > ~/ycm.log'}
-let g:ycm_goto_buffer_command = 'split-or-existing-window'
 let g:ycm_key_detailed_diagnostics = ''
 
 augroup ycm-mappings
@@ -147,8 +146,6 @@ let g:ale_echo_msg_format = '%linter% %severity%: %s (%code%)'
 Plug 'SirVer/ultisnips'    " snippet engine
 Plug 'honza/vim-snippets'  " snippets
 let g:UltiSnipsExpandTrigger = '<C-]>'
-let g:UltiSnipsJumpForwardTrigger = '<C-]>'
-let g:UltiSnipsJumpBackwardTrigger = '<C-[>'
 
 " Tagbar {{{3
 Plug 'majutsushi/tagbar'  " browse tags by scope
@@ -158,6 +155,10 @@ nmap <silent> <Leader>' :TagbarToggle<CR>
 
 " vim-slime {{{3
 Plug 'jpalardy/vim-slime'  " send text from buffer to terminal process
+let g:slime_no_mappings = 1
+nmap <silent> gr <Plug>SlimeMotionSend
+nmap <silent> grr <Plug>SlimeLineSend
+xmap <silent> gr <Plug>SlimeRegionSend
 if &term =~# "tmux"
   let g:slime_target = "tmux"
   let g:slime_default_config = {
@@ -171,11 +172,6 @@ endif
 let g:slime_paste_file = tempname()
 let g:slime_python_ipython = 1
 let g:slime_no_mappings = 1
-nmap <silent> <Plug>NoSlimeParagraphSend <Plug>SlimeParagraphSend
-nmap <silent> <Plug>NoSlimeConfig <Plug>SlimeLineSend
-nmap <silent> gr <Plug>SlimeMotionSend
-nmap <silent> grr <Plug>SlimeLineSend
-xmap <silent> gr <Plug>SlimeRegionSend
 
 " Language specific plugins {{{2
 
@@ -293,7 +289,8 @@ set copyindent           " Don't replace tabs with spaces when copying indent
 set preserveindent       " Don't replace tabs with spaces when adjusting indent
 set expandtab            " Expand tabs as spaces
 set shiftwidth=4         " Set width of autoindentation
-set textwidth=79         " Auto-format, e.g., gq, wraps here (0: disable)
+let g:default_textwidth = 79  " Auto-format (gq etc.) wraps here (0: disable)
+execute "set textwidth=" . g:default_textwidth
 set nojoinspaces         " Don't have <S-J> (joining) insert double spaces.
 set formatoptions=cql1j  " Set auto-format options
 augroup autoformat       " Bring out the big guns to override ftplugins
@@ -326,7 +323,6 @@ set tabstop=4            " Set width of tabstops
 set listchars=eol:$,tab:\|\ ,trail:-,space:.,extends:>,precedes:<,conceal:*,nbsp:~
 
 " Configure defaults for built-in terminal
-set termwinsize=6x0
 augroup terminal
   autocmd!
   " Terminal has absolutely no business on the buffer list
@@ -426,10 +422,14 @@ function! <SID>BufferOrWindowIsSpecial()
   return (&buftype !=# "" || &previewwindow)
 endfunction
 
+function! <SID>TextwidthUnchanged()
+  return (&textwidth == g:default_textwidth)
+endfunction
+
 augroup special
   autocmd!
   autocmd BufWinEnter *
-        \ if <SID>BufferOrWindowIsSpecial()
+        \ if <SID>BufferOrWindowIsSpecial() && <SID>TextwidthUnchanged()
         \ | setlocal textwidth=0
         \ | endif
 augroup END
