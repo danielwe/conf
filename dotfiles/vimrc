@@ -189,37 +189,41 @@ Plug 'Vimjas/vim-python-pep8-indent'  " indent python correctly
 
 " julia {{{3
 Plug '~/packages/julia-vim'    " julia syntax, motions and docs
-if !exists('g:LanguageClient_serverCommands')
-  let g:LanguageClient_serverCommands = {}
-endif
-let g:LanguageClient_serverCommands.julia = [
-      \ 'julia', '--startup-file=no', '--history-file=no', '-e', '
-      \ using LanguageServer;
-      \ server = LanguageServer.LanguageServerInstance(STDIN, STDOUT, false);
-      \ server.runlinter = true;
-      \ run(server);
-      \ ']
+
 if !exists('g:ycm_semantic_triggers')
   let g:ycm_semantic_triggers = {}
 endif
 let g:ycm_semantic_triggers.julia = ['.']  " Included in next version of ycmd
-function! <SID>PreviewJuliaDoc()
-  silent! pclose!
-  call LanguageClient#textDocument_hover()
-  silent! wincmd P
-  while !&previewwindow  " Poor man's synchronization
-      sleep 100m
-      silent! wincmd P
-  endwhile
-  setlocal filetype=juliadoc bufhidden=wipe
-  silent! wincmd p
-endfunction
-augroup julia
-  autocmd!
-  autocmd FileType julia nnoremap <silent> <buffer> go
-        \ :call LanguageClient#textDocument_definition()<CR>
-        \ | nnoremap <silent> <buffer> K :call <SID>PreviewJuliaDoc()<CR>
-augroup END
+
+let s:julials = system("julia -e 'print(Pkg.dir(\"LanguageServer\"))'")
+if s:julials !=# ""
+
+  if !exists('g:LanguageClient_serverCommands')
+    let g:LanguageClient_serverCommands = {}
+  endif
+  let g:LanguageClient_serverCommands.julia = [
+        \ s:julials . "/contrib/languageserver.sh"]
+
+  function! <SID>PreviewJuliaDoc()
+    silent! pclose!
+    call LanguageClient#textDocument_hover()
+    silent! wincmd P
+    while !&previewwindow  " Poor man's synchronization
+        sleep 100m
+        silent! wincmd P
+    endwhile
+    setlocal filetype=juliadoc bufhidden=wipe
+    silent! wincmd p
+  endfunction
+
+  augroup julia
+    autocmd!
+    autocmd FileType julia nnoremap <silent> <buffer> go
+          \ :call LanguageClient#textDocument_definition()<CR>
+          \ | nnoremap <silent> <buffer> K :call <SID>PreviewJuliaDoc()<CR>
+  augroup END
+endif
+unlet s:julials
 
 " latex {{{3
 Plug 'lervag/vimtex'  " complete, compile, view output, parse errors
