@@ -240,11 +240,14 @@ let g:vimtex_complete_close_braces = 0
 
 " vim-airline {{{3
 Plug 'vim-airline/vim-airline'         " improved status line and buffer line
-Plug 'vim-airline/vim-airline-themes'  " colorscheme-specific line themes
+Plug '~/packages/vim-airline-themes'   " colorscheme-specific line themes
 let g:airline#extensions#tabline#enabled = 1
 
 " base16 {{{3
-Plug 'chriskempson/base16-vim'  " base16 colorschemes
+Plug '~/packages/base16-vim'  " base16 colorschemes
+
+" Colorizer {{{3
+Plug 'chrisbra/Colorizer'  " color rgb sequences
 
 " Currently unused plugins {{{2
 
@@ -274,19 +277,27 @@ endif
 let g:ycm_semantic_triggers.tex = g:vimtex#re#youcompleteme
 
 " base16 {{{2
-let s:base16_config_file = expand("~/.vimrc_background")
-if !has('gui_running')
-  if filereadable(s:base16_config_file)
-    let g:base16colorspace = 256
-    execute 'source ' . s:base16_config_file
-    let g:airline_theme = 'base16_shell'
+let g:airline_theme = 'base16_shell'
+let g:airline_base16_monotone = 1
+
+set termguicolors
+colorscheme base16-atelier-dune-light
+if $BASE16_THEME !=# ""
+  if has('gui_running')
+    " Don't let a gvim :terminal pretend that it provides a 21-color base16
+    " palette, just because gvim was started from a shell with an active base16
+    " theme. The gvim terminal only provides the terminal_ansi_colors palette.
+    " Colorful vimception is achieved through termguicolors.
+    let $BASE16_THEME = ""
   else
-    set termguicolors
-    colorscheme base16-ocean
-    let g:airline_theme = 'base16_ocean'
+    let s:base16_config_file = expand("~/.vimrc_background")
+    if filereadable(s:base16_config_file)
+      set notermguicolors
+      let g:base16colorspace = 256
+      execute "source" s:base16_config_file
+    endif
+    unlet s:base16_config_file
   endif
-else
-  colorscheme base16-solarized-light
 endif
 
 "" solarized {{{2

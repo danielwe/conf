@@ -3,3 +3,13 @@
 
 # Enable vi mode
 set -o vi
+
+# enable base16 shell themes
+if [ -z "$BASE16_SHELL" ] \
+    && [ -n "$PS1" ] \
+    && [ -z "$TMUX" ] && [ -z "$STY" ] && [ -z "$VIM_TERMINAL" ]
+then
+    export BASE16_SHELL="$HOME/.config/base16-shell/"
+    [ -s "$BASE16_SHELL/profile_helper.sh" ] && \
+        eval "$("$BASE16_SHELL/profile_helper.sh")"
+fi
