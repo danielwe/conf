@@ -153,7 +153,7 @@ let g:LanguageClient_hoverPreview = "Always"
 Plug 'SirVer/ultisnips'    " snippet engine
 Plug 'honza/vim-snippets'  " snippets
 Plug '~/packages/vim-unicode-snippets'  " unicode snippets with latex triggers
-let g:UltiSnipsExpandTrigger = '<C-]>'
+let g:UltiSnipsExpandTrigger = '<C-Y>'
 
 " Tagbar {{{3
 Plug 'majutsushi/tagbar'  " browse tags by scope
@@ -351,13 +351,6 @@ set tabstop=4            " Set width of tabstops
 " Set whitespace characters in list mode
 set listchars=eol:$,tab:\|\ ,trail:-,space:.,extends:>,precedes:<,conceal:*,nbsp:~
 
-" Configure defaults for built-in terminal
-augroup terminal
-  autocmd!
-  " Terminal has absolutely no business on the buffer list
-  autocmd TerminalOpen * setlocal nobuflisted
-augroup END
-
 " Set gui specific options
 if has('vim_starting') && has('gui_running')
   set guifont=Noto\ Mono\ 11
@@ -367,6 +360,17 @@ if has('vim_starting') && has('gui_running')
   set guioptions-=T        " Disable toolbar
   set guioptions-=m        " Disable menubar
   set guioptions-=r        " Disable scrollbar
+endif
+
+" Terminal color hack for gvim and tmux (see |terminal-unix|--- the problem is
+" the nonsensical fallbacks)
+if has('gui_running')
+  " This is safe: gvim handles keys on its own.
+  let $TERM = 'xterm-256color'
+elseif &term =~# '256color'  " e.g., tmux-256color
+  " This is experimental: could lead vim to misunderstand some keys. Seems to
+  " work fine in tmux, however.
+  set term=xterm-256color
 endif
 
 " Key mappings and commands {{{1
@@ -392,6 +396,19 @@ nnoremap <expr> <Space>
 
 " Hit <Leader>/ to toggle list mode
 nmap <silent> <Leader>\ :set list!<CR>
+
+" Enable mouse scrolling in terminal mode
+function! ExitTerminalNormal()
+  nunmap <buffer> <silent> <RightMouse>
+  call feedkeys("i")
+endfunction
+
+function! MapExitTerminalNormal()
+  nmap <buffer> <silent> <RightMouse> :call ExitTerminalNormal()<CR>
+endfunction
+
+tmap <silent> <ScrollWheelUp> <C-W>N<C-Y>:call MapExitTerminalNormal()<CR>
+tmap <silent> <ScrollWheelDown> <C-W>N<C-E>:call MapExitTerminalNormal()<CR>
 
 " Change the (local) directory to that of current file with :Cd (:Lcd)
 command! Cd cd %:h
