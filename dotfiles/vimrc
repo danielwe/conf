@@ -54,7 +54,6 @@ nmap <silent> <Leader><Space> <Plug>(LoupeClearHighlight)
 
 " vim-grepper {{{3
 Plug 'mhinz/vim-grepper'  " grep inside vim
-
 if !exists('g:grepper')
   let g:grepper = {}
 endif
@@ -122,6 +121,9 @@ nmap <silent> <Leader>gp <Plug>GitGutterPrevHunk
 Plug 'Valloric/YouCompleteMe',
       \ {'do': './install.py --clang-completer > ~/ycm.log'}
 let g:ycm_key_detailed_diagnostics = ''
+if !exists('g:ycm_semantic_triggers')
+  let g:ycm_semantic_triggers = {}
+endif
 
 augroup ycm-mappings
   autocmd!
@@ -141,6 +143,9 @@ let g:ale_echo_msg_error_str = 'E'
 let g:ale_echo_msg_info_str = 'I'
 let g:ale_echo_msg_warning_str = 'W'
 let g:ale_echo_msg_format = '%linter% %severity%: %s (%code%)'
+if !exists('g:ale_linters')
+  let g:ale_linters = {}
+endif
 
 " language server protocol {{{3
 Plug 'autozimu/LanguageClient-neovim', {
@@ -221,18 +226,11 @@ let g:ale_linters.python = ['pycodestyle', 'pyflakes', 'pylint']
 
 " julia {{{3
 Plug '~/packages/julia-vim'    " julia syntax, motions and docs
-
-if !exists('g:ycm_semantic_triggers')
-  let g:ycm_semantic_triggers = {}
-endif
-let g:ycm_semantic_triggers.julia = ['.']  " Included in next version of ycmd
+let g:ycm_semantic_triggers.julia = ['.']  " included in next version of ycmd
 
 let s:julials = system("julia -e 'print(Pkg.dir(\"LanguageServer\"))'")
 if s:julials !=# ""
   let s:julials .= "/contrib/languageserver.sh"
-  if !exists('g:LanguageClient_serverCommands')
-    let g:LanguageClient_serverCommands = {}
-  endif
   let g:LanguageClient_serverCommands.julia = [s:julials]
 
   augroup julia
@@ -295,9 +293,6 @@ call plug#end()
 set viewoptions=cursor,slash,unix
 
 " latex {{{2
-if !exists('g:ycm_semantic_triggers')
-  let g:ycm_semantic_triggers = {}
-endif
 let g:ycm_semantic_triggers.tex = g:vimtex#re#youcompleteme
 
 " base16 {{{2
