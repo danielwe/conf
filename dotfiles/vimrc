@@ -85,6 +85,7 @@ Plug 'wincent/command-t',
 nmap <silent> <C-T> <Plug>(CommandT)
 nmap <silent> <C-B> <Plug>(CommandTBuffer)
 nmap <silent> <C-J> <Plug>(CommandTJump)
+nmap <silent> <C-H> <Plug>(CommandTHelp)
 " terminal compatibility: the tale of arrow keys and esc
 if (&term =~# "xterm") || (&term =~# "tmux")
   " esc is not mapped by default in xterm, let's fix that
@@ -228,20 +229,19 @@ let g:ale_linters.python = ['pycodestyle', 'pyflakes', 'pylint']
 Plug '~/packages/julia-vim'    " julia syntax, motions and docs
 let g:ycm_semantic_triggers.julia = ['.']  " included in next version of ycmd
 
-let s:julials = system("julia -e 'print(Pkg.dir(\"LanguageServer\"))'")
-if s:julials !=# ""
-  let s:julials .= "/contrib/languageserver.sh"
-  let g:LanguageClient_serverCommands.julia = [s:julials]
+let g:LanguageClient_serverCommands.julia = [
+      \ "~/.julia/v0.6/LanguageServer/contrib/languageserver.sh",
+      \ ]
+      "\ system("julia -e 'print(Pkg.dir(\"LanguageServer\"))'")
+      "\ . "/contrib/languageserver.sh",
 
-  augroup julia
-    autocmd!
-    autocmd FileType julia nnoremap <silent> <buffer> go
-          \ :call LanguageClient#textDocument_definition()<CR>
-          \ | nnoremap <silent> <buffer> K
-          \ :call <SID>LanguageClientDoc("juliadoc")<CR>
-  augroup END
-endif
-unlet s:julials
+augroup julia
+  autocmd!
+  autocmd FileType julia nnoremap <silent> <buffer> go
+        \ :call LanguageClient#textDocument_definition()<CR>
+        \ | nnoremap <silent> <buffer> K
+        \ :call <SID>LanguageClientDoc("juliadoc")<CR>
+augroup END
 
 " latex {{{3
 Plug 'lervag/vimtex'  " complete, compile, view output, parse errors
@@ -299,25 +299,24 @@ let g:ycm_semantic_triggers.tex = g:vimtex#re#youcompleteme
 let g:airline_theme = 'base16_shell'
 let g:airline_base16_monotone = 1
 
-set termguicolors
-colorscheme base16-atelier-dune-light
-if $BASE16_THEME !=# ""
-  if has('gui_running')
+let s:base16_shell_config_file = expand("~/.vimrc_background")
+if ($BASE16_THEME !=# "" && filereadable(s:base16_shell_config_file)
+      \ && !has('gui_running'))
+  set notermguicolors
+  let g:base16colorspace = 256
+  execute "source" s:base16_shell_config_file
+else
+  set termguicolors
+  colorscheme base16-atelier-dune-light
+  if ($BASE16_THEME !=# "" && has('gui_running'))
     " Don't let a gvim :terminal pretend that it provides a 21-color base16
     " palette, just because gvim was started from a shell with an active base16
     " theme. The gvim terminal only provides the terminal_ansi_colors palette.
     " Colorful vimception is achieved through termguicolors.
     let $BASE16_THEME = ""
-  else
-    let s:base16_config_file = expand("~/.vimrc_background")
-    if filereadable(s:base16_config_file)
-      set notermguicolors
-      let g:base16colorspace = 256
-      execute "source" s:base16_config_file
-    endif
-    unlet s:base16_config_file
   endif
 endif
+unlet s:base16_shell_config_file
 
 "" solarized {{{2
 "colorscheme solarized
@@ -372,8 +371,9 @@ endif
 
 set nowrap               " Do not wrap lines for display
 set linebreak            " If turning wrap back on, wrap at a whitespace
-set relativenumber       " Show relative line numbers
-set number               " Show line numbers (relative + absolute => hybrid)
+set numberwidth=2        " Set minimum width of line number column
+set norelativenumber     " Show relative line numbers?
+set nonumber             " Show line numbers? (relative + absolute => hybrid)
 set colorcolumn=+1,+2,+3 " Highlight columns after textwidth
 set showmatch            " Show matching brackets.
 set tabstop=4            " Set width of tabstops
