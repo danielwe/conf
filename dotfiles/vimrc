@@ -296,27 +296,31 @@ set viewoptions=cursor,slash,unix
 let g:ycm_semantic_triggers.tex = g:vimtex#re#youcompleteme
 
 " base16 {{{2
-let g:airline_theme = 'base16_shell'
+let g:airline_theme = 'base16_vim'
 let g:airline_base16_monotone = 1
 
-let s:base16_shell_config_file = expand("~/.vimrc_background")
-if ($BASE16_THEME !=# "" && filereadable(s:base16_shell_config_file)
-      \ && !has('gui_running'))
-  set notermguicolors
-  let g:base16colorspace = 256
-  execute "source" s:base16_shell_config_file
-else
+" Now choose colorscheme. If running in a terminal and termguicolors is not
+" set, any base16 theme is equivalent, and will give you the base16 theme that
+" the terminal was set up with using base16_shell (in particular, the
+" .vimrc_background file from base16_shell is unneccesary). In gvim, or with
+" termguicolors set, the exact theme named below will be used.
+let s:base16_theme = "base16-atelier-dune-light"
+
+if ($BASE16_THEME ==# "")
   set termguicolors
-  colorscheme base16-atelier-dune-light
-  if ($BASE16_THEME !=# "" && has('gui_running'))
+else
+  if has('gui_running')
     " Don't let a gvim :terminal pretend that it provides a 21-color base16
     " palette, just because gvim was started from a shell with an active base16
     " theme. The gvim terminal only provides the terminal_ansi_colors palette.
-    " Colorful vimception is achieved through termguicolors.
     let $BASE16_THEME = ""
+  else
+    set notermguicolors
+    let g:base16colorspace = 256
   endif
 endif
-unlet s:base16_shell_config_file
+execute "colorscheme" s:base16_theme
+unlet s:base16_theme
 
 "" solarized {{{2
 "colorscheme solarized
