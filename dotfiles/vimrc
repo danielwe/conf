@@ -227,6 +227,7 @@ let g:ale_linters.python = ['pycodestyle', 'pyflakes', 'pylint']
 
 " julia {{{3
 Plug '~/packages/julia-vim'    " julia syntax, motions and docs
+let g:latex_to_unicode_tab = 0  " turn off latex to unicode, use snippets
 let g:ycm_semantic_triggers.julia = ['.']  " included in next version of ycmd
 
 let g:LanguageClient_serverCommands.julia = [
