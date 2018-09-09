@@ -12,6 +12,15 @@ if empty(glob('~/.vim/autoload/plug.vim'))
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
+" Plugin development support
+function! s:DevelopOrPlug(development_path, production_path)
+  if isdirectory(expand(a:development_path))
+    Plug a:development_path
+  else
+    Plug a:production_path
+  endif
+endfunction
+
 call plug#begin('~/.vim/plugged')
 
 " Editor enhancements {{{2
@@ -27,7 +36,8 @@ Plug 'tpope/vim-surround'  " play with brackets, quotes etc.
 Plug 'tpope/vim-eunuch'    " integrate shell commands like mv, rm etc.
 
 " vim-butter {{{3
-Plug '~/packages/vim-butter'  " smoothen buffer navigation
+" smoothen buffer navigation
+call s:DevelopOrPlug('~/packages/vim-butter', 'danielwe/vim-butter')
 nmap <silent> <Down> :Blast<CR>
 nmap <silent> <Up> :Bfirst<CR>
 nmap <silent> <Left> :Bprev<CR>
@@ -187,7 +197,9 @@ endfunction
 " snippets {{{3
 Plug 'SirVer/ultisnips'    " snippet engine
 Plug 'honza/vim-snippets'  " snippets
-Plug '~/packages/vim-unicode-snippets'  " unicode snippets with latex triggers
+" unicode snippets with latex triggers
+call s:DevelopOrPlug('~/packages/vim-unicode-snippets',
+      \              'danielwe/vim-unicode-snippets')
 let g:UltiSnipsExpandTrigger = '<C-J>'
 let g:UltiSnipsJumpForwardTrigger = '<C-J>'
 let g:UltiSnipsJumpBackwardTrigger = '<C-K>'
@@ -226,7 +238,8 @@ Plug 'Vimjas/vim-python-pep8-indent'  " indent python correctly
 let g:ale_linters.python = ['pycodestyle', 'pyflakes', 'pylint']
 
 " julia {{{3
-Plug '~/packages/julia-vim'    " julia syntax, motions and docs
+" julia syntax, motions and docs
+call s:DevelopOrPlug('~/packages/julia-vim', 'JuliaEditorSupport/julia-vim')
 let g:latex_to_unicode_tab = 0  " turn off latex to unicode, use snippets
 let g:ycm_semantic_triggers.julia = ['.']  " included in next version of ycmd
 
@@ -263,11 +276,14 @@ let g:vimtex_complete_close_braces = 0
 
 " vim-airline {{{3
 Plug 'vim-airline/vim-airline'         " improved status line and buffer line
-Plug '~/packages/vim-airline-themes'   " colorscheme-specific line themes
+" colorscheme-specific line themes
+call s:DevelopOrPlug('~/packages/vim-airline-themes',
+      \              'vim-airline/vim-airline-themes')
 let g:airline#extensions#tabline#enabled = 1
 
 " base16 {{{3
-Plug '~/packages/base16-vim'  " base16 colorschemes
+" base16 colorschemes
+call s:DevelopOrPlug('~/packages/base16-vim', 'danielwe/base16-vim')
 
 " Colorizer {{{3
 Plug 'chrisbra/Colorizer'  " color rgb sequences
@@ -307,7 +323,7 @@ let g:airline_base16_monotone = 1
 " termguicolors set, the exact theme named below will be used.
 let s:base16_theme = "base16-atelier-dune-light"
 
-if ($BASE16_THEME ==# "")
+if ($BASE16_THEME ==# "") && has('termguicolors')
   set termguicolors
 else
   if has('gui_running')
@@ -315,7 +331,7 @@ else
     " palette, just because gvim was started from a shell with an active base16
     " theme. The gvim terminal only provides the terminal_ansi_colors palette.
     let $BASE16_THEME = ""
-  else
+  elseif has('termguicolors')
     set notermguicolors
     let g:base16colorspace = 256
   endif
@@ -442,8 +458,10 @@ function! MapExitTerminalNormal()
   nmap <buffer> <silent> <RightMouse> :call ExitTerminalNormal()<CR>
 endfunction
 
-tmap <silent> <ScrollWheelUp> <C-W>N<C-Y>:call MapExitTerminalNormal()<CR>
-tmap <silent> <ScrollWheelDown> <C-W>N<C-E>:call MapExitTerminalNormal()<CR>
+if has('terminal')
+  tmap <silent> <ScrollWheelUp> <C-W>N<C-Y>:call MapExitTerminalNormal()<CR>
+  tmap <silent> <ScrollWheelDown> <C-W>N<C-E>:call MapExitTerminalNormal()<CR>
+endif
 
 " Change the (local) directory to that of current file with :Cd (:Lcd)
 command! Cd cd %:h
