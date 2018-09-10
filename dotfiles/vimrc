@@ -34,6 +34,7 @@ Plug 'tpope/vim-endwise'   " automatically and wisely close environments
 Plug 'tpope/vim-repeat'    " improve `.'
 Plug 'tpope/vim-surround'  " play with brackets, quotes etc.
 Plug 'tpope/vim-eunuch'    " integrate shell commands like mv, rm etc.
+Plug 'tpope/vim-unimpaired'  " nifty keymappings, learn to use!
 
 " vim-butter {{{3
 " smoothen buffer navigation
