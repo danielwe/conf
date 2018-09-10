@@ -1,4 +1,4 @@
-# Put custom bashrc config here. The 'ubuntu-setup.sh' script will modify
+# Put custom bashrc config here. The 'install-bashrc.sh' script will modify
 # .bashrc to source these commands.
 
 # Enable vi mode
