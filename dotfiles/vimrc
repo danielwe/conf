@@ -297,7 +297,7 @@ let g:vimtex_complete_close_braces = 0
 
 " vim-airline {{{3
 " improved status line and buffer line
-call s:DevelopOrPlug('~/packages/vim-airline', 'danielwe/vim-airline')
+call s:DevelopOrPlug('~/packages/vim-airline', 'vim-airline/vim-airline')
 " colorscheme-specific line themes
 call s:DevelopOrPlug('~/packages/vim-airline-themes',
       \              'vim-airline/vim-airline-themes')
