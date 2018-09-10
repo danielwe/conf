@@ -332,8 +332,10 @@ else
     " palette, just because gvim was started from a shell with an active base16
     " theme. The gvim terminal only provides the terminal_ansi_colors palette.
     let $BASE16_THEME = ""
-  elseif has('termguicolors')
-    set notermguicolors
+  else
+    if has('termguicolors')
+      set notermguicolors
+    endif
     let g:base16colorspace = 256
   endif
 endif
@@ -517,19 +519,13 @@ augroup c_family
         \ foldnestmax=2
 augroup END
 
-" special windows or buffers {{{2
-function! <SID>BufferOrWindowIsSpecial()
-  return (&buftype !=# "" || &previewwindow)
-endfunction
-
-function! <SID>TextwidthUnchanged()
-  return (&textwidth == g:default_textwidth)
-endfunction
-
-augroup special
+" reading buffers and windows {{{2
+" Zero the textwidth in help buffers and other reading windows to erase right
+" side column highlighting.
+augroup reading
   autocmd!
   autocmd BufWinEnter *
-        \ if <SID>BufferOrWindowIsSpecial() && <SID>TextwidthUnchanged()
+        \ if &buftype ==# "help" || &previewwindow
         \ | setlocal textwidth=0
         \ | endif
 augroup END
