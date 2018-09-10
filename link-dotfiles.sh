@@ -12,7 +12,7 @@ done
 # Support entire dot directories. Usage: a folder inside 'dotfolders' named
 # 'one.two.three' will be linked to by '~/.one/two/three'
 DOTDIR="${DIR}/dotfolders"
-find "${DOTDIR}" -maxdepth 1 -type d | while read TARGET
+find "${DOTDIR}" -mindepth 1 -maxdepth 1 -type d | while read TARGET
 do
     LINK_NAME="${TARGET//\./\/}"
     LINK_NAME="${HOME}/.${LINK_NAME/#${DOTDIR}\//}"
