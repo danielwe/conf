@@ -88,29 +88,36 @@ let g:lt_quickfix_list_toggle_map = '<Leader>eq'
 
 " IDE-like functionality {{{2
 
-" command-t {{{3
-" file and buffer name fuzzy search
-Plug 'wincent/command-t',
-      \ {'do': 'cd ruby/command-t/ext/command-t && ruby extconf.rb && make'}
-nmap <silent> <C-T> <Plug>(CommandT)
-nmap <silent> <C-B> <Plug>(CommandTBuffer)
-nmap <silent> <C-J> <Plug>(CommandTJump)
-nmap <silent> <C-H> <Plug>(CommandTHelp)
-" terminal compatibility: the tale of arrow keys and esc
-if (&term =~# "xterm") || (&term =~# "tmux")
-  " esc is not mapped by default in xterm, let's fix that
-  " (not actually needed for tmux, but doesn't hurt)
-  let g:CommandTCancelMap = ['<C-C>', '<ESC>']
-  " now esc is mapped and arrow keys will misbehave, let's fix that
-  let g:CommandTSelectNextMap = ['<C-N>', '<C-J>', '<Down>', '<ESC>OB']
-  let g:CommandTSelectPrevMap = ['<C-P>', '<C-K>', '<Up>', '<ESC>OA']
-  let g:CommandTSelectLeftMap = ['<Left>', '<C-H>', '<ESC>OD']
-  let g:CommandTSelectRightMap = ['<Right>', '<C-L>', '<ESC>OC']
+" fuzzy search {{{3
+if has('ruby')
+  Plug 'wincent/command-t',
+        \ {'do': 'cd ruby/command-t/ext/command-t && ruby extconf.rb && make'}
+  nmap <silent> <C-T> <Plug>(CommandT)
+  nmap <silent> <C-B> <Plug>(CommandTBuffer)
+  nmap <silent> <C-J> <Plug>(CommandTJump)
+  nmap <silent> <C-H> <Plug>(CommandTHelp)
+  " terminal compatibility: the tale of arrow keys and esc
+  if (&term =~# "xterm") || (&term =~# "tmux")
+    " esc is not mapped by default in xterm, let's fix that
+    " (not actually needed for tmux, but doesn't hurt)
+    let g:CommandTCancelMap = ['<C-C>', '<ESC>']
+    " now esc is mapped and arrow keys will misbehave, let's fix that
+    let g:CommandTSelectNextMap = ['<C-N>', '<C-J>', '<Down>', '<ESC>OB']
+    let g:CommandTSelectPrevMap = ['<C-P>', '<C-K>', '<Up>', '<ESC>OA']
+    let g:CommandTSelectLeftMap = ['<Left>', '<C-H>', '<ESC>OD']
+    let g:CommandTSelectRightMap = ['<Right>', '<C-L>', '<ESC>OC']
+  endif
+else
+  Plug 'ctrlpvim/ctrlp.vim'
+  let g:ctrlp_map = '<C-T>'
+  nmap <silent> <C-B> :CtrlPBuffer<CR>
 endif
 
 " dirvish {{{3
 Plug 'justinmk/vim-dirvish'            " browse directories and files
-Plug 'kristijanhusak/vim-dirvish-git'  " annotate dirvish with git status
+if v:version >= 800
+  Plug 'kristijanhusak/vim-dirvish-git'  " annotate dirvish with git status
+endif
 
 " git integration {{{3
 Plug 'tpope/vim-fugitive'                 " git status, commit, diff etc.
@@ -148,51 +155,61 @@ augroup ycm-mappings
         \ | vmap <silent> <buffer>K :YcmCompleter GetDoc<Cr>
 augroup END
 
-" ALE {{{3
-Plug 'w0rp/ale'  " autolint
-let g:ale_echo_msg_error_str = 'E'
-let g:ale_echo_msg_info_str = 'I'
-let g:ale_echo_msg_warning_str = 'W'
-let g:ale_echo_msg_format = '%linter% %severity%: %s (%code%)'
+" linting {{{3
+if v:version >= 800
+  Plug 'w0rp/ale'
+  let g:ale_echo_msg_error_str = 'E'
+  let g:ale_echo_msg_info_str = 'I'
+  let g:ale_echo_msg_warning_str = 'W'
+  let g:ale_echo_msg_format = '%linter% %severity%: %s (%code%)'
+else
+  Plug 'vim-syntastic/syntastic'
+  let g:syntastic_always_populate_loc_list = 1
+  let g:syntastic_auto_loc_list = 0
+  let g:syntastic_check_on_open = 1
+  let g:syntastic_check_on_wq = 0
+endif
 if !exists('g:ale_linters')
   let g:ale_linters = {}
 endif
 
 " language server protocol {{{3
-Plug 'autozimu/LanguageClient-neovim', {
-      \ 'branch': 'next',
-      \ 'do': 'bash install.sh',
-      \ }
-let g:LanguageClient_hoverPreview = "always"
-let g:LanguageClient_diagnosticsList = "location"
-let g:LanguageClient_selectionUI = "quickfix"
-if !exists('g:LanguageClient_serverCommands')
-  let g:LanguageClient_serverCommands = {}
-endif
+if v:version >= 800
+  Plug 'autozimu/LanguageClient-neovim', {
+        \ 'branch': 'next',
+        \ 'do': 'bash install.sh',
+        \ }
+  let g:LanguageClient_hoverPreview = "always"
+  let g:LanguageClient_diagnosticsList = "location"
+  let g:LanguageClient_selectionUI = "quickfix"
+  if !exists('g:LanguageClient_serverCommands')
+    let g:LanguageClient_serverCommands = {}
+  endif
 
-function! <SID>LanguageClientDoc(...)
-  if !a:0
+  function! <SID>LanguageClientDoc(...)
+    if !a:0
+      call LanguageClient#textDocument_hover()
+      return
+    endif
+
+    let pvw = &previewwindow
+    silent! pclose!
     call LanguageClient#textDocument_hover()
-    return
-  endif
 
-  let pvw = &previewwindow
-  silent! pclose!
-  call LanguageClient#textDocument_hover()
-
-  silent! wincmd P
-  while !&previewwindow  " poor man's synchronization
-    sleep 100m
     silent! wincmd P
-  endwhile
+    while !&previewwindow  " poor man's synchronization
+      sleep 100m
+      silent! wincmd P
+    endwhile
 
-  execute "setfiletype" a:1
-  set bufhidden=wipe
+    execute "setfiletype" a:1
+    set bufhidden=wipe
 
-  if !pvw
-    silent! wincmd p
-  endif
-endfunction
+    if !pvw
+      silent! wincmd p
+    endif
+  endfunction
+endif
 
 " snippets {{{3
 Plug 'SirVer/ultisnips'    " snippet engine
@@ -236,6 +253,7 @@ let g:slime_no_mappings = 1
 Plug 'tmhedberg/SimpylFold'           " fold python correctly
 Plug 'Vimjas/vim-python-pep8-indent'  " indent python correctly
 let g:ale_linters.python = ['pycodestyle', 'pyflakes', 'pylint']
+let g:syntastic_python_checkers = ['pycodestyle', 'pyflakes', 'pylint']
 
 " julia {{{3
 " julia syntax, motions and docs
@@ -243,19 +261,21 @@ call s:DevelopOrPlug('~/packages/julia-vim', 'JuliaEditorSupport/julia-vim')
 let g:latex_to_unicode_tab = 0  " turn off latex to unicode, use snippets
 let g:ycm_semantic_triggers.julia = ['.']  " included in next version of ycmd
 
-let g:LanguageClient_serverCommands.julia = [
-      \ "~/.julia/v0.6/LanguageServer/contrib/languageserver.sh",
-      \ ]
-      "\ system("julia -e 'print(Pkg.dir(\"LanguageServer\"))'")
-      "\ . "/contrib/languageserver.sh",
+if exists('g:LanguageClient_loaded') && g:LanguageClient_loaded
+  let g:LanguageClient_serverCommands.julia = [
+        \ "~/.julia/v0.6/LanguageServer/contrib/languageserver.sh",
+        \ ]
+        "\ system("julia -e 'print(Pkg.dir(\"LanguageServer\"))'")
+        "\ . "/contrib/languageserver.sh",
 
-augroup julia
-  autocmd!
-  autocmd FileType julia nnoremap <silent> <buffer> go
-        \ :call LanguageClient#textDocument_definition()<CR>
-        \ | nnoremap <silent> <buffer> K
-        \ :call <SID>LanguageClientDoc("juliadoc")<CR>
-augroup END
+  augroup julia
+    autocmd!
+    autocmd FileType julia nnoremap <silent> <buffer> go
+          \ :call LanguageClient#textDocument_definition()<CR>
+          \ | nnoremap <silent> <buffer> K
+          \ :call <SID>LanguageClientDoc("juliadoc")<CR>
+  augroup END
+endif
 
 " latex {{{3
 Plug 'lervag/vimtex'  " complete, compile, view output, parse errors
