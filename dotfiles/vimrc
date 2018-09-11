@@ -138,7 +138,7 @@ nmap <silent> <Leader>gp <Plug>GitGutterPrevHunk
 " YouCompleteMe {{{3
 " autocomplete
 Plug 'Valloric/YouCompleteMe',
-      \ {'do': './install.py --clang-completer > ~/ycm.log'}
+      \ {'do': 'python3 install.py --clang-completer > ~/ycm.log'}
 let g:ycm_key_detailed_diagnostics = ''
 if !exists('g:ycm_semantic_triggers')
   let g:ycm_semantic_triggers = {}
