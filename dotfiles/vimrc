@@ -246,7 +246,6 @@ else
 endif
 let g:slime_paste_file = tempname()
 let g:slime_python_ipython = 1
-let g:slime_no_mappings = 1
 
 " Language specific plugins {{{2
 
