@@ -149,11 +149,11 @@ augroup ycm-mappings
   autocmd FileType
         \ c,cpp,objc,objcpp,cuda,cs,go,java,javascript,python,rust,typescript
         \ nmap <silent> <buffer>go :YcmCompleter GoTo<Cr>
-        \ | vmap <silent> <buffer>go :YcmCompleter GoTo<Cr>
+        \| vmap <silent> <buffer>go :YcmCompleter GoTo<Cr>
   autocmd FileType
         \ c,cpp,objc,objcpp,cuda,cs,java,javascript,python,typescript,rust
         \ nmap <silent> <buffer>K :YcmCompleter GetDoc<Cr>
-        \ | vmap <silent> <buffer>K :YcmCompleter GetDoc<Cr>
+        \| vmap <silent> <buffer>K :YcmCompleter GetDoc<Cr>
 augroup END
 
 " linting {{{3
