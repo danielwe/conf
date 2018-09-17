@@ -21,7 +21,7 @@ function! s:DevelopOrPlug(development_path, production_path)
   endif
 endfunction
 
-call plug#begin('~/.vim/plugged')
+call plug#begin()
 
 " Editor enhancements {{{2
 
