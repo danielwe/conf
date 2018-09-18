@@ -184,7 +184,8 @@ augroup END
 
 " linting and LSP {{{3
 if v:version >= 800
-  Plug 'w0rp/ale'
+  call s:DevelopOrPlug('~/packages/ale', 'danielwe/ale')
+  "Plug 'w0rp/ale'
   let g:ale_echo_msg_error_str = 'E'
   let g:ale_echo_msg_info_str = 'I'
   let g:ale_echo_msg_warning_str = 'W'
@@ -263,7 +264,8 @@ let g:syntastic_python_checkers = ['pycodestyle', 'pyflakes', 'pylint']
 
 " julia {{{3
 " julia syntax, motions and docs
-call s:DevelopOrPlug('~/packages/julia-vim', 'JuliaEditorSupport/julia-vim')
+"call s:DevelopOrPlug('~/packages/julia-vim', 'danielwe/julia-vim')
+Plug 'JuliaEditorSupport/julia-vim'
 let g:latex_to_unicode_tab = 0  " turn off latex to unicode, use snippets
 augroup GetDoc
   " Clear any GetDoc bindings from ycm/ale; julia-vim does it better due to
@@ -290,15 +292,18 @@ let g:vimtex_complete_close_braces = 0
 
 " vim-airline {{{3
 " improved status line and buffer line
-call s:DevelopOrPlug('~/packages/vim-airline', 'vim-airline/vim-airline')
+"call s:DevelopOrPlug('~/packages/vim-airline', 'danielwe/vim-airline')
+Plug 'vim-airline/vim-airline'
 " colorscheme-specific line themes
-call s:DevelopOrPlug('~/packages/vim-airline-themes',
-      \              'vim-airline/vim-airline-themes')
+"call s:DevelopOrPlug('~/packages/vim-airline-themes',
+"      \              'danielwe/vim-airline-themes')
+Plug 'vim-airline/vim-airline-themes'
 let g:airline#extensions#tabline#enabled = 1
 
 " base16 {{{3
 " base16 colorschemes
 call s:DevelopOrPlug('~/packages/base16-vim', 'danielwe/base16-vim')
+"Plug 'chriskempson/base16-vim'
 
 " Colorizer {{{3
 Plug 'chrisbra/Colorizer'  " color rgb sequences
