@@ -143,26 +143,71 @@ let g:ycm_key_detailed_diagnostics = ''
 if !exists('g:ycm_semantic_triggers')
   let g:ycm_semantic_triggers = {}
 endif
-
-augroup ycm-mappings
-  autocmd!
-  autocmd FileType
-        \ c,cpp,objc,objcpp,cuda,cs,go,java,javascript,python,rust,typescript
-        \ nmap <silent> <buffer>go :YcmCompleter GoTo<Cr>
-        \| vmap <silent> <buffer>go :YcmCompleter GoTo<Cr>
-  autocmd FileType
-        \ c,cpp,objc,objcpp,cuda,cs,java,javascript,python,typescript,rust
-        \ nmap <silent> <buffer>K :YcmCompleter GetDoc<Cr>
-        \| vmap <silent> <buffer>K :YcmCompleter GetDoc<Cr>
+if !exists('g:ycm_filetype_blacklist')
+  let g:ycm_filetype_blacklist = {}
+endif
+let g:ycm_goto_filetypes = [
+      \ 'c',
+      \ 'cpp',
+      \ 'objc',
+      \ 'objcpp',
+      \ 'cuda',
+      \ 'cs',
+      \ 'go',
+      \ 'java',
+      \ 'javascript',
+      \ 'python',
+      \ 'rust',
+      \ 'typescript',
+      \ ]
+let g:ycm_getdoc_filetypes = [
+      \ 'c',
+      \ 'cpp',
+      \ 'objc',
+      \ 'objcpp',
+      \ 'cuda',
+      \ 'cs',
+      \ 'java',
+      \ 'javascript',
+      \ 'python',
+      \ 'typescript',
+      \ 'rust',
+      \ ]
+augroup GoTo
+  execute "autocmd! FileType" join(g:ycm_goto_filetypes, ",")
+        \ "map <silent> <buffer> go :YcmCompleter GoTo<Cr>"
+augroup END
+augroup GetDoc
+  execute "autocmd! FileType" join(g:ycm_getdoc_filetypes, ",")
+        \ "map <silent> <buffer>K :YcmCompleter GetDoc<Cr>"
 augroup END
 
-" linting {{{3
+" linting and LSP {{{3
 if v:version >= 800
   Plug 'w0rp/ale'
   let g:ale_echo_msg_error_str = 'E'
   let g:ale_echo_msg_info_str = 'I'
   let g:ale_echo_msg_warning_str = 'W'
   let g:ale_echo_msg_format = '%linter% %severity%: %s (%code%)'
+
+  " Configure LSP for supported filetypes
+  let g:ale_completion_enabled = 1
+  let g:ale_lsp_filetypes = ['julia']
+  let s:ale_lsp_filetype_pattern = join(g:ale_lsp_filetypes, ",")
+  augroup GoTo
+    execute "autocmd! FileType" s:ale_lsp_filetype_pattern
+          \ "noremap <silent> <buffer> go :ALEGoToDefinition<CR>"
+  augroup END
+  augroup GetDoc
+    execute "autocmd! FileType" s:ale_lsp_filetype_pattern
+          \ "noremap <silent> <buffer> K :ALEHover<CR>"
+  augroup END
+
+  for s:ft in g:ale_lsp_filetypes
+    let g:ycm_filetype_blacklist[s:ft] = 1
+  endfor
+  unlet s:ale_lsp_filetype_pattern
+  unlet s:ft
 else
   Plug 'vim-syntastic/syntastic'
   let g:syntastic_always_populate_loc_list = 1
@@ -170,46 +215,8 @@ else
   let g:syntastic_check_on_open = 1
   let g:syntastic_check_on_wq = 0
 endif
-if !exists('g:ale_linters')
-  let g:ale_linters = {}
-endif
-
-" language server protocol {{{3
-if v:version >= 800
-  Plug 'autozimu/LanguageClient-neovim', {
-        \ 'branch': 'next',
-        \ 'do': 'bash install.sh',
-        \ }
-  let g:LanguageClient_hoverPreview = "always"
-  let g:LanguageClient_diagnosticsList = "location"
-  let g:LanguageClient_selectionUI = "quickfix"
-  if !exists('g:LanguageClient_serverCommands')
-    let g:LanguageClient_serverCommands = {}
-  endif
-
-  function! <SID>LanguageClientDoc(...)
-    if !a:0
-      call LanguageClient#textDocument_hover()
-      return
-    endif
-
-    let pvw = &previewwindow
-    silent! pclose!
-    call LanguageClient#textDocument_hover()
-
-    silent! wincmd P
-    while !&previewwindow  " poor man's synchronization
-      sleep 100m
-      silent! wincmd P
-    endwhile
-
-    execute "setfiletype" a:1
-    set bufhidden=wipe
-
-    if !pvw
-      silent! wincmd p
-    endif
-  endfunction
+if !exists('g:ale_linters_ignore')
+  let g:ale_linters_ignore = {}
 endif
 
 " snippets {{{3
@@ -252,30 +259,17 @@ let g:slime_python_ipython = 1
 " python {{{3
 Plug 'tmhedberg/SimpylFold'           " fold python correctly
 Plug 'Vimjas/vim-python-pep8-indent'  " indent python correctly
-let g:ale_linters.python = ['pycodestyle', 'pyflakes', 'pylint']
 let g:syntastic_python_checkers = ['pycodestyle', 'pyflakes', 'pylint']
 
 " julia {{{3
 " julia syntax, motions and docs
 call s:DevelopOrPlug('~/packages/julia-vim', 'JuliaEditorSupport/julia-vim')
 let g:latex_to_unicode_tab = 0  " turn off latex to unicode, use snippets
-let g:ycm_semantic_triggers.julia = ['.']  " included in next version of ycmd
-
-if exists('g:LanguageClient_loaded') && g:LanguageClient_loaded
-  let g:LanguageClient_serverCommands.julia = [
-        \ "~/.julia/v0.6/LanguageServer/contrib/languageserver.sh",
-        \ ]
-        "\ system("julia -e 'print(Pkg.dir(\"LanguageServer\"))'")
-        "\ . "/contrib/languageserver.sh",
-
-  augroup julia
-    autocmd!
-    autocmd FileType julia nnoremap <silent> <buffer> go
-          \ :call LanguageClient#textDocument_definition()<CR>
-          \ | nnoremap <silent> <buffer> K
-          \ :call <SID>LanguageClientDoc("juliadoc")<CR>
-  augroup END
-endif
+augroup GetDoc
+  " Clear any GetDoc bindings from ycm/ale; julia-vim does it better due to
+  " juliadoc filetype support
+  autocmd! FileType julia  
+augroup END
 
 " latex {{{3
 Plug 'lervag/vimtex'  " complete, compile, view output, parse errors
@@ -314,6 +308,21 @@ Plug 'chrisbra/Colorizer'  " color rgb sequences
 "" CCTree {{{3
 "" build and show call tree in C
 "Plug 'hari-rangarajan/CCTree', \ {'for': ['c', 'cpp', 'java']}
+
+"" language client {{{3
+"if v:version >= 800
+"  Plug 'autozimu/LanguageClient-neovim', {
+"        \ 'branch': 'next',
+"        \ 'do': 'bash install.sh',
+"        \ }
+"  let g:LanguageClient_hoverPreview = "always"
+"  let g:LanguageClient_diagnosticsList = "location"
+"  let g:LanguageClient_selectionUI = "quickfix"
+"  if !exists('g:LanguageClient_serverCommands')
+"    let g:LanguageClient_serverCommands = {}
+"  endif
+"endif
+
 
 "" julia {{{3
 "Plug 'AtsushiSakai/julia.vim'  " julia linting
@@ -374,7 +383,7 @@ set hidden               " Keep abandoned buffers around in the background
 set showcmd              " Show number of selected lines ++ in the bottom line
 set noswapfile           " Do not use swap file
 set wildmode=longest:full,full " Set autocomplete command behavior
-set completeopt=menuone,preview " Set completion options
+set completeopt=menuone,preview,noselect " Set completion options
 set mouse=a              " Enable mouse usage (all modes)
 
 " Enable persistent undo
