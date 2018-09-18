@@ -183,7 +183,8 @@ augroup GetDoc
 augroup END
 
 " linting and LSP {{{3
-if has("patch-8.0.1476")  " see https://github.com/w0rp/ale/issues/1536
+" see https://github.com/w0rp/ale/issues/1536 for details about bug and patches
+if v:version >= 800 && (has("patch-8.0.1476") || !has("patch-8.0.1449"))
   call s:DevelopOrPlug('~/packages/ale', 'danielwe/ale')
   "Plug 'w0rp/ale'
   let g:ale_echo_msg_error_str = 'E'
