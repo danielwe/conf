@@ -459,14 +459,10 @@ endif
 " Key mappings and commands {{{1
 
 " Scroll screen-based instead of line-based
-nnoremap k gk
-vnoremap k gk
-nnoremap j gj
-vnoremap j gj
-nnoremap gk k
-vnoremap gk k
-nnoremap gj j
-vnoremap gj j
+noremap k gk
+noremap j gj
+noremap gk k
+noremap gj j
 
 " Navigate windows easily; <Leader> as <C-W>. See :h opening-window.
 nnoremap <Leader> <C-W>
