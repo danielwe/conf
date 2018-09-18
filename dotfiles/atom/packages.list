@@ -1,5 +1,5 @@
-Hydrogen@2.5.1
-autocomplete-python@1.10.10
+Hydrogen@2.6.0
+autocomplete-python@1.10.12
 base16-syntax@1.8.1
 busy-signal@1.4.3
 ex-mode@0.18.0
@@ -8,14 +8,14 @@ git-blame@1.7.0
 highlight-selected@0.14.0
 hydrogen-launcher@1.2.2
 indent-detective@0.2.2
-ink@0.9.6
+ink@0.9.7
 intentions@1.1.5
 julia-client@0.7.6
 language-julia@0.17.0
 language-latex@1.1.1
 latex@0.50.0
 latex-completions@0.3.5
-latex-tree@0.3.0
+latex-tree@0.4.0
 latexer@0.3.0
 linter@2.2.0
 linter-chktex@1.3.1
