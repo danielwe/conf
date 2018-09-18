@@ -270,7 +270,7 @@ let g:latex_to_unicode_tab = 0  " turn off latex to unicode, use snippets
 augroup GetDoc
   " Clear any GetDoc bindings from ycm/ale; julia-vim does it better due to
   " juliadoc filetype support
-  autocmd! FileType julia  
+  autocmd! FileType julia
 augroup END
 
 " latex {{{3
