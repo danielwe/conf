@@ -86,4 +86,7 @@ disable=print-statement,
         dict-items-not-iterating,
         dict-keys-not-iterating,
         dict-values-not-iterating,
-        no-name-in-module
+        no-name-in-module,
+        bad-continuation,
+
+max-line-length=79

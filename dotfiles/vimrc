@@ -261,6 +261,8 @@ let g:slime_python_ipython = 1
 " python {{{3
 Plug 'tmhedberg/SimpylFold'           " fold python correctly
 Plug 'Vimjas/vim-python-pep8-indent'  " indent python correctly
+Plug 'ambv/black'                     " format code
+let g:black_linelength = 79
 let g:syntastic_python_checkers = ['pycodestyle', 'pyflakes', 'pylint']
 
 " julia {{{3
@@ -288,6 +290,16 @@ let g:vimtex_complete_close_braces = 0
 "      \   'default' : 0,
 "      \ },
 "      \}
+
+" lilypond {{{3
+let s:lilypond_vim_dir = split(expand('/usr/share/lilypond/*/vim/'))[-1]
+if isdirectory(s:lilypond_vim_dir)
+  let g:lilypond_enabled = 1
+  filetype off
+  set rtp+=s:lilypond_vim_dir
+  filetype on
+endif
+unlet s:lilypond_vim_dir
 
 " Display options: colorschemes, status lines etc. {{{2
 
@@ -384,10 +396,8 @@ unlet s:base16_theme
 
 " General settings {{{1
 
-set autowrite            " Save before commands like :next and :make
 set hidden               " Keep abandoned buffers around in the background
-set showcmd              " Show number of selected lines ++ in the bottom line
-set noswapfile           " Do not use swap file
+set showcmd              " Show partial commands in the status area
 set wildmode=longest:full,full " Set autocomplete command behavior
 set completeopt=menuone,preview,noselect " Set completion options
 set mouse=a              " Enable mouse usage (all modes)
@@ -402,17 +412,10 @@ if !isdirectory(&undodir)
 endif
 
 " Editing behavior
-set copyindent           " Don't replace tabs with spaces when copying indent
-set preserveindent       " Don't replace tabs with spaces when adjusting indent
-set expandtab            " Expand tabs as spaces
-set shiftwidth=4         " Set width of autoindentation
-let g:default_textwidth = 79  " Auto-format (gq etc.) wraps here (0: disable)
-execute "set textwidth=" . g:default_textwidth
 set nojoinspaces         " Don't have <S-J> (joining) insert double spaces.
 set formatoptions=cql1j  " Set auto-format options
-augroup autoformat       " Bring out the big guns to override ftplugins
-  autocmd!
-  autocmd FileType * set fo-=r fo-=o
+augroup rc_formatoptions " Bring out the big guns to override ftplugins
+  autocmd! BufNewFile,BufReadPost * setlocal fo-=r fo-=o
 augroup END
 
 
@@ -428,17 +431,17 @@ endif
 
 " Display settings {{{1
 
+set tabstop=8
 set nowrap               " Do not wrap lines for display
 set linebreak            " If turning wrap back on, wrap at a whitespace
 set numberwidth=2        " Set minimum width of line number column
 set norelativenumber     " Show relative line numbers?
-set nonumber             " Show line numbers? (relative + absolute => hybrid)
+set nonumber             " Show line numbers? (relative & absolute => hybrid)
 set colorcolumn=+1,+2,+3 " Highlight columns after textwidth
-set showmatch            " Show matching brackets.
-set tabstop=4            " Set width of tabstops
+set showmatch            " Show matching brackets
 
 " Set whitespace characters in list mode
-set listchars=eol:$,tab:\|\ ,trail:-,space:.,extends:>,precedes:<,conceal:*,nbsp:~
+set listchars=eol:$,tab:\|_,space:.,extends:>,precedes:<,conceal:*,nbsp:~
 
 " Set gui specific options
 if has('vim_starting') && has('gui_running')
@@ -501,62 +504,70 @@ endif
 command! Cd cd %:h
 command! Lcd lcd %:h
 
-" Available unmodified keys to follow leader: imy;/[]0123456789`
+" Available keys to follow leader: imy;/[]0123456789`
 
-" File/buffer/window type specific settings {{{1
+" Filetype-specific configuration {{{1
+" Sensible defaults are set by triggering on the VimEnter command instead of
+" using naked statements. This protects filetype-specific options from being
+" overridden when re-sourcing .vimrc.
 
-" tex {{{2
-"let g:tex_flavor = 'latex'  " Let's see if leaving this out works
-
-augroup tex
-  autocmd!
-  autocmd FileType tex,bib setlocal tabstop=2 shiftwidth=2 textwidth=0 wrap
-        \ breakindent breakindentopt=shift:2
-  autocmd FileType tex setlocal spell
+" wrap {{{2
+augroup rc_wrap
+  autocmd! VimEnter * set textwidth=80
+  autocmd! FileType python setlocal textwidth=79
+  " For unwrapped prose, wrap long lines and indicate with a hanging indent.
+  " Don't apply to, e.g., markdown and help, since these typically contain
+  " structures like tables and hard-wrapped columns, which don't mix with soft
+  " wrapping at all.
+  let s:setprosewrap =
+        \ "setlocal textwidth=0 wrap breakindent breakindentopt=shift:2"
+  execute "autocmd! FileType text,tex,bib" s:setprosewrap
+  " Do the same when a nonexistent file is opened in a preview window. This is
+  " a common mechanism for displaying documentation.
+  execute "autocmd! BufNewFile * if &previewwindow |" s:setprosewrap "| endif"
+  unlet s:setprosewrap
 augroup END
 
-" lilypond {{{2
-let g:lilypond_vim_dir = split(expand('/usr/share/lilypond/*/vim/'))[-1]
-if isdirectory(g:lilypond_vim_dir)
-  filetype off
-  set rtp+=g:lilypond_vim_dir
-  filetype on
-endif
-
-augroup lilypond
-  autocmd!
-  autocmd FileType lilypond setlocal tabstop=2 shiftwidth=2
-  autocmd FileType lilypond
-        \ nmap <silent> <buffer> <LocalLeader>ly :!lilypond %<CR>
+" spell {{{2
+augroup rc_spell
+  autocmd! FileType text,markdown,tex,gitcommit setlocal spell
 augroup END
 
-" gitcommit {{{2
-augroup gitcommit
-  autocmd!
-  autocmd FileType gitcommit setlocal spell textwidth=72 formatoptions+=t
+" compile {{{2
+augroup rc_compile
+  if exists('g:lilypond_enabled') && g:lilypond_enabled
+    autocmd! FileType lilypond
+          \ nmap <silent> <buffer> <LocalLeader>ll :!lilypond %<CR>
+  endif
 augroup END
 
-" script languages {{{2
-augroup scripts
-  autocmd!
-  autocmd FileType vim,javascript,typescript setlocal tabstop=2 shiftwidth=2
+" autoindent {{{2
+augroup rc_autoindent
+  autocmd! VimEnter * set
+        \ autoindent  " Copy indent from previous line when inserting new line.
+        \ copyindent  " Mimic indent structure (\t/_) when doing the above.
+        \ preserveindent  " Mimic existing indent structure when adjusting.
+  " Languages with C-style braces:
+  autocmd! FileType c,cpp,cuda,objc,objcpp,go,java,javascript,rust,typescript
+        \ setlocal cindent cinoptions=t0,(0,u0,U1,w1,Ws,m1
 augroup END
 
-" c-family {{{2
-augroup c_family
-  autocmd!
-  autocmd FileType c,cpp,objc,objcpp,cuda,cs,go,java setlocal cindent
-        \ cinoptions=(0,u0 noexpandtab tabstop=8 shiftwidth=8 foldmethod=syntax
-        \ foldnestmax=2
+" indentation unit {{{2
+" Set filetype specific indentation unit, i.e., shiftwidth. To use tab as the
+" indentation unit, set shiftwidth=0 and noexpandtab. A nonzero shiftwidth and
+" noexpandtab will give hideous mixed indents (unless shiftwidth happens to
+" equal tabstop, and editing behavior should not depend on a display option like
+" tabstop).
+augroup rc_indentunit
+  autocmd! VimEnter * setlocal shiftwidth=4 expandtab
+  autocmd! FileType vim,javascript,typescript,tex,bib
+        \ setlocal shiftwidth=2 expandtab
+  autocmd! FileType c,cpp,cuda,go setlocal shiftwidth=0 noexpandtab
+  autocmd! FileType java,rust setlocal shiftwidth=4 expandtab
 augroup END
 
-" reading buffers and windows {{{2
-" Zero the textwidth in help buffers and other reading windows to erase right
-" side column highlighting.
-augroup reading
-  autocmd!
-  autocmd BufWinEnter *
-        \ if &buftype ==# "help" || &previewwindow
-        \ | setlocal textwidth=0
-        \ | endif
+" folding {{{2
+augroup rc_fold
+  autocmd! FileType c,cpp,cuda,objc,objcpp,cs,go,java,javascript,rust,typescript
+        \ setlocal foldmethod=syntax foldnestmax=2
 augroup END
