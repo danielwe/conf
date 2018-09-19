@@ -45,14 +45,6 @@ nmap <silent> <Left> :Bprev<CR>
 nmap <silent> <Right> :Bnext<CR>
 nmap <silent> <C-C> :Bdelete<CR>
 
-" Hit <Leader>, to Drop $MYVIMRC, and <Leader>. to source
-nmap <silent> <Leader>, :Drop $MYVIMRC<CR>
-if has('gui_running') && filereadable($MYGVIMRC)
-    nmap <silent> <Leader>. :source $MYVIMRC<CR>:source $MYGVIMRC<CR>
-else
-    nmap <silent> <Leader>. :source $MYVIMRC<CR>
-endif
-
 " tcomment {{{3
 Plug 'tomtom/tcomment_vim'  " toggle comments
 let g:tcomment_mapleader1 = "<C-/>"
@@ -424,6 +416,10 @@ if !isdirectory(&undodir)
 endif
 
 " Editing behavior
+set textwidth=80         " Set line length for autoformatting (gq etc.)
+set autoindent           " Copy indent from previous line when creating new line.
+set copyindent           " Mimic indent structure (\t/_) when doing the above.
+set preserveindent       " Mimic existing indent structure when adjusting.
 set nojoinspaces         " Don't have <S-J> (joining) insert double spaces.
 set formatoptions=cql1j  " Set auto-format options
 augroup rc_formatoptions " Bring out the big guns to override ftplugins
@@ -497,6 +493,19 @@ nnoremap <expr> <Space>
 " Hit <Leader>/ to toggle list mode
 nmap <silent> <Leader>\ :set list!<CR>
 
+" Hit <Leader>, to Drop $MYVIMRC, and <Leader>. to source
+nmap <silent> <Leader>, :Drop $MYVIMRC<CR>
+if !exists('*<SID>LoadRc')
+  function! <SID>LoadRc()
+    source $MYVIMRC
+    if has('gui_running') && filereadable($MYGVIMRC)
+       source $MYGVIMRC
+    endif
+    silent! edit
+  endfunction
+endif
+nmap <silent> <Leader>. :call <SID>LoadRc()<CR>
+
 " Enable mouse scrolling in terminal mode
 function! ExitTerminalNormal()
   nunmap <buffer> <silent> <RightMouse>
@@ -525,7 +534,6 @@ command! Lcd lcd %:h
 
 " wrap {{{2
 augroup rc_wrap
-  autocmd! VimEnter * set textwidth=80
   autocmd! FileType python setlocal textwidth=79
   " For unwrapped prose, wrap long lines and indicate with a hanging indent.
   " Don't apply to, e.g., markdown and help, since these typically contain
@@ -555,10 +563,6 @@ augroup END
 
 " autoindent {{{2
 augroup rc_autoindent
-  autocmd! VimEnter * set
-        \ autoindent  " Copy indent from previous line when inserting new line.
-        \ copyindent  " Mimic indent structure (\t/_) when doing the above.
-        \ preserveindent  " Mimic existing indent structure when adjusting.
   " Languages with C-style braces:
   autocmd! FileType c,cpp,cuda,objc,objcpp,go,java,javascript,rust,typescript
         \ setlocal cindent cinoptions=t0,(0,u0,U1,w1,Ws,m1
