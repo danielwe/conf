@@ -261,8 +261,19 @@ let g:slime_python_ipython = 1
 " python {{{3
 Plug 'tmhedberg/SimpylFold'           " fold python correctly
 Plug 'Vimjas/vim-python-pep8-indent'  " indent python correctly
-Plug 'ambv/black'                     " format code
-let g:black_linelength = 79
+if has('python3')
+  function! s:PythonVersionMinor()
+python3 << EOF
+import sys, vim
+vim.command("let l:py_version_minor = {}".format(sys.version_info.minor))
+EOF
+    return l:py_version_minor
+  endfunction
+  if s:PythonVersionMinor() >= 6
+    Plug 'ambv/black'                     " format code
+    let g:black_linelength = 79
+  endif
+endif
 let g:syntastic_python_checkers = ['pycodestyle', 'pyflakes', 'pylint']
 
 " julia {{{3
