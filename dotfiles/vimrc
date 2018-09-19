@@ -427,7 +427,7 @@ endif
 set nojoinspaces         " Don't have <S-J> (joining) insert double spaces.
 set formatoptions=cql1j  " Set auto-format options
 augroup rc_formatoptions " Bring out the big guns to override ftplugins
-  autocmd! BufNewFile,BufReadPost * setlocal fo-=r fo-=o
+  autocmd! FileType * setlocal fo-=r fo-=o
 augroup END
 
 
