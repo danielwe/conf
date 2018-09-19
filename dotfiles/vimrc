@@ -175,11 +175,11 @@ let g:ycm_getdoc_filetypes = [
       \ ]
 augroup GoTo
   execute "autocmd! FileType" join(g:ycm_goto_filetypes, ",")
-        \ "map <silent> <buffer> go :YcmCompleter GoTo<Cr>"
+        \ "map <silent> <buffer> <C-]> :YcmCompleter GoTo<Cr>"
 augroup END
 augroup GetDoc
   execute "autocmd! FileType" join(g:ycm_getdoc_filetypes, ",")
-        \ "map <silent> <buffer>K :YcmCompleter GetDoc<Cr>"
+        \ "map <silent> <buffer> K :YcmCompleter GetDoc<Cr>"
 augroup END
 
 " linting and LSP {{{3
@@ -198,18 +198,18 @@ if v:version >= 800 && (has("patch-8.0.1476") || !has("patch-8.0.1449"))
   let s:ale_lsp_filetype_pattern = join(g:ale_lsp_filetypes, ",")
   augroup GoTo
     execute "autocmd! FileType" s:ale_lsp_filetype_pattern
-          \ "noremap <silent> <buffer> go :ALEGoToDefinition<CR>"
+          \ "noremap <silent> <buffer> <C-]> <Plug>(ale_go_to_definition)"
   augroup END
   augroup GetDoc
     execute "autocmd! FileType" s:ale_lsp_filetype_pattern
-          \ "noremap <silent> <buffer> K :ALEHover<CR>"
+          \ "noremap <silent> <buffer> K <Plug>(ale_hover)"
   augroup END
 
   for s:ft in g:ale_lsp_filetypes
     let g:ycm_filetype_blacklist[s:ft] = 1
   endfor
-  unlet s:ale_lsp_filetype_pattern
   unlet s:ft
+  unlet s:ale_lsp_filetype_pattern
 else
   Plug 'vim-syntastic/syntastic'
   let g:syntastic_always_populate_loc_list = 1
@@ -271,8 +271,9 @@ let g:syntastic_python_checkers = ['pycodestyle', 'pyflakes', 'pylint']
 Plug 'JuliaEditorSupport/julia-vim'
 let g:latex_to_unicode_tab = 0  " turn off latex to unicode, use snippets
 augroup GetDoc
-  " Clear any GetDoc bindings from ycm/ale; julia-vim does it better due to
-  " juliadoc filetype support
+  " Clear any GetDoc binding for julia from ycm/ale; julia-vim does it better by
+  " setting the juliadoc filetype, and uses 'keywordprg' so doesn't need
+  " explicit binding.
   autocmd! FileType julia
 augroup END
 
