@@ -53,7 +53,7 @@ let g:tcomment#options = {'whitespace' : 'no'}
 
 " loupe {{{3
 Plug 'wincent/loupe'  " improve vim search and highlighting
-nmap <silent> <Leader><Space> <Plug>(LoupeClearHighlight)
+nmap <silent> <Leader>/ <Plug>(LoupeClearHighlight)
 
 " vim-grepper {{{3
 Plug 'mhinz/vim-grepper'  " grep inside vim
@@ -61,8 +61,8 @@ if !exists('g:grepper')
   let g:grepper = {}
 endif
 let g:grepper.highlight = 1
-nmap gs <plug>(GrepperOperator)
-xmap gs <plug>(GrepperOperator)
+nmap <Leader>s <plug>(GrepperOperator)
+xmap <Leader>s <plug>(GrepperOperator)
 
 " undotree {{{3
 Plug 'mbbill/undotree'  " navigate undo tree
@@ -76,8 +76,8 @@ Plug 'Konfekt/FastFold'  " speed up folds
 
 " ListToggle {{{3
 Plug 'Valloric/ListToggle'  " toggle location list and quickfix list
-let g:lt_location_list_toggle_map = '<Leader>el'
-let g:lt_quickfix_list_toggle_map = '<Leader>eq'
+let g:lt_quickfix_list_toggle_map = '<Leader>qq'
+let g:lt_location_list_toggle_map = '<Leader>ql'
 
 " custom text objects {{{3
 Plug 'kana/vim-textobj-user'  " define custom text objects
@@ -89,10 +89,10 @@ Plug 'kana/vim-textobj-entire'  " define text objects for the entire buffer
 if has('ruby')
   Plug 'wincent/command-t',
         \ {'do': 'cd ruby/command-t/ext/command-t && ruby extconf.rb && make'}
-  nmap <silent> <C-T> <Plug>(CommandT)
-  nmap <silent> <C-B> <Plug>(CommandTBuffer)
-  nmap <silent> <C-J> <Plug>(CommandTJump)
-  nmap <silent> <C-H> <Plug>(CommandTHelp)
+  nmap <silent> <Leader>ff <Plug>(CommandT)
+  nmap <silent> <Leader>fb <Plug>(CommandTBuffer)
+  nmap <silent> <Leader>fj <Plug>(CommandTJump)
+  nmap <silent> <Leader>fh <Plug>(CommandTHelp)
   " terminal compatibility: the tale of arrow keys and esc
   if (&term =~# "xterm") || (&term =~# "tmux")
     " esc is not mapped by default in xterm, let's fix that
@@ -106,8 +106,8 @@ if has('ruby')
   endif
 else
   Plug 'ctrlpvim/ctrlp.vim'
-  let g:ctrlp_map = '<C-T>'
-  nmap <silent> <C-B> :CtrlPBuffer<CR>
+  let g:ctrlp_map = '<Leader>ff'
+  nmap <silent> <Leader>fb :CtrlPBuffer<CR>
 endif
 
 " dirvish {{{3
@@ -230,14 +230,15 @@ let g:UltiSnipsJumpBackwardTrigger = '<C-K>'
 Plug 'majutsushi/tagbar'  " browse tags by scope
 let g:tagbar_map_showproto = 'd'
 let g:tagbar_map_togglefold = ['o', 'za', '<Space>']
-nmap <silent> <Leader>' :TagbarToggle<CR>
+nmap <silent> <Leader>t :TagbarToggle<CR>
 
 " vim-slime {{{3
 Plug 'jpalardy/vim-slime'  " send text from buffer to terminal process
 let g:slime_no_mappings = 1
-nmap <silent> gr <Plug>SlimeMotionSend
-nmap <silent> grr <Plug>SlimeLineSend
-xmap <silent> gr <Plug>SlimeRegionSend
+nmap <silent> <Leader>r <Plug>SlimeMotionSend
+nmap <silent> <Leader>rr <Plug>SlimeLineSend
+nmap <silent> <Leader>r<Leader>r <Leader>rr
+xmap <silent> <Leader>r <Plug>SlimeRegionSend
 if &term =~# "tmux"
   let g:slime_target = "tmux"
   let g:slime_default_config = {
@@ -481,19 +482,17 @@ noremap j gj
 noremap gk k
 noremap gj j
 
-" Navigate windows easily: map <Leader> to <C-W> (see :h CTRL-W)
-nnoremap <Leader> <C-W>
+" Navigate windows easily: map ; to <C-W> (see :h CTRL-W)
+nnoremap ; <C-W>
 
 " Toggle folds with <Space>
-nnoremap <expr> <Space>
-      \ foldlevel('.') ?
-      \ 'za' :
-      \ "\<Space>"
+nnoremap <expr> <Space> foldlevel('.') ? 'za' : '\<Space>'
 
-" Hit <Leader>/ to toggle list mode
-nmap <silent> <Leader>\ :set list!<CR>
+" Hit <Leader><Space> to toggle list mode
+nmap <silent> <Leader><Space> :set list!<CR>
 
-" Hit <Leader>, to Drop $MYVIMRC, and <Leader>. to source
+" Hit <Leader>, to Drop $MYVIMRC, and <Leader>. to source it and reload the
+" current buffer
 nmap <silent> <Leader>, :Drop $MYVIMRC<CR>
 if !exists('*<SID>LoadRc')
   function! <SID>LoadRc()
@@ -525,7 +524,7 @@ endif
 command! Cd cd %:h
 command! Lcd lcd %:h
 
-" Available keys to follow leader: imy;/[]0123456789`
+" Available unmodified keys to follow ;: aemuy;'\/[0123456789`<Space>
 
 " Filetype-specific configuration {{{1
 " Sensible defaults are set by triggering on the VimEnter command instead of using naked
@@ -548,7 +547,7 @@ augroup END
 
 " spell {{{2
 augroup rc_spell
-  autocmd! FileType text,markdown,tex,gitcommit setlocal spell
+  autocmd! FileType markdown,tex,gitcommit setlocal spell
 augroup END
 
 " compile {{{2
