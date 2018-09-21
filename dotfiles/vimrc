@@ -429,7 +429,7 @@ set smartcase             " Do smart case matching.
 set hlsearch              " Highlight search.
 
 " Start a server
-if empty(v:servername) && exists('*remote_startserver')
+if has('clientserver') && empty(v:servername)
   call remote_startserver('VIM')
 endif
 
