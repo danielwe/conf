@@ -196,12 +196,12 @@ if v:version >= 800 && (has("patch-8.0.1476") || !has("patch-8.0.1449"))
     execute "autocmd! FileType" s:ale_lsp_filetype_pattern
           \ "noremap <silent> <buffer> K <Plug>(ale_hover)"
   augroup END
+  unlet s:ale_lsp_filetype_pattern
 
   for s:ft in g:ale_lsp_filetypes
     let g:ycm_filetype_blacklist[s:ft] = 1
   endfor
   unlet s:ft
-  unlet s:ale_lsp_filetype_pattern
 else
   Plug 'vim-syntastic/syntastic'
   let g:syntastic_always_populate_loc_list = 1
@@ -417,6 +417,8 @@ endif
 
 " Editing behavior
 set textwidth=80         " Set line length for autoformatting (gq etc.)
+set shiftwidth=4         " Set default indentation unit
+set expandtab            " Expand tabs as spaces by default
 set autoindent           " Copy indent from previous line when creating new line.
 set copyindent           " Mimic indent structure (\t/_) when doing the above.
 set preserveindent       " Mimic existing indent structure when adjusting.
@@ -575,9 +577,7 @@ augroup END
 " equal tabstop, and editing behavior should not depend on a display option like
 " tabstop).
 augroup rc_indentunit
-  autocmd! VimEnter * setlocal shiftwidth=4 expandtab
-  autocmd! FileType vim,javascript,typescript,tex,bib
-        \ setlocal shiftwidth=2 expandtab
+  autocmd! FileType vim,javascript,typescript,tex,bib setlocal shiftwidth=2 expandtab
   autocmd! FileType c,cpp,cuda,go setlocal shiftwidth=0 noexpandtab
   autocmd! FileType java,rust setlocal shiftwidth=4 expandtab
 augroup END
