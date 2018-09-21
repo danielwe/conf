@@ -79,6 +79,10 @@ Plug 'Valloric/ListToggle'  " toggle location list and quickfix list
 let g:lt_location_list_toggle_map = '<Leader>el'
 let g:lt_quickfix_list_toggle_map = '<Leader>eq'
 
+" custom text objects {{{3
+Plug 'kana/vim-textobj-user'  " define custom text objects
+Plug 'kana/vim-textobj-entire'  " define text objects for the entire buffer
+
 " IDE-like functionality {{{2
 
 " fuzzy search {{{3
