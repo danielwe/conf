@@ -27,13 +27,13 @@ call plug#begin()
 
 " tpope tools {{{3
 " Load sensible first, so options can be overridden
-Plug 'tpope/vim-sensible'  " sensible config starting point
+Plug 'tpope/vim-sensible'    " sensible config starting point
 runtime! plugin/sensible.vim
 
-Plug 'tpope/vim-endwise'   " automatically and wisely close environments
-Plug 'tpope/vim-repeat'    " improve `.'
-Plug 'tpope/vim-surround'  " play with brackets, quotes etc.
-Plug 'tpope/vim-eunuch'    " integrate shell commands like mv, rm etc.
+Plug 'tpope/vim-endwise'     " automatically and wisely close environments
+Plug 'tpope/vim-repeat'      " improve `.'
+Plug 'tpope/vim-surround'    " play with brackets, quotes etc.
+Plug 'tpope/vim-eunuch'      " integrate shell commands like mv, rm etc.
 Plug 'tpope/vim-unimpaired'  " nifty keymappings, learn to use!
 
 " vim-butter {{{3
@@ -107,7 +107,7 @@ else
 endif
 
 " dirvish {{{3
-Plug 'justinmk/vim-dirvish'            " browse directories and files
+Plug 'justinmk/vim-dirvish'              " browse directories and files
 if v:version >= 800
   Plug 'kristijanhusak/vim-dirvish-git'  " annotate dirvish with git status
 endif
@@ -177,8 +177,8 @@ augroup END
 " linting and LSP {{{3
 " see https://github.com/w0rp/ale/issues/1536 for details about bug and patches
 if v:version >= 800 && (has("patch-8.0.1476") || !has("patch-8.0.1449"))
-  "call s:DevelopOrPlug('~/packages/ale', 'danielwe/ale')
   Plug 'w0rp/ale'
+  "call s:DevelopOrPlug('~/packages/ale', 'danielwe/ale')
   let g:ale_echo_msg_error_str = 'E'
   let g:ale_echo_msg_info_str = 'I'
   let g:ale_echo_msg_warning_str = 'W'
@@ -217,8 +217,7 @@ endif
 Plug 'SirVer/ultisnips'    " snippet engine
 Plug 'honza/vim-snippets'  " snippets
 " unicode snippets with latex triggers
-call s:DevelopOrPlug('~/packages/vim-unicode-snippets',
-      \              'danielwe/vim-unicode-snippets')
+call s:DevelopOrPlug('~/packages/vim-unicode-snippets', 'danielwe/vim-unicode-snippets')
 let g:UltiSnipsExpandTrigger = '<C-J>'
 let g:UltiSnipsJumpForwardTrigger = '<C-J>'
 let g:UltiSnipsJumpBackwardTrigger = '<C-K>'
@@ -263,7 +262,6 @@ EOF
   endfunction
   if s:PythonVersionMinor() >= 6
     Plug 'ambv/black'                     " format code
-    let g:black_linelength = 79
   endif
 endif
 let g:syntastic_python_checkers = ['pycodestyle', 'pyflakes', 'pylint']
@@ -274,9 +272,8 @@ let g:syntastic_python_checkers = ['pycodestyle', 'pyflakes', 'pylint']
 Plug 'JuliaEditorSupport/julia-vim'
 let g:latex_to_unicode_tab = 0  " turn off latex to unicode, use snippets
 augroup GetDoc
-  " Clear any GetDoc binding for julia from ycm/ale; julia-vim does it better by
-  " setting the juliadoc filetype, and uses 'keywordprg' so doesn't need
-  " explicit binding.
+  " Clear any GetDoc binding for julia from ycm/ale; julia-vim does it better by setting
+  " the juliadoc filetype, and uses 'keywordprg' so doesn't need explicit binding.
   autocmd! FileType julia
 augroup END
 
@@ -309,18 +306,18 @@ unlet s:lilypond_vim_dir
 
 " vim-airline {{{3
 " improved status line and buffer line
-"call s:DevelopOrPlug('~/packages/vim-airline', 'danielwe/vim-airline')
 Plug 'vim-airline/vim-airline'
+"call s:DevelopOrPlug('~/packages/vim-airline', 'danielwe/vim-airline')
 " colorscheme-specific line themes
+Plug 'vim-airline/vim-airline-themes'
 "call s:DevelopOrPlug('~/packages/vim-airline-themes',
 "      \              'danielwe/vim-airline-themes')
-Plug 'vim-airline/vim-airline-themes'
 let g:airline#extensions#tabline#enabled = 1
 
 " base16 {{{3
 " base16 colorschemes
-call s:DevelopOrPlug('~/packages/base16-vim', 'danielwe/base16-vim')
 "Plug 'chriskempson/base16-vim'
+call s:DevelopOrPlug('~/packages/base16-vim', 'danielwe/base16-vim')
 
 " Colorizer {{{3
 Plug 'chrisbra/Colorizer'  " color rgb sequences
@@ -329,14 +326,11 @@ Plug 'chrisbra/Colorizer'  " color rgb sequences
 
 "" CCTree {{{3
 "" build and show call tree in C
-"Plug 'hari-rangarajan/CCTree', \ {'for': ['c', 'cpp', 'java']}
+"Plug 'hari-rangarajan/CCTree', {'for': ['c', 'cpp', 'java']}
 
 "" language client {{{3
 "if v:version >= 800
-"  Plug 'autozimu/LanguageClient-neovim', {
-"        \ 'branch': 'next',
-"        \ 'do': 'bash install.sh',
-"        \ }
+"  Plug 'autozimu/LanguageClient-neovim', {'branch': 'next', 'do': 'bash install.sh'}
 "  let g:LanguageClient_hoverPreview = "always"
 "  let g:LanguageClient_diagnosticsList = "location"
 "  let g:LanguageClient_selectionUI = "quickfix"
@@ -368,20 +362,20 @@ let g:ycm_semantic_triggers.tex = g:vimtex#re#youcompleteme
 let g:airline_theme = 'base16_vim'
 let g:airline_base16_monotone = 1
 
-" Now choose colorscheme. If running in a terminal and termguicolors is not
-" set, any base16 theme is equivalent, and will give you the base16 theme that
-" the terminal was set up with using base16_shell (in particular, the
-" .vimrc_background file from base16_shell is unneccesary). In gvim, or with
-" termguicolors set, the exact theme named below will be used.
+" Now choose colorscheme. If running in a terminal and termguicolors is not set, any
+" base16 theme is equivalent, and will give you the base16 theme that the terminal was
+" set up with using base16_shell (in particular, the .vimrc_background file from
+" base16_shell is unneccesary). In gvim, or with termguicolors set, the exact theme
+" named below will be used.
 let s:base16_theme = "base16-atelier-dune-light"
 
 if ($BASE16_THEME ==# "") && has('termguicolors')
   set termguicolors
 else
   if has('gui_running')
-    " Don't let a gvim :terminal pretend that it provides a 21-color base16
-    " palette, just because gvim was started from a shell with an active base16
-    " theme. The gvim terminal only provides the terminal_ansi_colors palette.
+    " Don't let a gvim :terminal pretend that it provides a 21-color base16 palette,
+    " just because gvim was started from a shell with an active base16 theme. The gvim
+    " terminal only provides the terminal_ansi_colors palette.
     let $BASE16_THEME = ""
   else
     if has('termguicolors')
@@ -400,11 +394,11 @@ unlet s:base16_theme
 
 " General settings {{{1
 
-set hidden               " Keep abandoned buffers around in the background
-set showcmd              " Show partial commands in the status area
-set wildmode=longest:full,full " Set autocomplete command behavior
-set completeopt=menuone,preview,noselect " Set completion options
-set mouse=a              " Enable mouse usage (all modes)
+set hidden                                " Keep abandoned buffers in the background.
+set showcmd                               " Show partial commands in the status area.
+set wildmode=longest:full,full            " Set autocomplete command behavior.
+set completeopt=menuone,preview,noselect  " Set completion options.
+set mouse=a                               " Enable mouse in terminal (all modes).
 
 " Enable persistent undo
 set undofile
@@ -416,25 +410,25 @@ if !isdirectory(&undodir)
 endif
 
 " Editing behavior
-set textwidth=80         " Set line length for autoformatting (gq etc.)
-set shiftwidth=4         " Set default indentation unit
-set expandtab            " Expand tabs as spaces by default
-set autoindent           " Copy indent from previous line when creating new line.
-set copyindent           " Mimic indent structure (\t/_) when doing the above.
-set preserveindent       " Mimic existing indent structure when adjusting.
-set nojoinspaces         " Don't have <S-J> (joining) insert double spaces.
-set formatoptions=cql1j  " Set auto-format options
-augroup rc_formatoptions " Bring out the big guns to override ftplugins
+set textwidth=88          " Set default line length. Inspired by black.
+set shiftwidth=4          " Set default indentation unit.
+set expandtab             " Expand tabs as spaces by default.
+set autoindent            " Copy indent from previous line when creating new line.
+set copyindent            " Mimic indent structure (tabs/spaces) when doing the above.
+set preserveindent        " Mimic existing indent structure when manually adjusting.
+set nojoinspaces          " Don't have <S-J> (joining) insert double spaces.
+set formatoptions=cql1j   " Set auto-format options.
+augroup rc_formatoptions  " Bring out the big guns to override ftplugins.
   autocmd! FileType * setlocal fo-=r fo-=o
 augroup END
 
 
 " Search behavior
-set ignorecase           " Do case insensitive matching
-set smartcase            " Do smart case matching
-set hlsearch             " Highlight search
+set ignorecase            " Do case insensitive matching.
+set smartcase             " Do smart case matching.
+set hlsearch              " Highlight search.
 
-" Always start a server
+" Start a server
 if empty(v:servername) && exists('*remote_startserver')
   call remote_startserver('VIM')
 endif
@@ -442,36 +436,36 @@ endif
 " Display settings {{{1
 
 set tabstop=8
-set nowrap               " Do not wrap lines for display
-set linebreak            " If turning wrap back on, wrap at a whitespace
-set numberwidth=2        " Set minimum width of line number column
-set norelativenumber     " Show relative line numbers?
-set nonumber             " Show line numbers? (relative & absolute => hybrid)
-set colorcolumn=+1,+2,+3 " Highlight columns after textwidth
-set showmatch            " Show matching brackets
+set nowrap                " Do not wrap lines for display.
+set linebreak             " If turning wrap back on, wrap at a whitespace.
+set numberwidth=2         " Set minimum width of line number column.
+set norelativenumber      " Show relative line numbers?
+set nonumber              " Show line numbers? (relative & absolute => hybrid)
+set colorcolumn=+1,+2,+3  " Highlight columns after textwidth.
+set showmatch             " Show matching brackets.
 
 " Set whitespace characters in list mode
 set listchars=eol:$,tab:\|_,space:.,extends:>,precedes:<,conceal:*,nbsp:~
 
 " Set gui specific options
 if has('vim_starting') && has('gui_running')
-  set guifont=Noto\ Mono\ 11
-  set guioptions+=f        " Dont detach from shell
-  set guioptions+=P        " Enable autoselect using the "+-register
-  set guioptions-=a        " Disable autoselect using the "*-register
-  set guioptions-=T        " Disable toolbar
-  set guioptions-=m        " Disable menubar
-  set guioptions-=r        " Disable scrollbar
+  set guifont=Ubuntu\ Mono\ 12
+  set guioptions+=f       " Dont detach from shell.
+  set guioptions+=P       " Enable autoselect using the "+-register.
+  set guioptions-=a       " Disable autoselect using the "*-register.
+  set guioptions-=T       " Disable toolbar.
+  set guioptions-=m       " Disable menubar.
+  set guioptions-=r       " Disable scrollbar.
 endif
 
-" Terminal color hack for gvim and tmux (see |terminal-unix|--- the problem is
-" the nonsensical fallbacks)
+" Terminal color hack for gvim and tmux (see |terminal-unix|--- the problem is the
+" nonsensical fallbacks)
 if has('gui_running')
-  " This is safe: gvim handles keys on its own.
+  " This is safe: gvim handles keys on its own
   let $TERM = 'xterm-256color'
 elseif &term =~# '256color'  " e.g., tmux-256color
-  " This is experimental: could lead vim to misunderstand some keys. Seems to
-  " work fine in tmux, however.
+  " This is experimental: could lead vim to misunderstand some keys. Seems to work fine
+  " in tmux, however.
   set term=xterm-256color
 endif
 
@@ -483,7 +477,7 @@ noremap j gj
 noremap gk k
 noremap gj j
 
-" Navigate windows easily; <Leader> as <C-W>. See :h opening-window.
+" Navigate windows easily: map <Leader> to <C-W> (see :h CTRL-W)
 nnoremap <Leader> <C-W>
 
 " Toggle folds with <Space>
@@ -508,7 +502,7 @@ if !exists('*<SID>LoadRc')
 endif
 nmap <silent> <Leader>. :call <SID>LoadRc()<CR>
 
-" Enable mouse scrolling in terminal mode
+" Enable mouse scrolling in vim terminal
 function! ExitTerminalNormal()
   nunmap <buffer> <silent> <RightMouse>
   call feedkeys("i")
@@ -530,22 +524,19 @@ command! Lcd lcd %:h
 " Available keys to follow leader: imy;/[]0123456789`
 
 " Filetype-specific configuration {{{1
-" Sensible defaults are set by triggering on the VimEnter command instead of
-" using naked statements. This protects filetype-specific options from being
-" overridden when re-sourcing .vimrc.
+" Sensible defaults are set by triggering on the VimEnter command instead of using naked
+" statements. This protects filetype-specific options from being overridden when
+" re-sourcing .vimrc.
 
 " wrap {{{2
 augroup rc_wrap
-  autocmd! FileType python setlocal textwidth=79
-  " For unwrapped prose, wrap long lines and indicate with a hanging indent.
-  " Don't apply to, e.g., markdown and help, since these typically contain
-  " structures like tables and hard-wrapped columns, which don't mix with soft
-  " wrapping at all.
-  let s:setprosewrap =
-        \ "setlocal textwidth=0 wrap breakindent breakindentopt=shift:2"
+  " For unwrapped prose, wrap long lines and indicate with a hanging indent (don't apply
+  " to, e.g., markdown and help, since these typically contain structures like tables
+  " and hard-wrapped columns, which don't mix with soft wrapping at all). Do the same
+  " when a nonexistent file is opened in a preview window. This is a common mechanism
+  " for displaying documentation.
+  let s:setprosewrap = "setlocal textwidth=0 wrap breakindent breakindentopt=shift:2"
   execute "autocmd! FileType text,tex,bib" s:setprosewrap
-  " Do the same when a nonexistent file is opened in a preview window. This is
-  " a common mechanism for displaying documentation.
   execute "autocmd! BufNewFile * if &previewwindow |" s:setprosewrap "| endif"
   unlet s:setprosewrap
 augroup END
@@ -558,14 +549,12 @@ augroup END
 " compile {{{2
 augroup rc_compile
   if exists('g:lilypond_enabled') && g:lilypond_enabled
-    autocmd! FileType lilypond
-          \ nmap <silent> <buffer> <LocalLeader>ll :!lilypond %<CR>
+    autocmd! FileType lilypond nmap <silent> <buffer> <LocalLeader>ll :!lilypond %<CR>
   endif
 augroup END
 
 " autoindent {{{2
 augroup rc_autoindent
-  " Languages with C-style braces:
   autocmd! FileType c,cpp,cuda,objc,objcpp,go,java,javascript,rust,typescript
         \ setlocal cindent cinoptions=t0,(0,u0,U1,w1,Ws,m1
 augroup END
@@ -573,9 +562,8 @@ augroup END
 " indentation unit {{{2
 " Set filetype specific indentation unit, i.e., shiftwidth. To use tab as the
 " indentation unit, set shiftwidth=0 and noexpandtab. A nonzero shiftwidth and
-" noexpandtab will give hideous mixed indents (unless shiftwidth happens to
-" equal tabstop, and editing behavior should not depend on a display option like
-" tabstop).
+" noexpandtab will give hideous mixed indents (unless shiftwidth happens to equal
+" tabstop, and editing behavior should not depend on a display option like tabstop).
 augroup rc_indentunit
   autocmd! FileType vim,javascript,typescript,tex,bib setlocal shiftwidth=2 expandtab
   autocmd! FileType c,cpp,cuda,go setlocal shiftwidth=0 noexpandtab

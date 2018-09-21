@@ -89,4 +89,4 @@ disable=print-statement,
         no-name-in-module,
         bad-continuation,
 
-max-line-length=79
+max-line-length=88
