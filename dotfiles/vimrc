@@ -539,6 +539,7 @@ augroup rc_wrap
   execute "autocmd! FileType text,tex,bib" s:setprosewrap
   execute "autocmd! BufNewFile * if &previewwindow |" s:setprosewrap "| endif"
   unlet s:setprosewrap
+  autocmd! TerminalOpen * setlocal textwidth=0
 augroup END
 
 " spell {{{2
