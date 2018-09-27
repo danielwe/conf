@@ -564,4 +564,5 @@ augroup END
 augroup rc_fold
   autocmd! FileType c,cpp,cuda,objc,objcpp,cs,go,java,javascript,rust,typescript
         \ setlocal foldmethod=syntax foldnestmax=2
+  autocmd! FileType julia setlocal foldmethod=syntax foldnestmax=2
 augroup END
