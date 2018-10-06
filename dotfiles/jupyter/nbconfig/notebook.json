@@ -14,7 +14,7 @@
     }
   },
   "ruler_column": [
-    "88"
+    "89"
   ],
   "ExecuteTime": {
     "clear_timings_on_clear_output": true
@@ -23,5 +23,8 @@
   "Notebook": {
     "Toolbar": true,
     "Header": false
-  }
+  },
+  "ruler_linestyle": [
+    "solid"
+  ]
 }
