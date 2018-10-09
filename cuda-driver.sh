@@ -2,12 +2,13 @@
 
 # Prepare the nvidia driver for use with a cuda installed from e.g. anaconda:
 
-# 18.04 assuming the nvidia driver and nvidia-prime is installed. Note that
-# nvidia-headless is perfectly adequate for cuda, but leaves system unbootable
-# if nvidia is not blacklisted, so stay with prime-select intel at all times.
+# 18.04 assuming nvidia-driver-* and nvidia-prime is installed, either from ubuntu or
+# cuda repos. Using nvidia-headless is not a good idea; no benefits, but easy to end up
+# in unbootable state.
+BLACKLIST_FILE="/lib/modprobe.d/blacklist-nvidia.conf"  # May be in /lib or /etc depending on version
 sudo prime-select intel  # Turn off nvidia at boot
 sudo systemctl disable nvidia-fallback.service  # Would load blacklisted and off-aliased nouveau
-sudo sed -i 's/^alias/#alias/' /etc/modprobe.d/blacklist-nvidia.conf  # Remove off-aliasing of nvidia to make it loadable
+sudo sed -i 's/^alias/#alias/' "$BLACKLIST_FILE"  # Remove off-aliasing of nvidia to make it loadable
 sudo update-initramfs -u -k all
 # Restart.
 #
