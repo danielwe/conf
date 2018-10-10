@@ -94,6 +94,27 @@ source "${DIR}/system-config.sh"
 
 # Miscellaneous tips {{{1
 
+### NCQ must be disabled if /var/log/syslog is being spammed with ata errors, like this:
+#Oct  9 12:55:19 new-orleans kernel: [  370.682159] ata2: exception Emask 0x1 SAct 0x0 SErr 0x40000 action 0x0
+#Oct  9 12:55:19 new-orleans kernel: [  370.682165] ata2: irq_stat 0x40000008
+#Oct  9 12:55:19 new-orleans kernel: [  370.682169] ata2: SError: { CommWake }
+#Oct  9 12:55:21 new-orleans kernel: [  372.743263] ata2: log page 10h reported inactive tag 31
+#Oct  9 12:55:21 new-orleans kernel: [  372.743275] ata2.00: exception Emask 0x1 SAct 0x40000000 SErr 0x50000 action 0x0
+#Oct  9 12:55:21 new-orleans kernel: [  372.743277] ata2.00: irq_stat 0x40000001
+#Oct  9 12:55:21 new-orleans kernel: [  372.743280] ata2: SError: { PHYRdyChg CommWake }
+#Oct  9 12:55:21 new-orleans kernel: [  372.743284] ata2.00: failed command: WRITE FPDMA QUEUED
+#Oct  9 12:55:21 new-orleans kernel: [  372.743289] ata2.00: cmd 61/10:f0:38:f0:30/00:00:26:00:00/40 tag 30 ncq dma 8192 out
+#Oct  9 12:55:21 new-orleans kernel: [  372.743289]          res 41/04:00:67:22:35/00:00:14:00:00/40 Emask 0x1 (device error)
+#Oct  9 12:55:21 new-orleans kernel: [  372.743291] ata2.00: status: { DRDY ERR }
+#Oct  9 12:55:21 new-orleans kernel: [  372.743292] ata2.00: error: { ABRT }
+#Oct  9 12:55:21 new-orleans kernel: [  372.743300] ata2: hard resetting link
+#Oct  9 12:55:21 new-orleans kernel: [  373.052592] ata2: SATA link up 6.0 Gbps (SStatus 133 SControl 300)
+#Oct  9 12:55:21 new-orleans kernel: [  373.053418] ata2.00: configured for UDMA/133
+#Oct  9 12:55:21 new-orleans kernel: [  373.053463] ata2: EH complete
+### To disable, add the switch 'libata.force=2:noncq' to the kernel command line in
+### '/etc/default/grub'. Replace '2' with the port indicated by the errors. Run ###
+### 'sudo update-grub' to activate the changes.
+
 ### Make a remapped mono sink for the master sink in pulseaudio
 ### i) find the name of the sink:
 # $ pacmd list-sinks | grep name:
