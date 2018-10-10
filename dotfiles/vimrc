@@ -2,19 +2,26 @@
 
 set nocompatible       " Be iMproved
 let g:mapleader = ','  " Set <Leader>
+if has('win32')
+  let $MYVIMRUNTIME = expand('$HOME/vimfiles')
+else
+  let $MYVIMRUNTIME = expand('$HOME/.vim')
+endif
 
 " Plugin configuration {{{1
 
 " Download vim-plug if not installed
-if empty(glob('~/.vim/autoload/plug.vim'))
-  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+let s:plugpath = expand($MYVIMRUNTIME . '/autoload/plug.vim')
+if empty(glob(s:plugpath))
+  execute "silent !curl -fLo" s:plugpath "--create-dirs"
+    \ "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
+unlet s:plugpath
 
 " Plugin development support
 function! s:DevelopOrPlug(name)
-  let l:devpath = expand('~/packages/' . a:name)
+  let l:devpath = expand('$HOME/packages/' . a:name)
   if isdirectory(l:devpath)
     Plug l:devpath
   else
@@ -131,8 +138,16 @@ nmap <silent> <Leader>gn <Plug>GitGutterNextHunk
 nmap <silent> <Leader>gp <Plug>GitGutterPrevHunk
 
 " YouCompleteMe {{{3
-Plug 'Valloric/YouCompleteMe',
-      \ {'do': '/usr/bin/python3 install.py --clang-completer > ~/ycm.log'}
+if has('win32')
+  let g:system_python = 'py -3'
+else
+  let g:system_python = '/usr/bin/python3'
+endif
+Plug 'Valloric/YouCompleteMe', {
+      \ 'do':
+      \ g:system_python . ' install.py --clang-completer > ' . expand('$HOME/ycm.log')
+      \ }
+unlet g:system_python
 let g:ycm_key_detailed_diagnostics = ''
 if !exists('g:ycm_semantic_triggers')
   let g:ycm_semantic_triggers = {}
@@ -294,14 +309,16 @@ let g:vimtex_complete_close_braces = 0
 "      \}
 
 " lilypond {{{3
-let s:lilypond_vim_dir = split(expand('/usr/share/lilypond/*/vim/'))[-1]
-if isdirectory(s:lilypond_vim_dir)
-  let g:lilypond_enabled = 1
-  filetype off
-  set rtp+=s:lilypond_vim_dir
-  filetype on
+if !has('win32')
+  let s:lilypond_vim_dir = split(expand('/usr/share/lilypond/*/vim/'))[-1]
+  if isdirectory(s:lilypond_vim_dir)
+    let g:lilypond_enabled = 1
+    filetype off
+    set rtp+=s:lilypond_vim_dir
+    filetype on
+  endif
+  unlet s:lilypond_vim_dir
 endif
-unlet s:lilypond_vim_dir
 
 " Display options: colorschemes, status lines etc. {{{2
 
@@ -349,6 +366,7 @@ call plug#end()
 " Post-plug configuration {{{1
 
 " vim-stay {{{2
+execute "set viewdir=" . expand('$MYVIMRUNTIME/view')
 set viewoptions=cursor,slash,unix
 
 " latex {{{2
@@ -389,6 +407,7 @@ unlet s:base16_theme
 
 " General settings {{{1
 
+set encoding=utf-8
 set hidden                                " Keep abandoned buffers in the background.
 set showcmd                               " Show partial commands in the status area.
 set wildmode=longest:full,full            " Set autocomplete command behavior.
@@ -399,7 +418,7 @@ set mouse=a                               " Enable mouse in terminal (all modes)
 set undofile
 set undolevels=1000
 set undoreload=10000
-set undodir=$HOME/.vim/undo
+execute "set undodir=" . expand('$MYVIMRUNTIME/undo')
 if !isdirectory(&undodir)
   call mkdir(&undodir)
 endif
@@ -444,7 +463,9 @@ set listchars=eol:$,tab:\|_,space:.,extends:>,precedes:<,conceal:*,nbsp:~
 
 " Set gui specific options
 if has('vim_starting') && has('gui_running')
-  set guifont=Ubuntu\ Mono\ 12
+  if !has('win32')
+    set guifont=Ubuntu\ Mono\ 12
+  endif
   set guioptions+=f       " Dont detach from shell.
   set guioptions+=P       " Enable autoselect using the "+-register.
   set guioptions-=a       " Disable autoselect using the "*-register.
@@ -456,8 +477,6 @@ endif
 " Terminal color hack for gvim and tmux (see |terminal-unix|--- the problem is the
 " nonsensical fallbacks)
 if has('gui_running')
-  " This is safe: gvim handles keys on its own
-  let $TERM = 'xterm-256color'
 elseif &term =~# '256color'  " e.g., tmux-256color
   " This is experimental: could lead vim to misunderstand some keys. Seems to work fine
   " in tmux, however.
