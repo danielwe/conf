@@ -1,20 +1,21 @@
 #!/bin/bash
 
-# Prepare the nvidia driver for use with a cuda installed from e.g. anaconda:
+# Prepare the nvidia driver for use with CUDA installed from e.g. anaconda:
 
 # 18.04 assuming nvidia-driver-* and nvidia-prime is installed, either from ubuntu or
-# cuda repos. Using nvidia-headless is not a good idea; no benefits, but easy to end up
-# in unbootable state.
-BLACKLIST_FILE="/lib/modprobe.d/blacklist-nvidia.conf"  # May be in /lib or /etc depending on version
+# CUDA repos. Using nvidia-headless is not a good idea; no real benefits, but easy to
+# end up in an unbootable state.
+BLACKLIST_FILE="/lib/modprobe.d/blacklist-nvidia.conf"  # May be in /lib or /etc
 sudo prime-select intel  # Turn off nvidia at boot
-sudo systemctl disable nvidia-fallback.service  # Would load blacklisted and off-aliased nouveau
-sudo sed -i 's/^alias/#alias/' "$BLACKLIST_FILE"  # Remove off-aliasing of nvidia to make it loadable
+sudo systemctl disable nvidia-fallback.service  # Don't replace with blacklisted nouveau
+sudo sed -i 's/^alias nvidia /#alias nvidia /' "$BLACKLIST_FILE"  # Make nvidia loadable
 sudo update-initramfs -u -k all
 # Restart.
 #
-# Before starting a cuda application do:
+# Whether nvidia is loaded automatically varies. To see if it's loaded, execute:
+# nvidia-smi
+# If not loaded, load as follows before running anything that links to CUDA:
 # sudo modprobe nvidia
-# That's all!
 
 
 # Older versions:
