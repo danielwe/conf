@@ -5,17 +5,16 @@
 # 18.04 assuming nvidia-driver-* and nvidia-prime is installed, either from ubuntu or
 # CUDA repos. Using nvidia-headless is not a good idea; no real benefits, but easy to
 # end up in an unbootable state.
-BLACKLIST_FILE="/lib/modprobe.d/blacklist-nvidia.conf"  # May be in /lib or /etc
+MOD_DIR="/lib/modprobe.d"  # Or /etc/modprobe.d, depending on version
 sudo prime-select intel  # Turn off nvidia at boot
-sudo systemctl disable nvidia-fallback.service  # Don't replace with blacklisted nouveau
-sudo sed -i 's/^alias nvidia /#alias nvidia /' "$BLACKLIST_FILE"  # Make nvidia loadable
-sudo update-initramfs -u -k all
+sudo rm -f "$MOD_DIR/blacklist-nvidia.conf"  # Make nvidia loadable
+sudo rm -f "$MOD_DIR/nvidia-kms.conf"  # Remove any modeset options
+sudo update-initramfs -u
 # Restart.
 #
-# Whether nvidia is loaded automatically varies. To see if it's loaded, execute:
-# nvidia-smi
-# If not loaded, load as follows before running anything that links to CUDA:
-# sudo modprobe nvidia
+# The files that were deleted without backup can be restored by cycling prime-select:
+# sudo prime-select nvidia
+# sudo prime-select intel
 
 
 # Older versions:
