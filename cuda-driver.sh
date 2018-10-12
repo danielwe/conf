@@ -2,20 +2,19 @@
 
 # Prepare the nvidia driver for use with CUDA installed from e.g. anaconda:
 
-# 18.04 assuming nvidia-driver-* and nvidia-prime is installed, either from ubuntu or
-# CUDA repos. Using nvidia-headless is not a good idea; no real benefits, but easy to
-# end up in an unbootable state.
-MOD_DIR="/lib/modprobe.d"  # Or /etc/modprobe.d, depending on version
+# 18.04 assuming nvidia-driver-* and nvidia-prime is installed. Using nvidia-headless is
+# not a good idea; no real benefits, but easy to end up in an unbootable state.
+MOD_DIR="/lib/modprobe.d"  # Or /etc/modprobe.d for older versions of prime
 sudo prime-select intel  # Turn off nvidia at boot
-sudo rm -f "$MOD_DIR/blacklist-nvidia.conf"  # Make nvidia loadable
-sudo rm -f "$MOD_DIR/nvidia-kms.conf"  # Remove any modeset options
-sudo update-initramfs -u
+sudo sed -i 's/^alias/#alias/' "$MOD_DIR/blacklist_nvidia.conf"  # Make nvidia loadable
 # Restart.
+# 
+# Before using CUDA, execute:
+# sudo modprobe nvidia
 #
-# The files that were deleted without backup can be restored by cycling prime-select:
-# sudo prime-select nvidia
-# sudo prime-select intel
-
+# NOTE: driver version 410 from the CUDA repos contains a more insistent persistence
+# daemon that makes the system unstable when configured as above, especially when waking
+# from lock or sleep. Use the version from the ubuntu repos for the time being.
 
 # Older versions:
 
