@@ -2,11 +2,51 @@
 
 # Prepare the nvidia driver for use with CUDA installed from e.g. anaconda:
 
-# 18.04 assuming nvidia-driver-* and nvidia-prime is installed. Using nvidia-headless is
-# not a good idea; no real benefits, but easy to end up in an unbootable state.
-MOD_DIR="/lib/modprobe.d"  # Or /etc/modprobe.d for older versions of prime
-sudo prime-select intel  # Turn off nvidia at boot
-sudo sed -i 's/^alias/#alias/' "$MOD_DIR/blacklist_nvidia.conf"  # Make nvidia loadable
+# PREFERRED METHOD
+
+# With bbswitch (no nvidia-prime).
+BLACKLIST_CONF=/etc/modprobe.d/blacklist-nvidia.conf
+BBSWITCH_CONF=/etc/modprobe.d/bbswitch.conf
+
+# Pinned, headless driver
+#VERSION=410  # Check preferred repo for latest version
+#sudo apt install nvidia-headless-$VERSION nvidia-utils-$VERSION libnvidia-cfg1-$VERSION
+
+# Full, automatically upgraded drivers, with CUDA
+sudo apt install cuda  # or just cuda-drivers
+
+sudo systemctl disable nvidia-fallback.service
+echo "blacklist nvidia" | sudo tee "$BLACKLIST_CONF"
+echo "blacklist nvidia-drm" | sudo tee -a "$BLACKLIST_CONF"
+echo "blacklist nvidia-modeset" | sudo tee -a "$BLACKLIST_CONF"
+echo "alias nvidia-drm off" | sudo tee -a "$BLACKLIST_CONF"
+echo "alias nvidia-modeset off" | sudo tee -a "$BLACKLIST_CONF"
+
+sudo apt install bbswitch
+echo "bbswitch" | sudo tee /etc/modules-load.d/bbswitch.conf
+echo "options bbswitch load_state=0" | sudo tee "$BBSWITCH_CONF"
+
+sudo sed -i 's/\(GRUB_CMDLINE_LINUX_DEFAULT=".*\)"$/\1 nogpumanager"/' /etc/default/grub
+sudo update-grub
+# Restart.
+# To turn on nvidia GPU:
+# sudo tee /proc/acpi/bbswitch <<< ON
+# sudo modprobe nvidia
+# sudo nvidia-smi -pm 1  # Optional, enables persistence mode
+# To turn off nvidia GPU:
+# sudo nvidia-smi -pm 0
+# sudo modprobe -r nvidia_drm nvidia_uvm
+# sudo tee /proc/acpi/bbswitch <<< OFF
+
+
+# OTHER METHODS:
+
+# 18.04 assuming nvidia-driver-* and nvidia-prime is installed. Not always stable. Using
+# nvidia-headless is not a good idea; no real benefits, but easy to end up in an
+# unbootable state.
+#MOD_DIR="/lib/modprobe.d"  # Or /etc/modprobe.d for older versions of prime
+#sudo prime-select intel  # Turn off nvidia at boot
+#sudo sed -i 's/^alias/#alias/' "$MOD_DIR/blacklist_nvidia.conf"  # Make nvidia loadable
 # Restart.
 # 
 # Before using CUDA, execute:
