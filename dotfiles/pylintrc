@@ -88,5 +88,6 @@ disable=print-statement,
         dict-values-not-iterating,
         no-name-in-module,
         bad-continuation,
+        unused-wildcard-import,
 
 max-line-length=88
