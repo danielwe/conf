@@ -153,9 +153,7 @@ if !filereadable(g:ycm_global_ycm_extra_conf)
   call writefile(
         \ [
         \   'def Settings(**kwargs):',
-        \   '    return {',
-        \   '        "interpreter_path": "python"',
-        \   '    }',
+        \   '    return {"interpreter_path": "python"}',
         \ ],
         \ g:ycm_global_ycm_extra_conf,
         \ )
