@@ -148,16 +148,7 @@ Plug 'Valloric/YouCompleteMe', {
       \ g:system_python . ' install.py --clang-completer > ' . expand('$HOME/ycm.log')
       \ }
 unlet g:system_python
-let g:ycm_global_ycm_extra_conf = expand('$HOME/.ycm_extra_conf.py')
-if !filereadable(g:ycm_global_ycm_extra_conf)
-  call writefile(
-        \ [
-        \   'def Settings(**kwargs):',
-        \   '    return {"interpreter_path": "python"}',
-        \ ],
-        \ g:ycm_global_ycm_extra_conf,
-        \ )
-endif
+let g:ycm_python_binary_path = "python"
 let g:ycm_key_detailed_diagnostics = ''
 if !exists('g:ycm_semantic_triggers')
   let g:ycm_semantic_triggers = {}
