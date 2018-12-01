@@ -331,8 +331,8 @@ Plug 'vim-airline/vim-airline-themes'
 let g:airline#extensions#tabline#enabled = 1
 
 " base16 {{{3
-"Plug 'chriskempson/base16-vim'  " base16 colorschemes
-call s:DevelopOrPlug('base16-vim')
+Plug 'chriskempson/base16-vim'  " base16 colorschemes
+"call s:DevelopOrPlug('base16-vim')
 
 " Colorizer {{{3
 Plug 'chrisbra/Colorizer'  " apply color to rgb sequences
