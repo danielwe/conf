@@ -1,5 +1,4 @@
 #!/bin/bash
-# vim: foldmethod=marker
 
 # Install the nextcloud sync client
 sudo add-apt-repository ppa:nextcloud-devs/client

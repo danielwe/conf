@@ -48,37 +48,44 @@ sudo add-apt-repository -y ppa:jonathonf/vim  # up-to-date vim dodges bugs
 
 # Install regular packages {{{2
 
+packages=(
+    # backgrounds and themes {{{3
+    variety  # download and cycle desktop backgrounds
+    # essential applications  {{{3
+    chromium-browser
+    nautilus-dropbox
+    zathura                 # pdf viewer with recoloring
+    vim-gtk                 # vim-gnome/vim-gtk3 is has no ruby support
+    libcanberra-gtk-module  # sounds for for gvim
+    # command line and config tools {{{3
+    tmux                # terminal multiplexing
+    ncurses-term        # terminal type definitions
+    curl                # transfer data to/from URL (download files etc.)
+    trash-cli           # rm to trash
+    tree                # like ls -R but readable
+    silversearcher-ag   # search like grep but better
+    linux-tools-common  # kernel tools for etc.
+    powertop            # power monitoring and diagnosis
+    tlp                 # power settings for laptops
+    tlp-rdw             # power settings for wireless devices
+    cpufrequtils        # cpu frequency scaling utilities
+    #acpi-call-dkms      # extra power tools for thinkpads
+    # development tools {{{3
+    git
+    build-essential
+    python3-dev      # python headers
+    exuberant-ctags  # generate tags
+    cmake            # build process manager
+    clang            # C-family LLVM frontend (compiler etc.)
+    openmpi-bin      # MPI binaries
+    libopenmpi-dev   # MPI headers
+    ruby-dev         # ruby headers
+    shellcheck       # static analysis/linting for shell scripts
+    # }}}3
+)
+
 sudo apt update
-sudo apt install \
-    \ # backgrounds and themes {{{3
-    variety \  # download and cycle desktop backgrounds
-    \ # essential applications  {{{3
-    chromium-browser \
-    nautilus-dropbox \
-    zathura \                 # pdf viewer with recoloring
-    vim-gtk \                 # vim-gnome/vim-gtk3 is has no ruby support
-    libcanberra-gtk-module \  # sounds for for gvim
-    \ # command line and config tools {{{3
-    ncurses-term \        # terminal type definitions
-    curl \                # transfer data to/from URL (download files etc.)
-    trash-cli \           # rm to trash
-    tree \                # like ls -R but readable
-    silversearcher-ag \   # search like grep but better
-    linux-tools-common \  # kernel tools for etc.
-    powertop \            # power monitoring and diagnosis
-    tlp \                 # power settings for laptops
-    tlp-rdw \             # power settings for wireless devices
-    cpufrequtils \        # cpu frequency scaling utilities
-    \ #acpi-call-dkms \      # extra power tools for thinkpads
-    \ # development tools {{{3
-    git \
-    exuberant-ctags \  # generate tags
-    cmake \            # build process manager
-    clang \            # C-family LLVM frontend (compiler etc.)
-    openmpi-bin \      # MPI binaries
-    libopenmpi-dev \   # MPI headers
-    ruby-dev \         # ruby headers
-    shellcheck \       # static analysis/linting for shell scripts
+sudo apt install "${packages[@]}"
 
 # Link configuration dotfiles {{{1
 source "${DIR}/link-dotfiles.sh"

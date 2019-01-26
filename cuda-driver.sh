@@ -22,9 +22,11 @@ echo "blacklist nvidia-modeset" | sudo tee -a "$BLACKLIST_CONF"
 echo "alias nvidia-drm off" | sudo tee -a "$BLACKLIST_CONF"
 echo "alias nvidia-modeset off" | sudo tee -a "$BLACKLIST_CONF"
 
-sudo apt install bbswitch
+sudo apt install bbswitch-dkms
 echo "bbswitch" | sudo tee /etc/modules-load.d/bbswitch.conf
 echo "options bbswitch load_state=0" | sudo tee "$BBSWITCH_CONF"
+
+sudo update-initramfs -u
 
 sudo sed -i 's/\(GRUB_CMDLINE_LINUX_DEFAULT=".*\)"$/\1 nogpumanager"/' /etc/default/grub
 sudo update-grub
