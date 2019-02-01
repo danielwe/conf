@@ -6,6 +6,7 @@
 
 # With bbswitch (no nvidia-prime).
 BLACKLIST_CONF=/etc/modprobe.d/blacklist-nvidia.conf
+BBSWITCH_LOAD=/etc/modules-load.d/bbswitch.conf
 BBSWITCH_CONF=/etc/modprobe.d/bbswitch.conf
 
 # Pinned, headless driver
@@ -17,18 +18,19 @@ sudo apt install cuda  # or just cuda-drivers
 
 sudo systemctl disable nvidia-fallback.service
 echo "blacklist nvidia" | sudo tee "$BLACKLIST_CONF"
+echo "blacklist nvidia-uvm" | sudo tee -a "$BLACKLIST_CONF"
 echo "blacklist nvidia-drm" | sudo tee -a "$BLACKLIST_CONF"
 echo "blacklist nvidia-modeset" | sudo tee -a "$BLACKLIST_CONF"
-echo "alias nvidia-drm off" | sudo tee -a "$BLACKLIST_CONF"
-echo "alias nvidia-modeset off" | sudo tee -a "$BLACKLIST_CONF"
 
 sudo apt install bbswitch-dkms
-echo "bbswitch" | sudo tee /etc/modules-load.d/bbswitch.conf
+echo "bbswitch" | sudo tee "$BBSWITCH_LOAD"
 echo "options bbswitch load_state=0" | sudo tee "$BBSWITCH_CONF"
 
 sudo update-initramfs -u
 
 sudo sed -i 's/\(GRUB_CMDLINE_LINUX_DEFAULT=".*\)"$/\1 nogpumanager"/' /etc/default/grub
+# Some hardware requires the following kernel parameter to work with bbswitch:
+sudo sed -i 's/\(GRUB_CMDLINE_LINUX_DEFAULT=".*\)"$/\1 acpi_rev_override"/' /etc/default/grub
 sudo update-grub
 # Restart.
 # To turn on nvidia GPU:
