@@ -309,6 +309,9 @@ let g:vimtex_complete_close_braces = 0
 "      \ },
 "      \}
 
+" toml {{{3
+Plug 'cespare/vim-toml'  " add toml syntax
+
 " lilypond {{{3
 if !has('win32')
   let s:lilypond_vim_dir = split(expand('/usr/share/lilypond/*/vim/'))[-1]
