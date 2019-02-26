@@ -81,7 +81,8 @@ Plug 'zhimsel/vim-stay'  " keep place in buffer across sessions
 Plug 'Konfekt/FastFold'  " speed up folds
 
 " ListToggle {{{3
-Plug 'Valloric/ListToggle'  " toggle location list and quickfix list
+"Plug 'Valloric/ListToggle'  " toggle location list and quickfix list
+call s:DevelopOrPlug('ListToggle')
 let g:lt_quickfix_list_toggle_map = '<Leader>qq'
 let g:lt_location_list_toggle_map = '<Leader>ql'
 
