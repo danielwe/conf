@@ -146,7 +146,8 @@ else
 endif
 Plug 'Valloric/YouCompleteMe', {
       \ 'do':
-      \ g:system_python . ' install.py --clang-completer > ' . expand('$HOME/ycm.log')
+      \ g:system_python
+      \ . ' install.py --clang-completer > ' . expand('$HOME/ycm.log') . ' 2>&1'
       \ }
 unlet g:system_python
 let g:ycm_python_binary_path = "python"
@@ -217,10 +218,12 @@ if v:version >= 800 && (has("patch-8.0.1476") || !has("patch-8.0.1449"))
   augroup END
   unlet s:ale_lsp_filetype_pattern
 
-  for s:ft in g:ale_lsp_filetypes
-    let g:ycm_filetype_blacklist[s:ft] = 1
-  endfor
-  unlet s:ft
+  if exists('g:ycm_filetype_blacklist')
+    for s:ft in g:ale_lsp_filetypes
+      let g:ycm_filetype_blacklist[s:ft] = 1
+    endfor
+    unlet s:ft
+  endif
 else
   Plug 'vim-syntastic/syntastic'
   let g:syntastic_always_populate_loc_list = 1
@@ -375,7 +378,9 @@ execute "set viewdir=" . expand('$MYVIMRUNTIME/view')
 set viewoptions=cursor,slash,unix
 
 " latex {{{2
-let g:ycm_semantic_triggers.tex = g:vimtex#re#youcompleteme
+if exists('g:ycm_semantic_triggers.tex')
+  let g:ycm_semantic_triggers.tex = g:vimtex#re#youcompleteme
+endif
 
 " base16 {{{2
 let g:airline_theme = 'base16_vim'
