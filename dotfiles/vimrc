@@ -378,7 +378,7 @@ execute "set viewdir=" . expand('$MYVIMRUNTIME/view')
 set viewoptions=cursor,slash,unix
 
 " latex {{{2
-if exists('g:ycm_semantic_triggers.tex')
+if exists('g:ycm_semantic_triggers')
   let g:ycm_semantic_triggers.tex = g:vimtex#re#youcompleteme
 endif
 
