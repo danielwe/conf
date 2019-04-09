@@ -36,6 +36,8 @@ call plug#begin()
 " tpope tools {{{3
 Plug 'tpope/vim-sensible'     " sensible config starting point
 runtime! plugin/sensible.vim  " load first so options can be overridden
+syntax off                    " managed by vim-plug, none of sensible's business
+filetype plugin indent off
 
 Plug 'tpope/vim-endwise'      " automatically and wisely close environments
 Plug 'tpope/vim-repeat'       " improve `.'
@@ -321,9 +323,7 @@ if !has('win32')
   let s:lilypond_vim_dir = split(expand('/usr/share/lilypond/*/vim/'))[-1]
   if isdirectory(s:lilypond_vim_dir)
     let g:lilypond_enabled = 1
-    filetype off
     set rtp+=s:lilypond_vim_dir
-    filetype on
   endif
   unlet s:lilypond_vim_dir
 endif
