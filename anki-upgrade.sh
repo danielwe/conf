@@ -2,8 +2,8 @@
 
 # Upgrade anki
 
-VERSION="2.0.52"
-ARCHIVE="anki-${VERSION}-amd64.tar.gz"
+VERSION="2.1.11"
+ARCHIVE="anki-${VERSION}-linux-amd64.tar.bz2"
 
 # Move to installation directory
 CURRENT_DIR="$( pwd )"
