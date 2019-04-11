@@ -500,6 +500,10 @@ noremap k gk
 noremap j gj
 noremap gk k
 noremap gj j
+noremap $ g$
+noremap ^ g^
+noremap g$ $
+noremap g^ ^
 
 " Navigate windows easily: map ; to <C-W> (see :h CTRL-W)
 nnoremap ; <C-W>
