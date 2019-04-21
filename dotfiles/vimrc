@@ -588,7 +588,7 @@ augroup END
 " noexpandtab will give hideous mixed indents (unless shiftwidth happens to equal
 " tabstop, but editing behavior should not depend on a display setting like tabstop).
 augroup rc_indentunit
-  autocmd! FileType vim,javascript,typescript,tex,bib setlocal shiftwidth=2 expandtab
+  autocmd! FileType vim,sh,javascript,typescript,tex,bib setlocal shiftwidth=2 expandtab
   autocmd! FileType c,cpp,cuda,go setlocal shiftwidth=0 noexpandtab
   autocmd! FileType java,rust setlocal shiftwidth=4 expandtab
 augroup END
