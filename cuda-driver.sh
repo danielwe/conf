@@ -13,10 +13,10 @@ sudo apt install cuda  # or just cuda-drivers
 
 BLACKLIST_CONF=/etc/modprobe.d/blacklist-nvidia.conf
 
-echo "blacklist nvidia" | sudo tee "$BLACKLIST_CONF"
-echo "blacklist nvidia_uvm" | sudo tee -a "$BLACKLIST_CONF"
-echo "blacklist nvidia_modeset" | sudo tee -a "$BLACKLIST_CONF"
-echo "blacklist nvidia_drm" | sudo tee -a "$BLACKLIST_CONF"
+echo 'blacklist nvidia
+blacklist nvidia_uvm
+blacklist nvidia_modeset
+blacklist nvidia_drm' | sudo tee "$BLACKLIST_CONF"
 
 # PREFERRED: automatic power management by the kernel. With recent kernels this is
 # sufficient for the GPU to be powered down when drivers are unloaded.
@@ -28,20 +28,43 @@ echo "w /sys/bus/pci/devices/0000:01:00.0/remove - - - - 1" | sudo tee "$OFF_CON
 
 sudo update-initramfs -u
 
+# Make sure GPU is always on when going to sleep, otherwise you'll get in trouble. For
+# some reason any attempt to automatically turn it back off on resume will fail to
+# persist, so this hook does not bother trying.
+SLEEP_HOOK=/lib/systemd/system-sleep/nvidia
+
+echo '#!/bin/sh
+
+GPUID="0000:01:00.0"
+
+case $1 in
+  pre)
+    if modprobe --dry-run --first-time nvidia > /dev/null 2>&1
+    then
+      echo 1 > "/sys/bus/pci/rescan" \
+        && echo auto > "/sys/bus/pci/devices/$GPUID/power/control" \
+        && modprobe nvidia \
+        && nvidia-smi -pm 1
+    fi
+    ;;
+  post)
+    exit 0
+    ;;
+esac' | sudo tee "$SLEEP_HOOK"
+sudo chmod +x "$SLEEP_HOOK"
+
 # Restart.
 
-# To turn on nvidia GPU:
+# To turn on GPU from bash:
 #GPUID="0000:01:00.0"
-#if [[ ! -e "/sys/bus/pci/devices/$GPUID" ]]
-#then
-#    sudo tee /sys/bus/pci/rescan <<< 1
-#fi
-#sudo tee "/sys/bus/pci/devices/$GPUID/power/control" <<< auto  # Ensure automatic pm
-#sudo modprobe nvidia && sudo nvidia-smi -pm 1  # Optional, enables persistence mode
-# To turn off nvidia GPU:
-#sudo modprobe -r nvidia_drm nvidia_modeset nvidia_uvm
-#sudo nvidia-smi -pm 0 && sudo modprobe -r nvidia
-#sudo tee "/sys/bus/pci/devices/$GPUID/power/control" <<< auto  # Ensure automatic pm
+#sudo tee /sys/bus/pci/rescan <<< 1 \
+#  && sudo tee "/sys/bus/pci/devices/$GPUID/power/control" <<< auto \
+#  && sudo modprobe nvidia \
+#  && sudo nvidia-smi -pm 1
+# To turn off GPU from bash:
+#sudo tee "/sys/bus/pci/devices/$GPUID/power/control" <<< auto \
+#  && sudo nvidia-smi -pm 0 \
+#  && sudo modprobe -r nvidia_drm nvidia_modeset nvidia_uvm nvidia
 
 # Power management using bbswitch. Note that the GPU is correctly powered off with
 # recent kernels, even if bbswitch complains to syslogs that it's not. (Check power
