@@ -35,9 +35,11 @@ call plug#begin()
 
 " tpope tools {{{3
 Plug 'tpope/vim-sensible'     " sensible config starting point
-runtime! plugin/sensible.vim  " load first so options can be overridden
-syntax off                    " managed by vim-plug, none of sensible's business
-filetype plugin indent off
+if has('vim_starting')
+  runtime! plugin/sensible.vim  " load first so options can be overridden
+  syntax off                    " managed by vim-plug, none of sensible's business
+  filetype plugin indent off
+endif
 
 Plug 'tpope/vim-endwise'      " automatically and wisely close environments
 Plug 'tpope/vim-repeat'       " improve `.'
