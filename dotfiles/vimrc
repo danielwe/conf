@@ -59,7 +59,7 @@ nmap <silent> <C-C> :Bdelete<CR>
 Plug 'tomtom/tcomment_vim'  " toggle comments
 let g:tcomment_mapleader1 = "<C-/>"
 let g:tcomment_mapleader2 = "g/"
-let g:tcomment#options = {'whitespace' : 'no'}
+let g:tcomment#options = {'whitespace' : 'yes'}
 
 " loupe {{{3
 Plug 'wincent/loupe'  " improve search and highlighting
