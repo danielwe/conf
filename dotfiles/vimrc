@@ -242,7 +242,7 @@ endif
 " snippets {{{3
 Plug 'SirVer/ultisnips'                       " snippet engine
 Plug 'honza/vim-snippets'                     " snippets
-call s:DevelopOrPlug('vim-unicode-snippets')  " unicode snippets with latex triggers
+" call s:DevelopOrPlug('vim-unicode-snippets')  " unicode snippets with latex triggers
 let g:UltiSnipsExpandTrigger = '<C-J>'
 let g:UltiSnipsJumpForwardTrigger = '<C-J>'
 let g:UltiSnipsJumpBackwardTrigger = '<C-K>'
@@ -304,18 +304,18 @@ augroup END
 
 " latex {{{3
 Plug 'lervag/vimtex'  " complete, compile, view output, parse errors
-let g:vimtex_view_automatic = 0
-let g:vimtex_view_method = 'zathura'
 let g:vimtex_fold_enabled = 1
-let g:vimtex_complete_enabled = 1
-let g:vimtex_complete_close_braces = 0
-"let g:vimtex_quickfix_latexlog = {
-"      \ 'overfull' : 0,
-"      \ 'underfull' : 0,
-"      \ 'packages' : {
-"      \   'default' : 0,
-"      \ },
-"      \}
+let g:vimtex_format_enabled = 1
+let g:vimtex_view_method = 'zathura'
+let g:vimtex_view_automatic = 0
+" let g:vimtex_complete_close_braces = 0
+" let g:vimtex_quickfix_latexlog = {
+"       \ 'overfull' : 0,
+"       \ 'underfull' : 0,
+"       \ 'packages' : {
+"       \   'default' : 0,
+"       \ },
+"       \}
 
 " toml {{{3
 Plug 'cespare/vim-toml'  " add toml syntax
