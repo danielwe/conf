@@ -3,9 +3,17 @@ set selection-clipboard "clipboard"
 
 set synctex "true"
 
-set highlight-color "#ae9513"
-set highlight-active-color "#b65611"
 set highlight-transparency 0.2
 set recolor "true"
-set recolor-darkcolor "#6e6b5e"
-set recolor-lightcolor "#fefbec"
+
+# base16 atelier estuary light
+set highlight-color "#a5980d"
+set highlight-active-color "#ae7313"
+set recolor-darkcolor "#5f5e4e"
+set recolor-lightcolor "#f4f3ec"
+
+# # base16 atelier dune light
+# set highlight-color "#ae9513"
+# set highlight-active-color "#b65611"
+# set recolor-darkcolor "#6e6b5e"
+# set recolor-lightcolor "#fefbec"

@@ -392,7 +392,7 @@ let g:airline_base16_monotone = 1
 " theme is equivalent, and will give you the base16 theme that the terminal was set up
 " with using base16_shell (in particular, the .vimrc_background file from base16_shell
 " is unneccesary). In gvim, or with termguicolors set, the theme named below is used.
-let s:base16_theme = "base16-atelier-dune-light"
+let s:base16_theme = "base16-atelier-estuary-light"
 
 if ($BASE16_THEME ==# "") && has('termguicolors')
   set termguicolors
