@@ -2,7 +2,7 @@
 
 # Install anki
 
-VERSION="2.1.11"
+VERSION="2.1.13"
 ARCHIVE="anki-${VERSION}-linux-amd64.tar.bz2"
 
 # Move to installation directory

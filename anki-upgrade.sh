@@ -2,7 +2,7 @@
 
 # Upgrade anki
 
-VERSION="2.1.11"
+VERSION="2.1.13"
 ARCHIVE="anki-${VERSION}-linux-amd64.tar.bz2"
 
 # Move to installation directory
@@ -17,7 +17,7 @@ do
 done
 
 # Download new binaries and extract
-wget "https://apps.ankiwed.net/downloads/current/${ARCHIVE}"
+wget "https://apps.ankiweb.net/downloads/current/${ARCHIVE}"
 tar -xf "${ARCHIVE}"
 rm "${ARCHIVE}"
 

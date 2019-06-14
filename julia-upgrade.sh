@@ -3,7 +3,7 @@
 # Upgrade julia
 
 MAJOR_VERSION="1.1"
-FULL_VERSION="1.1.0"
+FULL_VERSION="1.1.1"
 ARCHIVE="julia-${FULL_VERSION}-linux-x86_64.tar.gz"
 
 # Move to installation directory
