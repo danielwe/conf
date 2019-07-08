@@ -4,6 +4,11 @@
 # Enable vi mode
 set -o vi
 
+# set PATH so it includes npm binaries
+if [ -d "/home/daniel/local/npm/bin" ] ; then
+    PATH="/home/daniel/local/npm/bin:$PATH"
+fi
+
 # enable base16 shell themes
 if [ -z "$BASE16_SHELL" ] \
     && [ -n "$PS1" ] \

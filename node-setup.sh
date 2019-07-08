@@ -3,7 +3,6 @@
 # Install and configure Node.js
 # Remember to link dotfiles first.
 
-MAJOR_VERSION=8
+MAJOR_VERSION=10
 
-curl -sL https://deb.nodesource.com/setup_${MAJOR_VERSION}.x | sudo -E bash -
-sudo apt install nodejs
+sudo snap install node --classic --channel=${MAJOR_VERSION}
