@@ -35,12 +35,6 @@ call plug#begin()
 
 " tpope tools {{{3
 Plug 'tpope/vim-sensible'     " sensible config starting point
-if has('vim_starting')
-  runtime! plugin/sensible.vim  " load first so options can be overridden
-  syntax off                    " managed by vim-plug, none of sensible's business
-  filetype plugin indent off
-endif
-
 Plug 'tpope/vim-endwise'      " automatically and wisely close environments
 Plug 'tpope/vim-repeat'       " improve `.'
 Plug 'tpope/vim-surround'     " play with brackets, quotes etc.
@@ -64,15 +58,6 @@ let g:tcomment#options = {'whitespace' : 'yes'}
 " loupe {{{3
 Plug 'wincent/loupe'  " improve search and highlighting
 nmap <silent> <Leader>/ <Plug>(LoupeClearHighlight)
-
-" vim-grepper {{{3
-Plug 'mhinz/vim-grepper'  " grep from vim
-if !exists('g:grepper')
-  let g:grepper = {}
-endif
-let g:grepper.highlight = 1
-nmap <Leader>s <plug>(GrepperOperator)
-xmap <Leader>s <plug>(GrepperOperator)
 
 " undotree {{{3
 Plug 'mbbill/undotree'  " navigate undo tree
@@ -120,6 +105,11 @@ else
   let g:ctrlp_map = '<Leader>ff'
   nmap <silent> <Leader>fb :CtrlPBuffer<CR>
 endif
+
+" vim-grepper {{{3
+Plug 'mhinz/vim-grepper'  " grep from vim
+nmap <Leader>s <plug>(GrepperOperator)
+xmap <Leader>s <plug>(GrepperOperator)
 
 " dirvish {{{3
 Plug 'justinmk/vim-dirvish'              " browse directories and files
@@ -373,11 +363,24 @@ Plug 'chrisbra/Colorizer'  " apply color to rgb sequences
 
 call plug#end()
 
+
 " Post-plug configuration {{{1
+
+" tpope tools {{{2
+if has('vim_starting')
+  runtime! plugin/sensible.vim  " load first so options can be overridden
+endif
 
 " vim-stay {{{2
 execute "set viewdir=" . expand('$MYVIMRUNTIME/view')
 set viewoptions=cursor,slash,unix
+
+" vim-grepper {{{3
+if has('vim_starting')
+  runtime! plugin/grepper.vim  " load now so options can be overridden
+endif
+let g:grepper.highlight = 1
+let g:grepper.git.grepprg .= ' --untracked'
 
 " latex {{{2
 if exists('g:ycm_semantic_triggers')
