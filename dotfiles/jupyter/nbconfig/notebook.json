@@ -1,12 +1,21 @@
 {
   "load_extensions": {
+    "jupyter-js-widgets/extension": true,
+    "nbextensions_configurator/config_menu/main": true,
+    "contrib_nbextensions_help_item/main": true,
     "execute_time/ExecuteTime": true,
     "select_keymap/main": true,
     "scratchpad/main": true,
     "ruler/main": true,
-    "codefolding/main": true,
-    "notify/notify": true,
-    "toc2/main": true
+    "codefolding/main": false,
+    "notify/notify": false,
+    "toc2/main": true,
+    "rubberband/main": true,
+    "codemirror_mode_extensions/main": false,
+    "collapsible_headings/main": true,
+    "latex_envs/latex_envs": true,
+    "comment-uncomment/main": false,
+    "table_beautifier/main": true
   },
   "Cell": {
     "cm_config": {
