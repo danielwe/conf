@@ -278,6 +278,9 @@ augroup GetDoc
 augroup END
 
 " latex {{{3
+Plug 'Konfekt/tex-conceal.vim'  " fix tex conceal
+let g:tex_conceal = "abdmg"
+
 Plug 'lervag/vimtex'  " complete, compile, view output, parse errors
 let g:vimtex_fold_enabled = 1
 let g:vimtex_format_enabled = 1
@@ -291,6 +294,10 @@ let g:vimtex_view_automatic = 0
 "       \   'default' : 0,
 "       \ },
 "       \}
+
+" markdown etc. {{{3
+Plug 'vim-pandoc/vim-pandoc'
+Plug 'vim-pandoc/vim-pandoc-syntax'
 
 " toml {{{3
 Plug 'cespare/vim-toml'  " add toml syntax
@@ -470,6 +477,7 @@ set norelativenumber      " Show relative line numbers?
 set nonumber              " Show line numbers? (relative & absolute => hybrid)
 set colorcolumn=+1,+2,+3  " Highlight columns after textwidth.
 set showmatch             " Show matching brackets.
+set conceallevel=2        " Enable conceal when defined
 
 " Set whitespace characters in list mode
 set listchars=eol:$,tab:\|_,space:.,extends:>,precedes:<,conceal:*,nbsp:~
