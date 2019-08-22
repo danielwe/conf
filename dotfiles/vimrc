@@ -146,12 +146,6 @@ Plug 'Valloric/YouCompleteMe', {
 unlet g:system_python
 let g:ycm_python_binary_path = "python"
 let g:ycm_key_detailed_diagnostics = ''
-if !exists('g:ycm_semantic_triggers')
-  let g:ycm_semantic_triggers = {}
-endif
-if !exists('g:ycm_filetype_blacklist')
-  let g:ycm_filetype_blacklist = {}
-endif
 let g:ycm_goto_filetypes = [
       \ 'c',
       \ 'cpp',
@@ -212,21 +206,12 @@ if v:version >= 800 && (has("patch-8.0.1476") || !has("patch-8.0.1449"))
   augroup END
   unlet s:ale_lsp_filetype_pattern
 
-  if exists('g:ycm_filetype_blacklist')
-    for s:ft in g:ale_lsp_filetypes
-      let g:ycm_filetype_blacklist[s:ft] = 1
-    endfor
-    unlet s:ft
-  endif
 else
   Plug 'vim-syntastic/syntastic'
   let g:syntastic_always_populate_loc_list = 1
   let g:syntastic_auto_loc_list = 0
   let g:syntastic_check_on_open = 1
   let g:syntastic_check_on_wq = 0
-endif
-if !exists('g:ale_linters_ignore')
-  let g:ale_linters_ignore = {}
 endif
 
 " snippets {{{3
@@ -347,9 +332,6 @@ Plug 'chrisbra/Colorizer'  " apply color to rgb sequences
 "  let g:LanguageClient_hoverPreview = "always"
 "  let g:LanguageClient_diagnosticsList = "location"
 "  let g:LanguageClient_selectionUI = "quickfix"
-"  if !exists('g:LanguageClient_serverCommands')
-"    let g:LanguageClient_serverCommands = {}
-"  endif
 "endif
 
 
@@ -375,21 +357,37 @@ endif
 execute "set viewdir=" . expand('$MYVIMRUNTIME/view')
 set viewoptions=cursor,slash,unix
 
-" vim-grepper {{{3
+" vim-grepper {{{2
 if has('vim_starting')
   runtime! plugin/grepper.vim  " load now so options can be overridden
 endif
 let g:grepper.highlight = 1
 let g:grepper.git.grepprg .= ' --untracked'
 
-" latex {{{2
-if exists('g:ycm_semantic_triggers')
-  let g:ycm_semantic_triggers.tex = g:vimtex#re#youcompleteme
+" ale/syntastic linter {{{2
+if exists('g:ale_lsp_filetypes')
+  if !exists('g:ycm_filetype_blacklist')
+    let g:ycm_filetype_blacklist = {}
+  endif
+  for s:ft in g:ale_lsp_filetypes
+    let g:ycm_filetype_blacklist[s:ft] = 1
+  endfor
+  unlet s:ft
 endif
+
+" latex {{{2
+if !exists('g:ycm_semantic_triggers')
+  let g:ycm_semantic_triggers = {}
+endif
+let g:ycm_semantic_triggers.tex = g:vimtex#re#youcompleteme
 
 " base16 {{{2
 let g:airline_theme = 'base16_vim'
 let g:airline_base16_monotone = 1
+
+" The base16 themes seem to work best with background=light. This setting mainly affects
+" how vim selects highlighting colors from the palette.
+set background=light
 
 " Choose colorscheme. If running in a terminal and termguicolors is not set, any base16
 " theme is equivalent, and will give you the base16 theme that the terminal was set up
@@ -489,9 +487,10 @@ if has('vim_starting') && has('gui_running')
   set guioptions-=r       " Disable scrollbar.
 endif
 
-" Terminal color hack for gvim and tmux (see |terminal-unix|--- the problem is the
+" Terminal color hack for gvim and tmux (see |terminal-unix|---the problem is the
 " nonsensical fallbacks)
 if has('gui_running')
+  let $TERM = 'xterm-256color'
 elseif &term =~# '256color'  " e.g., tmux-256color
   " This is experimental: could lead vim to misunderstand some keys. Seems to work fine
   " in tmux, however.
