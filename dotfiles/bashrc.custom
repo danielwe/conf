@@ -1,9 +1,6 @@
 # Put custom bashrc config here. The 'install-bashrc.sh' script will modify
 # .bashrc to source these commands.
 
-# Enable vi mode
-set -o vi
-
 # set PATH so it includes npm binaries
 if [ -d "/home/daniel/local/npm/bin" ] ; then
     PATH="/home/daniel/local/npm/bin:$PATH"
