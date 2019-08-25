@@ -81,30 +81,14 @@ Plug 'kana/vim-textobj-entire'  " define text objects for the entire buffer
 
 " IDE-like functionality {{{2
 
-" command-t/ctrlp fuzzy finder {{{3
-if has('ruby')
-  Plug 'wincent/command-t',
-        \ {'do': 'cd ruby/command-t/ext/command-t && ruby extconf.rb && make'}
-  nmap <silent> <Leader>ff <Plug>(CommandT)
-  nmap <silent> <Leader>fb <Plug>(CommandTBuffer)
-  nmap <silent> <Leader>fj <Plug>(CommandTJump)
-  nmap <silent> <Leader>fh <Plug>(CommandTHelp)
-  " terminal compatibility: the tale of arrow keys and esc
-  if (&term =~# "xterm") || (&term =~# "tmux")
-    " esc is not mapped by default in xterm, let's fix that
-    " (not actually needed for tmux, but doesn't hurt)
-    let g:CommandTCancelMap = ['<C-C>', '<ESC>']
-    " now esc is mapped and arrow keys will misbehave, let's fix that
-    let g:CommandTSelectNextMap = ['<C-N>', '<C-J>', '<Down>', '<ESC>OB']
-    let g:CommandTSelectPrevMap = ['<C-P>', '<C-K>', '<Up>', '<ESC>OA']
-    let g:CommandTSelectLeftMap = ['<Left>', '<C-H>', '<ESC>OD']
-    let g:CommandTSelectRightMap = ['<Right>', '<C-L>', '<ESC>OC']
-  endif
-else
-  Plug 'ctrlpvim/ctrlp.vim'
-  let g:ctrlp_map = '<Leader>ff'
-  nmap <silent> <Leader>fb :CtrlPBuffer<CR>
-endif
+" fuzzy search {{{3
+Plug 'junegunn/fzf', { 'dir' : '~/packages/fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
+nmap <silent> <Leader>ff :Files<CR>
+nmap <silent> <Leader>fb :Buffers<CR>
+nmap <silent> <Leader>fl :Lines<CR>
+nmap <silent> <Leader>fh :Helptags<CR>
+nmap <silent> <Leader>fc :Commits<CR>
 
 " vim-grepper {{{3
 Plug 'mhinz/vim-grepper'  " grep from vim
@@ -248,7 +232,7 @@ endif
 let g:slime_paste_file = tempname()
 let g:slime_python_ipython = 1
 
-" Language specific plugins {{{2
+" Language/application specific plugins {{{2
 
 " python {{{3
 Plug 'tmhedberg/SimpylFold'           " fold python correctly
@@ -295,9 +279,35 @@ let g:vimtex_view_automatic = 0
 "       \ },
 "       \}
 
-" markdown etc. {{{3
-Plug 'vim-pandoc/vim-pandoc'
+" markdown/wiki {{{3
+" Plug 'vim-pandoc/vim-pandoc'
+call s:DevelopOrPlug('vim-pandoc')
 Plug 'vim-pandoc/vim-pandoc-syntax'
+let g:pandoc#syntax#conceal#urls = 1
+let g:pandoc#hypertext#split_open_cmd = "Drop"
+let g:pandoc#hypertext#edit_open_cmd = "Drop"
+let g:pandoc#hypertext#create_if_no_alternates_exist = 1
+let g:pandoc#biblio#use_bibtool = 1
+let g:pandoc#biblio#sources = 'bctgy'
+
+augroup rc_autochdir
+  " pandoc link navigation only works if working dir tracks file dir
+  autocmd! FileType pandoc Lcd
+augroup END
+
+Plug 'alok/notational-fzf-vim'
+let g:nv_search_paths = ['~/Documents/wikien']
+let g:nv_window_direction = 'left'
+let g:nv_preview_direction = 'down'
+let g:nv_use_short_pathnames = 1
+
+function! NVThis(query)
+  NV
+  call feedkeys(a:query)
+endfunction
+
+nmap <silent> <Leader>nv :call NVThis(getline('.'))<CR>
+vmap <silent> <Leader>nv :call NVThis(@*)<CR>
 
 " toml {{{3
 Plug 'cespare/vim-toml'  " add toml syntax
@@ -371,7 +381,13 @@ endif
 let g:grepper.highlight = 1
 let g:grepper.git.grepprg .= ' --untracked'
 
-" ale/syntastic linter {{{2
+" autocompletion {{{2
+if !exists('g:ycm_semantic_triggers')
+  let g:ycm_semantic_triggers = {}
+endif
+let g:ycm_semantic_triggers.tex = g:vimtex#re#youcompleteme
+let g:ycm_semantic_triggers.pandoc = '@'
+
 if exists('g:ale_lsp_filetypes')
   if !exists('g:ycm_filetype_blacklist')
     let g:ycm_filetype_blacklist = {}
@@ -381,12 +397,6 @@ if exists('g:ale_lsp_filetypes')
   endfor
   unlet s:ft
 endif
-
-" latex {{{2
-if !exists('g:ycm_semantic_triggers')
-  let g:ycm_semantic_triggers = {}
-endif
-let g:ycm_semantic_triggers.tex = g:vimtex#re#youcompleteme
 
 " base16 {{{2
 let g:airline_theme = 'base16_vim'
