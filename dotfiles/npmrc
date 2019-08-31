@@ -1,1 +1,1 @@
-prefix = /home/daniel/local/npm
+prefix = ${HOME}/local/npm
