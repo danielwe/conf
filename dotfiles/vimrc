@@ -324,7 +324,7 @@ function! s:NVQuery(fzfquery, rgquery)
 endfunction
 
 function! s:NVCommandQuery(query)
-  let queries = split(a:query, '\(,\|;\)', 1)  " splits on , or ;
+  let queries = split(a:query, ',\|;', 1)  " splits on , or ;
   let fzfquery = trim(queries[0])
   let rgquery = trim(get(queries, 1, ''))
   call s:NVQuery(l:fzfquery, l:rgquery)
