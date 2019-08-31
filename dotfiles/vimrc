@@ -84,6 +84,7 @@ Plug 'kana/vim-textobj-entire'  " define text objects for the entire buffer
 Plug 'junegunn/fzf', {'dir' : '~/local/fzf', 'do': './install --all'}
 Plug 'junegunn/fzf.vim'
 nmap <silent> <Leader>ff :Files<CR>
+nmap <silent> <Leader>fv :Files $MYVIMRUNTIME<CR>
 nmap <silent> <Leader>fb :Buffers<CR>
 nmap <silent> <Leader>fl :Lines<CR>
 nmap <silent> <Leader>fh :Helptags<CR>
