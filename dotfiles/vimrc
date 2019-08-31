@@ -274,34 +274,71 @@ let g:vimtex_view_automatic = 0
 "       \}
 
 " markdown/wiki {{{3
-" Plug 'vim-pandoc/vim-pandoc'
-call s:DevelopOrPlug('vim-pandoc')
+Plug 'vim-pandoc/vim-pandoc'
 Plug 'vim-pandoc/vim-pandoc-syntax'
+Plug 'vim-pandoc/vim-pandoc-after'
+let g:pandoc#keyboard#display_options = 0
+
 let g:pandoc#syntax#conceal#urls = 1
+
+let g:pandoc#formatting#mode = 'h'
+let g:pandoc#formatting#textwidth = 88
+
 let g:pandoc#hypertext#split_open_cmd = "Drop"
 let g:pandoc#hypertext#edit_open_cmd = "Drop"
 let g:pandoc#hypertext#create_if_no_alternates_exist = 1
+
 let g:pandoc#biblio#use_bibtool = 1
 let g:pandoc#biblio#sources = 'bctgy'
+
+let g:pandoc#after#modules#enabled = ["fastfold", "ultisnips"]
 
 augroup rc_autochdir
   " pandoc link navigation only works if working dir tracks file dir
   autocmd! FileType pandoc Lcd
 augroup END
 
-Plug 'alok/notational-fzf-vim'
-let g:nv_search_paths = ['~/Documents/wikien']
+let g:ale_linter_aliases = {'pandoc': 'markdown'}
+let g:ale_markdown_mdl_options = '--rules ~MD009,~MD013'
+
+Plug 'iamcco/markdown-preview.nvim', {'do': 'cd app & yarn install'}
+Plug 'suan/vim-instant-markdown', {
+      \ 'do': 'npm -g install instant-markdown-d@next',
+      \ 'for': ['markdown', 'pandoc'],
+      \ }
+let g:instant_markdown_autostart = 0
+let g:instant_markdown_mathjax = 1
+
+Plug 'alok/notational-fzf-vim'  " Interactive NV-like full-text search
+let g:nv_search_paths = ['~/Documents/notatbank']
 let g:nv_window_direction = 'left'
 let g:nv_preview_direction = 'down'
 let g:nv_use_short_pathnames = 1
+let g:nv_keymap = {'ctrl-h': 'split', 'ctrl-v': 'vertical split', 'ctrl-t': 'tabedit'}
+let g:nv_create_note_window = 'Drop'
 
-function! NVThis(query)
-  NV
-  call feedkeys(a:query)
+" Define more flexible version of the :NV command, supporting an initial fzf query
+function! s:NVQuery(fzfquery, rgquery)
+  execute 'NV' a:rgquery
+  call feedkeys(a:fzfquery)
 endfunction
 
-nmap <silent> <Leader>nv :call NVThis(getline('.'))<CR>
-vmap <silent> <Leader>nv :call NVThis(@*)<CR>
+function! s:NVCommandQuery(query)
+  let queries = split(a:query, '\(,\|;\)', 1)  " splits on , or ;
+  let fzfquery = trim(queries[0])
+  let rgquery = trim(get(queries, 1, ''))
+  call s:NVQuery(l:fzfquery, l:rgquery)
+endfunction
+
+command! -nargs=? NQ call s:NVCommandQuery('<args>')
+
+nmap <silent> <Leader>nq :call <SID>NVCommandQuery(getline('.'))<CR>
+vmap <silent> <Leader>nq :call <SID>NVCommandQuery(@*)<CR>
+
+call s:DevelopOrPlug('vim-nvtags')
+let g:nvtags_globs = ['*.md']
+nmap <silent> <Leader>nt :put ='  '<CR>d}k:NVTags<CR>
+vmap <silent> <Leader>nt :put ='  '<CR>d}k:execute 'NVTagsQuery' @*<CR>
 
 " toml {{{3
 Plug 'cespare/vim-toml'  " add toml syntax
