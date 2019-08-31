@@ -17,11 +17,10 @@ if empty(glob(s:plugpath))
     \ "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
-unlet s:plugpath
 
 " Plugin development support
 function! s:DevelopOrPlug(name)
-  let l:devpath = expand('$HOME/packages/' . a:name)
+  let devpath = expand('$HOME/packages/' . a:name)
   if isdirectory(l:devpath)
     Plug l:devpath
   else
@@ -82,7 +81,7 @@ Plug 'kana/vim-textobj-entire'  " define text objects for the entire buffer
 " IDE-like functionality {{{2
 
 " fuzzy search {{{3
-Plug 'junegunn/fzf', { 'dir' : '~/packages/fzf', 'do': './install --all' }
+Plug 'junegunn/fzf', {'dir' : '~/local/fzf', 'do': './install --all'}
 Plug 'junegunn/fzf.vim'
 nmap <silent> <Leader>ff :Files<CR>
 nmap <silent> <Leader>fb :Buffers<CR>
@@ -117,17 +116,12 @@ nmap <silent> <Leader>gn <Plug>GitGutterNextHunk
 nmap <silent> <Leader>gp <Plug>GitGutterPrevHunk
 
 " YouCompleteMe {{{3
-if has('win32')
-  let g:system_python = 'py -3'
-else
-  let g:system_python = '/usr/bin/python3'
-endif
 Plug 'Valloric/YouCompleteMe', {
-      \ 'do':
-      \ g:system_python
-      \ . ' install.py --clang-completer > ' . expand('$HOME/ycm.log') . ' 2>&1'
+      \ 'do': join([
+      \   has('win32') ? 'py -3' : '/usr/bin/python3',
+      \   'install.py --clang-completer > ' . expand('$HOME/ycm.log') . ' 2>&1',
+      \ ])
       \ }
-unlet g:system_python
 let g:ycm_python_binary_path = "python"
 let g:ycm_key_detailed_diagnostics = ''
 let g:ycm_goto_filetypes = [
@@ -188,7 +182,6 @@ if v:version >= 800 && (has("patch-8.0.1476") || !has("patch-8.0.1449"))
     execute "autocmd! FileType" s:ale_lsp_filetype_pattern
           \ "noremap <silent> <buffer> K <Plug>(ale_hover)"
   augroup END
-  unlet s:ale_lsp_filetype_pattern
 
 else
   Plug 'vim-syntastic/syntastic'
@@ -319,7 +312,6 @@ if !has('win32')
     let g:lilypond_enabled = 1
     set rtp+=s:lilypond_vim_dir
   endif
-  unlet s:lilypond_vim_dir
 endif
 
 " Display options: colorschemes, status lines etc. {{{2
@@ -362,7 +354,6 @@ Plug 'chrisbra/Colorizer'  " apply color to rgb sequences
 
 call plug#end()
 
-
 " Post-plug configuration {{{1
 
 " tpope tools {{{2
@@ -392,10 +383,9 @@ if exists('g:ale_lsp_filetypes')
   if !exists('g:ycm_filetype_blacklist')
     let g:ycm_filetype_blacklist = {}
   endif
-  for s:ft in g:ale_lsp_filetypes
-    let g:ycm_filetype_blacklist[s:ft] = 1
+  for s:ale_lsp_filetype in g:ale_lsp_filetypes
+    let g:ycm_filetype_blacklist[s:ale_lsp_filetype] = 1
   endfor
-  unlet s:ft
 endif
 
 " base16 {{{2
@@ -428,7 +418,6 @@ else
   endif
 endif
 execute "colorscheme" s:base16_theme
-unlet s:base16_theme
 
 "" solarized {{{2
 "colorscheme solarized
@@ -538,8 +527,8 @@ nmap <silent> <Leader><Space> :set list!<CR>
 
 " Hit <Leader>, to Drop $MYVIMRC, and <Leader>. to source it and reload current buffer
 nmap <silent> <Leader>, :Drop $MYVIMRC<CR>
-if !exists('*<SID>LoadRc')
-  function! <SID>LoadRc()
+if !exists('*s:LoadRc')
+  function! s:LoadRc()
     source $MYVIMRC
     if has('gui_running') && filereadable($MYGVIMRC)
        source $MYGVIMRC
@@ -582,7 +571,6 @@ augroup rc_wrap
   let s:setprosewrap = "setlocal textwidth=0 wrap breakindent breakindentopt=shift:2"
   execute "autocmd! FileType text,tex,bib" s:setprosewrap
   execute "autocmd! BufNewFile * if &previewwindow |" s:setprosewrap "| endif"
-  unlet s:setprosewrap
   autocmd! TerminalOpen * setlocal textwidth=0
 augroup END
 
@@ -610,7 +598,8 @@ augroup END
 " noexpandtab will give hideous mixed indents (unless shiftwidth happens to equal
 " tabstop, but editing behavior should not depend on a display setting like tabstop).
 augroup rc_indentunit
-  autocmd! FileType vim,sh,javascript,typescript,tex,bib setlocal shiftwidth=2 expandtab
+  autocmd! FileType vim,sh,javascript,typescript,tex,bib,markdown,pandoc
+        \ setlocal shiftwidth=2 expandtab
   autocmd! FileType c,cpp,cuda,go setlocal shiftwidth=0 noexpandtab
   autocmd! FileType java,rust setlocal shiftwidth=4 expandtab
 augroup END
