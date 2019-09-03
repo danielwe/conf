@@ -312,6 +312,9 @@ let g:nv_use_short_pathnames = 1
 let g:nv_keymap = {'ctrl-h': 'split', 'ctrl-v': 'vertical split', 'ctrl-t': 'tabedit'}
 let g:nv_create_note_window = 'Drop'
 
+nmap <silent> <Leader>nv :NV<CR>
+nmap <silent> <Leader>nt :NV (^\|\s)#\w\S+(\s\|$)<CR>
+
 " Define more flexible version of the :NV command, supporting an initial fzf query
 function! s:NVQuery(fzfquery, rgquery)
   execute 'NV' a:rgquery
@@ -325,15 +328,16 @@ function! s:NVCommandQuery(query)
   call s:NVQuery(l:fzfquery, l:rgquery)
 endfunction
 
-command! -nargs=? NQ call s:NVCommandQuery('<args>')
+command! -nargs=? NQ call s:NVCommandQuery(<q-args>)
 
 nmap <silent> <Leader>nq :call <SID>NVCommandQuery(getline('.'))<CR>
 vmap <silent> <Leader>nq :call <SID>NVCommandQuery(@*)<CR>
 
 call s:DevelopOrPlug('vim-nvtags')
 let g:nvtags_globs = ['*.md']
-nmap <silent> <Leader>nt :put ='  '<CR>d}k:NVTags<CR>
-vmap <silent> <Leader>nt :put ='  '<CR>d}k:execute 'NVTagsQuery' @*<CR>
+
+nmap <silent> <Leader>np :normal A <CR>d}:NVTags<CR>
+vmap <silent> <Leader>np :normal A <CR>d}:execute 'NVTagsQuery' @*<CR>
 
 " toml {{{3
 Plug 'cespare/vim-toml'  " add toml syntax
