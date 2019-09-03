@@ -288,7 +288,7 @@ let g:pandoc#biblio#sources = 'bctgy'
 
 let g:pandoc#after#modules#enabled = ["fastfold", "ultisnips"]
 
-augroup rc_autochdir
+augroup rc_autocd
   " pandoc link navigation only works if working dir tracks file dir
   autocmd! FileType pandoc Lcd
 augroup END
@@ -303,6 +303,11 @@ Plug 'suan/vim-instant-markdown', {
       \ }
 let g:instant_markdown_autostart = 0
 let g:instant_markdown_mathjax = 1
+
+augroup markserv
+  autocmd FileType markdown,pandoc
+        \ command! -nargs=? Markserv botright terminal ++rows=2 markserv <args>
+augroup END
 
 Plug 'alok/notational-fzf-vim'  " Interactive NV-like full-text search
 let g:nv_search_paths = ['~/Documents/notatbank']
