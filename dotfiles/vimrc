@@ -90,11 +90,6 @@ nmap <silent> <Leader>fl :Lines<CR>
 nmap <silent> <Leader>fh :Helptags<CR>
 nmap <silent> <Leader>fc :Commits<CR>
 
-" vim-grepper {{{3
-Plug 'mhinz/vim-grepper'  " grep from vim
-nmap <Leader>s <plug>(GrepperOperator)
-xmap <Leader>s <plug>(GrepperOperator)
-
 " dirvish {{{3
 Plug 'justinmk/vim-dirvish'              " browse directories and files
 if v:version >= 800
@@ -402,13 +397,6 @@ endif
 " vim-stay {{{2
 execute "set viewdir=" . expand('$MYVIMRUNTIME/view')
 set viewoptions=cursor,slash,unix
-
-" vim-grepper {{{2
-if has('vim_starting')
-  runtime! plugin/grepper.vim  " load now so options can be overridden
-endif
-let g:grepper.highlight = 1
-let g:grepper.git.grepprg .= ' --untracked'
 
 " autocompletion {{{2
 if !exists('g:ycm_semantic_triggers')
