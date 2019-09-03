@@ -276,7 +276,6 @@ let g:pandoc#keyboard#display_options = 0
 
 let g:pandoc#syntax#conceal#urls = 1
 
-let g:pandoc#formatting#mode = 'h'
 let g:pandoc#formatting#textwidth = 88
 
 let g:pandoc#hypertext#split_open_cmd = "Drop"
@@ -599,19 +598,18 @@ command! Lcd lcd %:h
 " wrap {{{2
 augroup rc_wrap
   " For unwrapped prose, wrap long lines and indicate with a hanging indent (don't apply
-  " to, e.g., markdown and help, since these typically contain structures like tables
-  " and hard-wrapped columns that don't mix with soft wrapping at all). Do the same when
-  " a nonexistent file is opened in a preview window (this is a common mechanism for
-  " displaying documentation).
+  " to, e.g., help, since it often contains manual alignment that doesn't mix with soft
+  " wrapping at all). Do the same when a nonexistent file is opened in a preview window
+  " (this is a common mechanism for displaying documentation).
   let s:setprosewrap = "setlocal textwidth=0 wrap breakindent breakindentopt=shift:2"
-  execute "autocmd! FileType text,tex,bib" s:setprosewrap
+  execute "autocmd! FileType text,tex,bib,markdown,pandoc" s:setprosewrap
   execute "autocmd! BufNewFile * if &previewwindow |" s:setprosewrap "| endif"
   autocmd! TerminalOpen * setlocal textwidth=0
 augroup END
 
 " spell {{{2
 augroup rc_spell
-  autocmd! FileType markdown,tex,gitcommit setlocal spell
+  autocmd! FileType markdown,pandoc,tex,gitcommit setlocal spell
 augroup END
 
 " compile {{{2
