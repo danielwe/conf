@@ -274,6 +274,15 @@ Plug 'vim-pandoc/vim-pandoc-syntax'
 Plug 'vim-pandoc/vim-pandoc-after'
 let g:pandoc#keyboard#display_options = 0
 
+let g:pandoc#syntax#conceal#blacklist = [
+      \ "atx",
+      \ "codeblock_start",
+      \ "codeblock_delim",
+      \ "list",
+      \ "ellipses",
+      \ "quotes",
+      \ ]
+let g:pandoc#syntax#conceal#cchar_overrides = {"footnote" : "^"}
 let g:pandoc#syntax#conceal#urls = 1
 
 let g:pandoc#formatting#textwidth = 88
