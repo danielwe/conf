@@ -84,7 +84,7 @@ Plug 'kana/vim-textobj-entire'  " define text objects for the entire buffer
 Plug 'junegunn/fzf', {'dir' : '~/local/fzf', 'do': './install --all'}
 Plug 'junegunn/fzf.vim'
 nmap <silent> <Leader>ff :Files<CR>
-nmap <silent> <Leader>fv :Files $MYVIMRUNTIME<CR>
+nmap <silent> <Leader>fp :Files $MYVIMRUNTIME/plugged<CR>
 nmap <silent> <Leader>fb :Buffers<CR>
 nmap <silent> <Leader>fl :Lines<CR>
 nmap <silent> <Leader>fh :Helptags<CR>
@@ -269,11 +269,11 @@ let g:vimtex_view_automatic = 0
 "       \}
 
 " markdown/wiki {{{3
+" Pandoc suite for syntax, navigation, citations
 Plug 'vim-pandoc/vim-pandoc'
 Plug 'vim-pandoc/vim-pandoc-syntax'
 Plug 'vim-pandoc/vim-pandoc-after'
 let g:pandoc#keyboard#display_options = 0
-
 let g:pandoc#syntax#conceal#blacklist = [
       \ "atx",
       \ "codeblock_start",
@@ -284,26 +284,27 @@ let g:pandoc#syntax#conceal#blacklist = [
       \ ]
 let g:pandoc#syntax#conceal#cchar_overrides = {"footnote" : "^"}
 let g:pandoc#syntax#conceal#urls = 1
-
 let g:pandoc#formatting#textwidth = 88
-
 let g:pandoc#hypertext#split_open_cmd = "Drop"
 let g:pandoc#hypertext#edit_open_cmd = "Drop"
 let g:pandoc#hypertext#create_if_no_alternates_exist = 1
-
 let g:pandoc#biblio#use_bibtool = 1
 let g:pandoc#biblio#sources = 'bctgy'
-
 let g:pandoc#after#modules#enabled = ["fastfold", "ultisnips"]
-
 augroup rc_autocd
   " pandoc link navigation only works if working dir tracks file dir
   autocmd! FileType pandoc Lcd
 augroup END
 
+" Markdown linting
 let g:ale_linter_aliases = {'pandoc': 'markdown'}
 let g:ale_markdown_mdl_options = '--rules ~MD009,~MD013'
 
+" Markdown preview
+augroup markserv
+  autocmd FileType markdown,pandoc
+        \ command! -nargs=? Markserv botright terminal ++rows=2 markserv <args>
+augroup END
 Plug 'iamcco/markdown-preview.nvim', {'do': 'cd app & yarn install'}
 Plug 'suan/vim-instant-markdown', {
       \ 'do': 'npm -g install instant-markdown-d@next',
@@ -312,11 +313,7 @@ Plug 'suan/vim-instant-markdown', {
 let g:instant_markdown_autostart = 0
 let g:instant_markdown_mathjax = 1
 
-augroup markserv
-  autocmd FileType markdown,pandoc
-        \ command! -nargs=? Markserv botright terminal ++rows=2 markserv <args>
-augroup END
-
+" Searching
 Plug 'alok/notational-fzf-vim'  " Interactive NV-like full-text search
 let g:nv_search_paths = ['~/Documents/notatbank']
 let g:nv_window_direction = 'left'
@@ -331,10 +328,6 @@ function! s:NVQuery(fzfquery, rgquery)
   call feedkeys(a:fzfquery)
 endfunction
 
-function! s:NVTagQuery(fzfquery)
-  call s:NVQuery(a:fzfquery, '(^|\s)#\w\S+(\s|$)')
-endfunction
-
 function! s:NVCombinedQuery(query)
   let queries = split(a:query, ',\|;', 1)  " splits on , or ;
   let fzfquery = trim(queries[0])
@@ -342,17 +335,21 @@ function! s:NVCombinedQuery(query)
   call s:NVQuery(l:fzfquery, l:rgquery)
 endfunction
 
-command! -nargs=? NT call s:NVTagQuery(<q-args>)
 command! -nargs=? NQ call s:NVCombinedQuery(<q-args>)
-
-nmap <silent> <Leader>nt :call <SID>NVTagQuery(getline('.'))<CR>
-vmap <silent> <Leader>nt :call <SID>NVTagQuery(@*)<CR>
 nmap <silent> <Leader>nq :call <SID>NVCombinedQuery(getline('.'))<CR>
 vmap <silent> <Leader>nq :call <SID>NVCombinedQuery(@*)<CR>
 
+" Tagging
+function! s:NVTagQuery(fzfquery)
+  call s:NVQuery(a:fzfquery, '^Tags:\s+#\w\S+')
+endfunction
+
+command! -nargs=? NT call s:NVTagQuery(<q-args>)
+nmap <silent> <Leader>nt :call <SID>NVTagQuery(getline('.'))<CR>
+vmap <silent> <Leader>nt :call <SID>NVTagQuery(@*)<CR>
+
 call s:DevelopOrPlug('vim-nvtags')
 let g:nvtags_globs = ['*.md']
-
 nmap <silent> <Leader>np A<Space><Esc>d}:NVTags<CR>
 vmap <silent> <Leader>np A<Space><Esc>d}:execute 'NVTagsQuery' @*<CR>
 
