@@ -328,6 +328,7 @@ function! s:NVQuery(fzfquery, rgquery)
   call feedkeys(a:fzfquery)
 endfunction
 
+
 function! s:NVCombinedQuery(query)
   let queries = split(a:query, ',\|;', 1)  " splits on , or ;
   let fzfquery = trim(queries[0])
@@ -352,6 +353,10 @@ call s:DevelopOrPlug('vim-nvtags')
 let g:nvtags_globs = ['*.md']
 nmap <silent> <Leader>np A<Space><Esc>d}:NVTags<CR>
 vmap <silent> <Leader>np A<Space><Esc>d}:execute 'NVTagsQuery' @*<CR>
+
+" New note with timestamp as filename
+nmap <silent> <Leader>nn :execute 'edit'
+      \ g:nv_search_paths[0] . '/' . strftime("%Y%m%d%H%M%S") . '.md'<CR>
 
 " toml {{{3
 Plug 'cespare/vim-toml'  " add toml syntax
