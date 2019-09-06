@@ -105,11 +105,11 @@ nmap <silent> <Leader>gg :Gstatus<CR>
 nmap <silent> <Leader>gd :Gdiff<CR>
 nmap <silent> <Leader>gl :Gitv<CR>
 nmap <silent> <Leader>gf :Gitv!<CR>
-nmap <silent> <Leader>gh <Plug>GitGutterPreviewHunk
-nmap <silent> <Leader>gs <Plug>GitGutterStageHunk
-nmap <silent> <Leader>gu <Plug>GitGutterUndoHunk
-nmap <silent> <Leader>gn <Plug>GitGutterNextHunk
-nmap <silent> <Leader>gp <Plug>GitGutterPrevHunk
+nmap <silent> <Leader>gh <Plug>(GitGutterPreviewHunk)
+nmap <silent> <Leader>gs <Plug>(GitGutterStageHunk)
+nmap <silent> <Leader>gu <Plug>(GitGutterUndoHunk)
+nmap <silent> <Leader>gn <Plug>(GitGutterNextHunk)
+nmap <silent> <Leader>gp <Plug>(GitGutterPrevHunk)
 
 " YouCompleteMe {{{3
 Plug 'Valloric/YouCompleteMe', {
