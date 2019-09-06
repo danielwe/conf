@@ -298,7 +298,7 @@ augroup END
 
 " Markdown linting
 let g:ale_linter_aliases = {'pandoc': 'markdown'}
-let g:ale_markdown_mdl_options = '--rules ~MD009,~MD013'
+let g:ale_markdown_mdl_options = '--rules ~MD009,~MD013,~MD024,~MD036'
 
 " Markdown preview
 augroup markserv
@@ -640,7 +640,7 @@ augroup END
 
 " spell {{{2
 augroup rc_spell
-  autocmd! FileType markdown,pandoc,tex,gitcommit setlocal spell
+  autocmd! FileType markdown,pandoc,tex,gitcommit setlocal spell spelllang=en,nb
 augroup END
 
 " compile {{{2
