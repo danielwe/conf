@@ -328,7 +328,6 @@ function! s:NVQuery(fzfquery, rgquery)
   call feedkeys(a:fzfquery)
 endfunction
 
-
 function! s:NVCombinedQuery(query)
   let queries = split(a:query, ',\|;', 1)  " splits on , or ;
   let fzfquery = trim(queries[0])
@@ -342,7 +341,7 @@ vmap <silent> <Leader>nq :call <SID>NVCombinedQuery(@*)<CR>
 
 " Tagging
 function! s:NVTagQuery(fzfquery)
-  call s:NVQuery(a:fzfquery, '^Tags:\s+#\w\S+')
+  call s:NVQuery(a:fzfquery, '^Tags:\s*#\w\S')
 endfunction
 
 command! -nargs=? NT call s:NVTagQuery(<q-args>)
@@ -353,6 +352,23 @@ call s:DevelopOrPlug('vim-nvtags')
 let g:nvtags_globs = ['*.md']
 nmap <silent> <Leader>np A<Space><Esc>d}:NVTags<CR>
 vmap <silent> <Leader>np A<Space><Esc>d}:execute 'NVTagsQuery' @*<CR>
+
+function s:NVTagsUpdateAll()
+  normal G$
+  call search('\c\(^\|:\)\s*!\?#\w\S', 'w')
+  normal j0
+  while search('\c\(^\|:\)\s*!\?#\w\S', 'W') > 0
+    execute "normal A\<Space>\<Esc>d}"
+    NVTags
+    normal j0
+  endwhile
+endfunction
+
+command! -bar NVTagsAll call s:NVTagsUpdateAll()
+
+augroup rc_nvtags
+  autocmd! BufReadPost *.md NVTagsAll | write
+augroup END
 
 " New note with timestamp as filename
 nmap <silent> <Leader>nn :execute 'edit'
