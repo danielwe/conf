@@ -302,8 +302,10 @@ let g:ale_markdown_mdl_options = '--rules ~MD009,~MD013,~MD024,~MD036'
 
 " Markdown preview
 augroup markserv
-  autocmd FileType markdown,pandoc
-        \ command! -nargs=? Markserv botright terminal ++rows=2 markserv <args>
+  if executable('markserv')
+    autocmd! FileType markdown,pandoc
+          \ command! -nargs=? Markserv botright terminal ++rows=2 markserv <args>
+  endif
 augroup END
 Plug 'iamcco/markdown-preview.nvim', {'do': 'cd app & yarn install'}
 Plug 'suan/vim-instant-markdown', {
