@@ -353,18 +353,20 @@ let g:nvtags_globs = ['*.md']
 nmap <silent> <Leader>np A<Space><Esc>d}:NVTags<CR>
 vmap <silent> <Leader>np A<Space><Esc>d}:execute 'NVTagsQuery' @*<CR>
 
-function s:NVTagsUpdateAll()
-  normal G$
-  call search('\c\(^\|:\)\s*!\?#\w\S', 'w')
-  normal j0
-  while search('\c\(^\|:\)\s*!\?#\w\S', 'W') > 0
+function! s:NVTagsUpdateAll()
+  normal mt
+  normal gg0
+  call search('\(^\|:\)\s*!\?#\w\S', 'c')
+  while search('\(^\|:\)\s*!\?#\w\S', 'W')
     execute "normal A\<Space>\<Esc>d}"
     NVTags
-    normal j0
+    normal }
   endwhile
+  normal `t
+  delmarks t
 endfunction
 
-command! -bar NVTagsAll call s:NVTagsUpdateAll()
+command! NVTagsAll call s:NVTagsUpdateAll()
 
 " New note with timestamp as filename
 nmap <silent> <Leader>nn :execute 'edit'
