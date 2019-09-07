@@ -308,8 +308,10 @@ Plug 'suan/vim-instant-markdown', {
       \ 'do': 'npm -g install instant-markdown-d@next',
       \ 'for': ['markdown', 'pandoc'],
       \ }
+      " \ 'do': '& pip install smdv',
 let g:instant_markdown_autostart = 0
 let g:instant_markdown_mathjax = 1
+" let g:instant_markdown_python = 1
 
 " Searching
 Plug 'alok/notational-fzf-vim'  " Interactive NV-like full-text search
