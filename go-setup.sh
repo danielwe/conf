@@ -1,18 +1,16 @@
 #!/bin/bash
 
-# Install and configure Node.js
-# Remember to link dotfiles first.
+# Install and configure go
 
-MAJOR_VERSION=10
+sudo snap install go --classic
 
-sudo snap install node --classic --channel=${MAJOR_VERSION}
-
-# Insert npm binaries in PATH
+# Insert go binaries in PATH
 BASHRC="${HOME}/.profile"
 
-BIN="${HOME}/local/npm/bin"
+BIN="${HOME}/local/go/bin"
 echo >> ${BASHRC}
 echo "# set PATH so it includes npm binaries" >> ${BASHRC}
 echo 'if [ -d "'"${BIN}"'" ] ; then' >> ${BASHRC}
 echo '    PATH="'"${BIN}"':$PATH"' >> ${BASHRC}
 echo "fi" >> ${BASHRC}
+echo 'export GOPATH="$HOME/local/go"'

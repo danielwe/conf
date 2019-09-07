@@ -3,4 +3,4 @@
 # Install custom bashrc
 echo >> ~/.bashrc
 echo '# Source custom config' >> ~/.bashrc
-echo 'source "$HOME/.bashrc.custom"' >> ~/.bashrc
+echo '[ -f ~/.bashrc.custom ] && source ~/.bashrc.custom' >> ~/.bashrc
