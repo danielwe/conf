@@ -291,10 +291,6 @@ let g:pandoc#hypertext#create_if_no_alternates_exist = 1
 let g:pandoc#biblio#use_bibtool = 1
 let g:pandoc#biblio#sources = 'bctgy'
 let g:pandoc#after#modules#enabled = ["fastfold", "ultisnips"]
-augroup rc_autocd
-  " pandoc link navigation only works if working dir tracks file dir
-  autocmd! FileType pandoc Lcd
-augroup END
 
 " Markdown linting
 let g:ale_linter_aliases = {'pandoc': 'markdown'}
@@ -367,10 +363,6 @@ function s:NVTagsUpdateAll()
 endfunction
 
 command! -bar NVTagsAll call s:NVTagsUpdateAll()
-
-augroup rc_nvtags
-  autocmd! BufReadPost *.md NVTagsAll | write
-augroup END
 
 " New note with timestamp as filename
 nmap <silent> <Leader>nn :execute 'edit'
