@@ -322,19 +322,6 @@ let g:nv_use_short_pathnames = 1
 let g:nv_keymap = {'ctrl-h': 'split', 'ctrl-v': 'vertical split', 'ctrl-t': 'tabedit'}
 let g:nv_create_note_window = 'Drop'
 
-" Define variations of the :NV command
-command! NVHere execute 'NV' getline('.')
-
-function! s:NVQueries(fzfquery, rgquery)
-  execute 'NV' a:rgquery
-  call feedkeys(trim(a:fzfquery))
-endfunction
-
-command! -nargs=? NF call s:NVQueries(<q-args>, '')
-command! -nargs=? NFHere call s:NVQueries(split(getline('.'), ':')[-1], <q-args>)
-nmap <silent> <Leader>nf :NFHere<CR>
-vmap <silent> <Leader>nf <Esc>:execute 'NF' @*<CR>
-
 " Tagging
 call s:DevelopOrPlug('vim-nvtags')
 let g:nvtags_tagline_prefix = 'Tags'
@@ -342,10 +329,6 @@ let g:nvtags_globs = ['*.md']
 nmap <silent> <Leader>na :NVTagsAll!<CR>
 nmap <silent> <Leader>nu :NVTagsHere!<CR>
 vmap <silent> <Leader>nu <Esc>:execute 'NVTags!' @*<CR>
-
-" Interactive tag search
-command! -nargs=? NT call s:NVQueries(<q-args>, g:nvtags_tagline_pattern)
-command! NTHere execute 'NT' split(getline('.'), ':')[-1]
 nmap <silent> <Leader>nt :NTHere<CR>
 vmap <silent> <Leader>nt <Esc>:execute 'NT' @*<CR>
 
