@@ -168,7 +168,7 @@ if v:version >= 800 && (has("patch-8.0.1476") || !has("patch-8.0.1449"))
   let g:ale_echo_msg_format = '%linter% %severity%: %s (%code%)'
 
   " Configure LSP for supported filetypes
-  let g:ale_completion_enabled = 1
+  let g:ale_completion_enabled = 0
   let g:ale_lsp_filetypes = ['julia']
   let s:ale_lsp_filetype_pattern = join(g:ale_lsp_filetypes, ",")
   augroup GoTo
