@@ -158,8 +158,9 @@ augroup END
 
 " ale/syntastic linter {{{3
 if v:version >= 800 && (has("patch-8.0.1476") || !has("patch-8.0.1449"))
-  " see https://github.com/w0rp/ale/issues/1536 for details about bug and required patch
-  Plug 'w0rp/ale'
+  " see https://github.com/dense-analysis/ale/issues/1536 for details about bug and
+  " required patch
+  Plug 'dense-analysis/ale'
   "call s:DevelopOrPlug('ale')
   let g:ale_echo_msg_error_str = 'E'
   let g:ale_echo_msg_info_str = 'I'
