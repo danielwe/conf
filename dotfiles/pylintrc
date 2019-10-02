@@ -89,5 +89,8 @@ disable=print-statement,
         no-name-in-module,
         bad-continuation,
         unused-wildcard-import,
+        unsubscriptable-object,
+        not-callable,
+        too-many-function-args,
 
 max-line-length=88
