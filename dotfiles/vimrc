@@ -209,7 +209,7 @@ nmap <silent> <Leader>r <Plug>SlimeMotionSend
 nmap <silent> <Leader>rr <Plug>SlimeLineSend
 nmap <silent> <Leader>r<Leader>r <Leader>rr
 xmap <silent> <Leader>r <Plug>SlimeRegionSend
-if &term =~# "tmux"
+if $TERM =~# "tmux" && exists("$TMUX")
   let g:slime_target = "tmux"
   let g:slime_default_config = {
         \ "socket_name": split($TMUX, ",")[0],
