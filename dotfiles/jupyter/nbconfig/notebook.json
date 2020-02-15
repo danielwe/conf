@@ -13,7 +13,7 @@
     "rubberband/main": true,
     "codemirror_mode_extensions/main": false,
     "collapsible_headings/main": true,
-    "latex_envs/latex_envs": true,
+    "latex_envs/latex_envs": false,
     "comment-uncomment/main": false,
     "table_beautifier/main": true
   },
