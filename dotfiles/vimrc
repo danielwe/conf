@@ -191,7 +191,7 @@ endif
 " snippets {{{3
 Plug 'SirVer/ultisnips'                       " snippet engine
 Plug 'honza/vim-snippets'                     " snippets
-" call s:DevelopOrPlug('vim-unicode-snippets')  " unicode snippets with latex triggers
+call s:DevelopOrPlug('vim-unicode-snippets')  " unicode snippets with latex triggers
 let g:UltiSnipsExpandTrigger = '<C-J>'
 let g:UltiSnipsJumpForwardTrigger = '<C-J>'
 let g:UltiSnipsJumpBackwardTrigger = '<C-K>'
