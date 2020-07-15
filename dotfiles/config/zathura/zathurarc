@@ -3,12 +3,12 @@ set selection-clipboard "clipboard"
 
 set synctex "true"
 
-set highlight-transparency 0.2
-set recolor "true"
+# set highlight-transparency 0.2
+# set recolor "true"
 
 # base16 atelier estuary light
-set highlight-color "#a5980d"
-set highlight-active-color "#ae7313"
+# set highlight-color "#a5980d"
+# set highlight-active-color "#ae7313"
 set recolor-darkcolor "#5f5e4e"
 set recolor-lightcolor "#f4f3ec"
 
