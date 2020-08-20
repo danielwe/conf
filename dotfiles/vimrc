@@ -114,7 +114,7 @@ nmap <silent> <Leader>gp <Plug>(GitGutterPrevHunk)
 " YouCompleteMe {{{3
 Plug 'Valloric/YouCompleteMe', {
       \ 'do': join([
-      \   has('win32') ? 'py -3' : '/usr/bin/python3',
+      \   has('win32') ? 'py -3' : '/usr/bin/python3.7',
       \   'install.py --clang-completer > ' . expand('$HOME/ycm.log') . ' 2>&1',
       \ ])
       \ }
