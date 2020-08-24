@@ -28,6 +28,14 @@ function! s:DevelopOrPlug(name)
   endif
 endfunction
 
+function! s:Python3VersionMinor()
+python3 << EOF
+import sys, vim
+vim.command("let l:py_version_minor = {}".format(sys.version_info.minor))
+EOF
+  return l:py_version_minor
+endfunction
+
 call plug#begin()
 
 " Editor enhancements {{{2
@@ -112,13 +120,16 @@ nmap <silent> <Leader>gn <Plug>(GitGutterNextHunk)
 nmap <silent> <Leader>gp <Plug>(GitGutterPrevHunk)
 
 " YouCompleteMe {{{3
-Plug 'Valloric/YouCompleteMe', {
-      \ 'commit': '321700e',
+let g:ycm_options = {
       \ 'do': join([
       \   has('win32') ? 'py -3' : '/usr/bin/python3',
       \   'install.py --clangd-completer > ' . expand('$HOME/ycm.log') . ' 2>&1',
       \ ]),
       \ }
+if s:Python3VersionMinor() < 6
+  let g:ycm_options['commit'] = '321700e'
+endif
+Plug 'Valloric/YouCompleteMe', g:ycm_options
 let g:ycm_python_binary_path = "python"
 let g:ycm_key_detailed_diagnostics = ''
 let g:ycm_goto_filetypes = [
@@ -228,17 +239,8 @@ let g:slime_python_ipython = 1
 " python {{{3
 Plug 'tmhedberg/SimpylFold'           " fold python correctly
 Plug 'Vimjas/vim-python-pep8-indent'  " indent python correctly
-if has('python3')
-  function! s:PythonVersionMinor()
-python3 << EOF
-import sys, vim
-vim.command("let l:py_version_minor = {}".format(sys.version_info.minor))
-EOF
-    return l:py_version_minor
-  endfunction
-  if s:PythonVersionMinor() >= 6
-    Plug 'ambv/black'                 " format code
-  endif
+if s:Python3VersionMinor() >= 6
+  Plug 'ambv/black'                 " format code
 endif
 let g:syntastic_python_checkers = ['pycodestyle', 'pyflakes', 'pylint']
 
