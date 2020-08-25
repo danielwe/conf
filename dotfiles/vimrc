@@ -538,6 +538,12 @@ elseif &term =~# '256color'  " e.g., tmux-256color
   " in tmux, however.
   set term=xterm-256color
 endif
+" Avoid issues after vim-8.2.0767 with terminals presumably too old
+" to handle t_TI and t_TE. Remove once we have all moved on, e.g. to Ubuntu 20.04. See:
+" * https://github.com/vim/vim/issues/6111
+" * https://github.com/vim/vim/issues/6112
+" * https://github.com/vim/vim/issues/6122
+set t_TI= t_TE=
 
 " Key mappings and commands {{{1
 
