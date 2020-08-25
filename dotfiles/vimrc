@@ -529,15 +529,6 @@ if has('vim_starting') && has('gui_running')
   set guioptions-=r       " Disable scrollbar.
 endif
 
-" Terminal color hack for gvim and tmux (see |terminal-unix|---the problem is the
-" nonsensical fallbacks)
-if has('gui_running')
-  let $TERM = 'xterm-256color'
-elseif &term =~# '256color'  " e.g., tmux-256color
-  " This is experimental: could lead vim to misunderstand some keys. Seems to work fine
-  " in tmux, however.
-  set term=xterm-256color
-endif
 " Avoid issues after vim-8.2.0767 with terminals presumably too old
 " to handle t_TI and t_TE. Remove once we have all moved on, e.g. to Ubuntu 20.04. See:
 " * https://github.com/vim/vim/issues/6111
