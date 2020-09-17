@@ -2,74 +2,106 @@
 
 # Prepare the nvidia driver for use with CUDA installed from e.g. anaconda:
 
-# WITH MANUAL TOGGLING, NO NVIDIA-PRIME
-
-# Full, automatically upgraded drivers, with CUDA
+# PACKAGES
 sudo apt install cuda  # or just cuda-drivers
 
-# Pinned, headless driver
-#VERSION=410  # Check preferred repo for latest version
-#sudo apt install nvidia-headless-$VERSION nvidia-utils-$VERSION libnvidia-cfg1-$VERSION
+# STARTUP BEHAVIOR AND POWER MANAGMENT
+# gpu-manager needs to believe it's being instructed by prime-select to boot on intel
+echo 'off' | sudo tee "/etc/prime-discrete"
 
-BLACKLIST_CONF=/etc/modprobe.d/blacklist-nvidia.conf
+# module options to enable fine-grained power management
+echo \
+'# Enable fine-grained runtime D3 power control
+options nvidia "NVreg_DynamicPowerManagement=0x02"' \
+  | sudo tee "/etc/modprobe.d/nvidia.conf"
 
-echo 'blacklist nvidia
+# Hooks to ensure consistent power control states on driver load/unload. See
+# https://download.nvidia.com/XFree86/Linux-x86_64/450.51/README/dynamicpowermanagement.html.
+echo \
+'# Enable runtime PM for NVIDIA VGA/3D controller devices on driver bind
+ACTION=="bind", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x030000", TEST=="power/control", ATTR{power/control}="auto"
+ACTION=="bind", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x030200", TEST=="power/control", ATTR{power/control}="auto"
+
+# Disable runtime PM for NVIDIA VGA/3D controller devices on driver unbind
+ACTION=="unbind", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x030000", TEST=="power/control", ATTR{power/control}="on"
+ACTION=="unbind", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x030200", TEST=="power/control", ATTR{power/control}="on"' \
+  | sudo tee "/etc/udev/rules.d/80-nvidia-pm.rules"
+
+# VERSION SPECIFIC ISSUES
+
+# If system X server is < 1.21 and PRIME offloading is desired, install patched version.
+# See
+# https://download.nvidia.com/XFree86/Linux-x86_64/450.51/README/primerenderoffload.html
+sudo add-apt-repository ppa:aplattner/ppa
+
+# Pin repo in case its versions are lagging
+echo \
+'Package: *
+Pin: release o=LP-PPA-aplattner
+Pin-Priority: 5000' \
+  | sudo tee "/etc/apt/preferences.d/xorg-repository-pin-5000"
+
+sudo apt upgrade
+
+# If GPU is older than the Turing architecture, nvidia_drm must remain unloaded until
+# all X sessions have started for power management to be able to turn it off completely
+# when not in use, since any X session loaded after nvidia_drm will initialize some GPU
+# memory, keeping it powered on unless it support runtime D3 power management. See
+# https://download.nvidia.com/XFree86/Linux-x86_64/450.51/README/dynamicpowermanagement.html.
+# There are so many services that want to load the drivers: kernel/gpumanager, gdm,
+# xorg, nvidia-persistenced.service, ...; it seems like the most stable solution is to
+# blacklist all nvidia drivers and completely disable nvidia-persistenced.service
+# (persistence mode isn't very relevant for laptops anyway). Still, for incomprehensible
+# reasons, the drivers will load during the first X login session, so the second X login
+# session will register Xorg as a GPU client. This can be used to enable PRIME render
+# offload for a second graphics/gaming-dedicated user, while minimizing power
+# consumption when not using offloading. (Note that if the nvidia driver itself is not
+# blacklisted, it will start on boot without also starting nvidia_drm. This might sound
+# desireable, but this turns out to be incredibly unstable and lead to frequent crashes
+# during boot, at list when persistence mode is disabled.)
+
+echo '
+# Avoid loading drivers at boot
+blacklist nvidia
 blacklist nvidia_uvm
 blacklist nvidia_modeset
-blacklist nvidia_drm' | sudo tee "$BLACKLIST_CONF"
+blacklist nvidia_drm' \
+  | sudo tee -a "/etc/modprobe.d/nvidia.conf"
 
-# PREFERRED: automatic power management by the kernel. With recent kernels this is
-# sufficient for the GPU to be powered down when drivers are unloaded.
+sudo systemctl mask nvidia-persistenced.service
 
-# Make sure that GPU is completely off on boot to avoid driver loading by anyone
-# (kernel, xorg, gnome, nvidia-fallback.service, ...)
-OFF_CONF=/etc/tmpfiles.d/nvidia-off.conf
-echo "w /sys/bus/pci/devices/0000:01:00.0/remove - - - - 1" | sudo tee "$OFF_CONF"
+# OLDER SOLUTIONS
 
-sudo update-initramfs -u
-
-# Make sure GPU is always on when going to sleep, otherwise you'll get in trouble. For
-# some reason any attempt to automatically turn it back off on resume will fail to
-# persist, so this hook does not bother trying.
-SLEEP_HOOK=/lib/systemd/system-sleep/nvidia
-
-echo '#!/bin/sh
-
-GPUID="0000:01:00.0"
-
-case $1 in
-  pre)
-    if modprobe --dry-run --first-time nvidia > /dev/null 2>&1
-    then
-      echo 1 > "/sys/bus/pci/rescan" \
-        && echo auto > "/sys/bus/pci/devices/$GPUID/power/control" \
-        && modprobe nvidia \
-        && nvidia-smi -pm 1
-    fi
-    ;;
-  post)
-    exit 0
-    ;;
-esac' | sudo tee "$SLEEP_HOOK"
-sudo chmod +x "$SLEEP_HOOK"
-
-# Restart.
-
-# To turn on GPU from bash:
-#GPUID="0000:01:00.0"
-#sudo tee /sys/bus/pci/rescan <<< 1 \
-#  && sudo tee "/sys/bus/pci/devices/$GPUID/power/control" <<< auto \
-#  && sudo modprobe nvidia \
-#  && sudo nvidia-smi -pm 1
-# To turn off GPU from bash:
-#sudo tee "/sys/bus/pci/devices/$GPUID/power/control" <<< auto \
-#  && sudo nvidia-smi -pm 0 \
-#  && sudo modprobe -r nvidia_drm nvidia_modeset nvidia_uvm nvidia
-
-# Power management using bbswitch. Note that the GPU is correctly powered off with
-# recent kernels, even if bbswitch complains to syslogs that it's not. (Check power
-# consumption in powertop or similar to confirm).
+# A more heavyhanded way to avoid premature driver loading: unregister card on boot
+# echo "w /sys/bus/pci/devices/0000:01:00.0/remove - - - - 1" \
+#   | sudo tee /etc/tmpfiles.d/nvidia-off.conf
+# # Make sure to re-register GPU before going to sleep, otherwise trouble awaits
+# SLEEP_HOOK=/lib/systemd/system-sleep/nvidia
 #
+# echo \
+# '#!/bin/sh
+#
+# case $1 in
+#   pre)
+#     modprobe --dry-run --first-time nvidia > /dev/null 2>&1 \
+#       && echo 1 > "/sys/bus/pci/rescan" \
+#       && sleep 1 \
+#       && modprobe nvidia
+#     ;;
+#   post)
+#     ;;
+# esac' \
+#   | sudo tee "$SLEEP_HOOK"
+# sudo chmod +x "$SLEEP_HOOK"
+
+# To turn on GPU from bash, use commands from sleep hook. Consider adding to .xprofile.
+
+
+# Power management using bbswitch
+
+# Note that the GPU is correctly powered off with recent kernels, even if bbswitch
+# complains to syslogs that it's not. (Check power consumption in powertop or similar to
+# confirm).
 ##sudo systemctl disable nvidia-fallback.service  # No longer present for recent drivers
 #
 #BBSWITCH_LOAD=/etc/modules-load.d/bbswitch.conf
@@ -96,25 +128,7 @@ sudo chmod +x "$SLEEP_HOOK"
 #sudo nvidia-smi -pm 0 && sudo modprobe -r nvidia
 #sudo tee /proc/acpi/bbswitch <<< OFF
 
-
-# OTHER METHODS:
-
-# 18.04 assuming nvidia-driver-* and nvidia-prime is installed. Not always stable. Using
-# nvidia-headless is not a good idea; no real benefits, but easy to end up in an
-# unbootable state.
-#MOD_DIR="/lib/modprobe.d"  # Or /etc/modprobe.d for older versions of prime
-#sudo prime-select intel  # Turn off nvidia at boot
-#sudo sed -i 's/^alias/#alias/' "$MOD_DIR/blacklist_nvidia.conf"  # Make nvidia loadable
-# Restart.
-# 
-# Before using CUDA, execute:
-#sudo modprobe nvidia
-#
-# NOTE: driver version 410 from the CUDA repos contains a more insistent persistence
-# daemon that makes the system unstable when configured as above, especially when waking
-# from lock or sleep. Use the version from the ubuntu repos for the time being.
-
-# Older versions:
+# Manually configuring linker paths
 
 #BASHRC="${HOME}/.bashrc"
 
@@ -131,7 +145,6 @@ sudo chmod +x "$SLEEP_HOOK"
 #echo '    fi' >> ${BASHRC}
 #echo '    unset nvdir' >> ${BASHRC}
 #echo 'fi 2>/dev/null' >> ${BASHRC}
-
 
 # Manual CUDA install: lots of hoops to jump through, but in the end you want
 # to add something like this to .bashrc:
