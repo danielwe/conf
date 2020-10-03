@@ -60,7 +60,7 @@ nmap <silent> <C-C> :Bdelete<CR>
 Plug 'tomtom/tcomment_vim'  " toggle comments
 let g:tcomment_mapleader1 = "<C-/>"
 let g:tcomment_mapleader2 = "g/"
-let g:tcomment#options = {'whitespace' : 'yes'}
+let g:tcomment#options = {'whitespace' : 'no'}
 
 " loupe {{{3
 Plug 'wincent/loupe'  " improve search and highlighting
@@ -85,6 +85,8 @@ let g:lt_location_list_toggle_map = '<Leader>ql'
 " custom text objects {{{3
 Plug 'kana/vim-textobj-user'    " define custom text objects
 Plug 'kana/vim-textobj-entire'  " define text objects for the entire buffer
+Plug 'Julian/vim-textobj-brace'  " define text objects for content between braces
+Plug 'rbonvall/vim-textobj-latex'  " define text objects for latex structures
 
 " IDE-like functionality {{{2
 
@@ -169,11 +171,16 @@ augroup GetDoc
 augroup END
 
 " ale/syntastic linter {{{3
-if v:version >= 800 && (has("patch-8.0.1476") || !has("patch-8.0.1449"))
+let s:ale_version_check = 
+      \ (v:version >= 800 && (has("patch-8.0.1476") || !has("patch-8.0.1449")))
+if s:ale_version_check
   " see https://github.com/dense-analysis/ale/issues/1536 for details about bug and
   " required patch
   Plug 'dense-analysis/ale'
   "call s:DevelopOrPlug('ale')
+  let g:ale_lint_on_text_changed = 'never'
+  let g:ale_lint_on_insert_leave = 1
+
   let g:ale_echo_msg_error_str = 'E'
   let g:ale_echo_msg_info_str = 'I'
   let g:ale_echo_msg_warning_str = 'W'
@@ -191,7 +198,6 @@ if v:version >= 800 && (has("patch-8.0.1476") || !has("patch-8.0.1449"))
     execute "autocmd! FileType" s:ale_lsp_filetype_pattern
           \ "noremap <silent> <buffer> K <Plug>(ale_hover)"
   augroup END
-
 else
   Plug 'vim-syntastic/syntastic'
   let g:syntastic_always_populate_loc_list = 1
@@ -242,7 +248,9 @@ Plug 'Vimjas/vim-python-pep8-indent'  " indent python correctly
 if s:Python3VersionMinor() >= 6
   Plug 'ambv/black'                 " format code
 endif
-let g:syntastic_python_checkers = ['pycodestyle', 'pyflakes', 'pylint']
+if !s:ale_version_check
+  let g:syntastic_python_checkers = ['pycodestyle', 'pyflakes', 'pylint']
+endif
 
 " julia {{{3
 Plug 'JuliaEditorSupport/julia-vim'  " julia syntax, motions and docs
@@ -255,23 +263,49 @@ augroup GetDoc
 augroup END
 
 " latex {{{3
-Plug 'Konfekt/tex-conceal.vim'  " fix tex conceal
-let g:tex_conceal = "abdmg"
+Plug 'KeitaNakamura/tex-conceal.vim', {'for': 'tex'}  " fix tex conceal
+let g:tex_superscripts= "[0-9a-zA-W.,:;+-<>/()=]"
+let g:tex_subscripts= "[0-9aehijklmnoprstuvx,+-/().]"
+let g:tex_conceal = "abdgms"
 
 Plug 'lervag/vimtex'  " complete, compile, view output, parse errors
 let g:tex_flavor = 'latex'
 let g:vimtex_fold_enabled = 1
+" restrict folds to evironments that can have enormous content
+let g:vimtex_fold_types = {
+      \ 'comments': {'enabled': 1},
+      \ 'envs': {
+      \   'whitelist' : [
+      \     'array', 'matrix', 'matrix*', 'bmatrix', 'bmatrix*', 'Bmatrix', 'Bmatrix*',
+      \     'pmatrix', 'pmatrix*', 'vmatrix', 'vmatrix*', 'Vmatrix', 'Vmatrix*',
+      \     'tabular', 'tabular*', 'tabularx', 'tabulary', 'longtable',
+      \     'fmfgraph', 'fmfgraph*',
+      \   ]
+      \ },
+      \ 'cmd_single': {'cmds': ['fmfcmd']},
+      \ 'items': {'enabled': 0},
+      \}
 let g:vimtex_format_enabled = 1
+let g:vimtex_indent_enabled = 1
+let g:vimtex_indent_delims = {'open': [], 'close': [], 'include_modified_math': 0}
+" don't indent inside evironments that don't subdivide 'content scope'
+let g:vimtex_indent_ignored_envs = [
+      \ 'document',
+      \ 'landscape', 'minipage', 'framed',
+      \ 'frame', 'column', 'block', 'alertblock', 'exampleblock',
+      \ 'subequations', 'split', 'aligned',
+      \ 'subtable', 'subfigure', 'tikzpicture',
+      \ 'fmffile',
+      \]
+let g:vimtex_grammar_vlty = {'lt_directory': '~/local/LanguageTool-5.1'}
 let g:vimtex_view_method = 'zathura'
 let g:vimtex_view_automatic = 0
-" let g:vimtex_complete_close_braces = 0
-" let g:vimtex_quickfix_latexlog = {
-"       \ 'overfull' : 0,
-"       \ 'underfull' : 0,
-"       \ 'packages' : {
-"       \   'default' : 0,
-"       \ },
-"       \}
+
+if !exists('g:ale_linters')
+  let g:ale_linters = {}
+endif
+let g:ale_linters['tex'] = ['chktex']
+let g:ale_tex_chktex_options = '-I0 -H0 -n3 -n9 -n10 -n17'
 
 " markdown/wiki {{{3
 " Pandoc suite for syntax, navigation, citations
@@ -308,15 +342,6 @@ augroup markserv
           \ botright terminal ++rows=2 markserv %:p:.
   endif
 augroup END
-Plug 'iamcco/markdown-preview.nvim', {'do': 'cd app & yarn install'}
-Plug 'suan/vim-instant-markdown', {
-      \ 'do': 'npm -g install instant-markdown-d@next',
-      \ 'for': ['markdown', 'pandoc'],
-      \ }
-      " \ 'do': '& pip install smdv',
-let g:instant_markdown_autostart = 0
-let g:instant_markdown_mathjax = 1
-" let g:instant_markdown_python = 1
 
 " Searching
 Plug 'alok/notational-fzf-vim'  " Interactive NV-like full-text search
@@ -366,8 +391,8 @@ Plug 'vim-airline/vim-airline-themes'
 let g:airline#extensions#tabline#enabled = 1
 
 " base16 {{{3
-"Plug 'chriskempson/base16-vim'  " base16 colorschemes
-call s:DevelopOrPlug('base16-vim')
+Plug 'chriskempson/base16-vim'  " base16 colorschemes
+"call s:DevelopOrPlug('base16-vim')
 
 " Colorizer {{{3
 Plug 'chrisbra/Colorizer'  " apply color to rgb sequences
@@ -388,6 +413,17 @@ Plug 'chrisbra/Colorizer'  " apply color to rgb sequences
 
 "" julia {{{3
 "Plug 'AtsushiSakai/julia.vim'  " julia linter
+
+"" markdown/wiki {{{3
+"Plug 'iamcco/markdown-preview.nvim', {'do': 'cd app & yarn install'}
+"Plug 'suan/vim-instant-markdown', {
+"      \ 'do': 'npm -g install instant-markdown-d@next',
+"      \ 'for': ['markdown', 'pandoc'],
+"      \ }
+"      " \ 'do': '& pip install smdv',
+"let g:instant_markdown_autostart = 0
+"let g:instant_markdown_mathjax = 1
+"" let g:instant_markdown_python = 1
 
 "" solarized {{{3
 "Plug 'altercation/vim-colors-solarized'
@@ -513,8 +549,9 @@ set colorcolumn=+1,+2,+3  " Highlight columns after textwidth.
 set showmatch             " Show matching brackets.
 set conceallevel=2        " Enable conceal when defined
 
-" Set whitespace characters in list mode
+" Set whitespace characters in list mode and folds
 set listchars=eol:$,tab:\|_,space:.,extends:>,precedes:<,conceal:*,nbsp:~
+set fillchars=fold:\ 
 
 " Set gui specific options
 if has('vim_starting') && has('gui_running')
