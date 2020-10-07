@@ -122,19 +122,22 @@ nmap <silent> <Leader>gn <Plug>(GitGutterNextHunk)
 nmap <silent> <Leader>gp <Plug>(GitGutterPrevHunk)
 
 " YouCompleteMe {{{3
-let g:ycm_options = {
+let g:ycm_plug_options = {
       \ 'do': join([
       \   has('win32') ? 'py -3' : '/usr/bin/python3',
       \   'install.py --clangd-completer > ' . expand('$HOME/ycm.log') . ' 2>&1',
       \ ]),
       \ }
 if s:Python3VersionMinor() < 6
-  let g:ycm_options['commit'] = '321700e'
+  let g:ycm_plug_options['commit'] = '321700e'
 endif
-Plug 'Valloric/YouCompleteMe', g:ycm_options
-let g:ycm_python_binary_path = "python"
+Plug 'Valloric/YouCompleteMe', g:ycm_plug_options
 let g:ycm_key_detailed_diagnostics = ''
-let g:ycm_goto_filetypes = [
+let g:ycm_min_num_of_chars_for_completion = 5
+let g:ycm_max_num_identifier_candidates = 5
+let g:ycm_max_num_candidates = 15
+let g:ycm_max_num_candidates_to_detail = 0
+let s:ycm_goto_filetypes = [
       \ 'c',
       \ 'cpp',
       \ 'objc',
@@ -148,13 +151,14 @@ let g:ycm_goto_filetypes = [
       \ 'rust',
       \ 'typescript',
       \ ]
-let g:ycm_getdoc_filetypes = [
+let s:ycm_getdoc_filetypes = [
       \ 'c',
       \ 'cpp',
       \ 'objc',
       \ 'objcpp',
       \ 'cuda',
       \ 'cs',
+      \ 'go',
       \ 'java',
       \ 'javascript',
       \ 'python',
@@ -162,11 +166,11 @@ let g:ycm_getdoc_filetypes = [
       \ 'rust',
       \ ]
 augroup GoTo
-  execute "autocmd! FileType" join(g:ycm_goto_filetypes, ",")
+  execute "autocmd! FileType" join(s:ycm_goto_filetypes, ",")
         \ "map <silent> <buffer> <C-]> :YcmCompleter GoTo<Cr>"
 augroup END
 augroup GetDoc
-  execute "autocmd! FileType" join(g:ycm_getdoc_filetypes, ",")
+  execute "autocmd! FileType" join(s:ycm_getdoc_filetypes, ",")
         \ "map <silent> <buffer> K :YcmCompleter GetDoc<Cr>"
 augroup END
 
@@ -178,7 +182,7 @@ if s:ale_version_check
   " required patch
   Plug 'dense-analysis/ale'
   "call s:DevelopOrPlug('ale')
-  let g:ale_lint_on_text_changed = 'never'
+  let g:ale_lint_on_text_changed = 'normal'
   let g:ale_lint_on_insert_leave = 1
 
   let g:ale_echo_msg_error_str = 'E'
@@ -209,7 +213,7 @@ endif
 " snippets {{{3
 Plug 'SirVer/ultisnips'                       " snippet engine
 Plug 'honza/vim-snippets'                     " snippets
-" call s:DevelopOrPlug('vim-unicode-snippets')  " unicode snippets with latex triggers
+ call s:DevelopOrPlug('vim-unicode-snippets')  " unicode snippets with latex triggers
 let g:UltiSnipsExpandTrigger = '<C-J>'
 let g:UltiSnipsJumpForwardTrigger = '<C-J>'
 let g:UltiSnipsJumpBackwardTrigger = '<C-K>'
@@ -271,6 +275,12 @@ let g:tex_conceal = "abdgms"
 Plug 'lervag/vimtex'  " complete, compile, view output, parse errors
 let g:tex_flavor = 'latex'
 let g:vimtex_fold_enabled = 1
+let g:vimtex_format_enabled = 1
+let g:vimtex_indent_enabled = 1
+let g:vimtex_indent_delims = {'open': [], 'close': [], 'include_modified_math': 0}
+let g:vimtex_view_method = 'zathura'
+let g:vimtex_view_automatic = 0
+
 " restrict folds to evironments that can have enormous content
 let g:vimtex_fold_types = {
       \ 'comments': {'enabled': 1},
@@ -285,9 +295,7 @@ let g:vimtex_fold_types = {
       \ 'cmd_single': {'cmds': ['fmfcmd']},
       \ 'items': {'enabled': 0},
       \}
-let g:vimtex_format_enabled = 1
-let g:vimtex_indent_enabled = 1
-let g:vimtex_indent_delims = {'open': [], 'close': [], 'include_modified_math': 0}
+
 " don't indent inside evironments that don't subdivide 'content scope'
 let g:vimtex_indent_ignored_envs = [
       \ 'document',
@@ -297,10 +305,8 @@ let g:vimtex_indent_ignored_envs = [
       \ 'subtable', 'subfigure', 'tikzpicture',
       \ 'fmffile',
       \]
-let g:vimtex_grammar_vlty = {'lt_directory': '~/local/LanguageTool-5.1'}
-let g:vimtex_view_method = 'zathura'
-let g:vimtex_view_automatic = 0
 
+" Configure linters
 if !exists('g:ale_linters')
   let g:ale_linters = {}
 endif
@@ -447,8 +453,10 @@ set viewoptions=cursor,slash,unix
 if !exists('g:ycm_semantic_triggers')
   let g:ycm_semantic_triggers = {}
 endif
-let g:ycm_semantic_triggers.tex = g:vimtex#re#youcompleteme
-let g:ycm_semantic_triggers.pandoc = '@'
+augroup ycm_triggers
+  autocmd! VimEnter * let g:ycm_semantic_triggers.tex = g:vimtex#re#youcompleteme
+        \| let g:ycm_semantic_triggers.pandoc = '@'
+augroup END
 
 if exists('g:ale_lsp_filetypes')
   if !exists('g:ycm_filetype_blacklist')
