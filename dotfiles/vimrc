@@ -247,10 +247,10 @@ let g:slime_python_ipython = 1
 " Language/application specific plugins {{{2
 
 " python {{{3
-Plug 'tmhedberg/SimpylFold'           " fold python correctly
-Plug 'Vimjas/vim-python-pep8-indent'  " indent python correctly
+Plug 'tmhedberg/SimpylFold'               " fold python correctly
+Plug 'Vimjas/vim-python-pep8-indent'      " indent python correctly
 if s:Python3VersionMinor() >= 6
-  Plug 'ambv/black'                 " format code
+  Plug 'psf/black', {'branch': 'stable'}  " format code
 endif
 if !s:ale_version_check
   let g:syntastic_python_checkers = ['pycodestyle', 'pyflakes', 'pylint']
