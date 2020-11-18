@@ -487,15 +487,18 @@ set background=light
 " is unneccesary). In gvim, or with termguicolors set, the theme named below is used.
 let s:base16_theme = "base16-atelier-sulphurpool-light"
 
-if ($BASE16_THEME ==# "") && has('termguicolors')
-  set termguicolors
-else
+if ($BASE16_THEME !=# "")
+  " The shell is set up with a 21-color base16 palette using base16_shell.
   if has('gui_running')
-    " Don't let a gvim :terminal pretend that it provides a 21-color base16 palette,
-    " just because gvim was started from a shell with an active base16 theme. The gvim
-    " terminal only provides the terminal_ansi_colors palette.
+    " The gvim :terminal is provides the 16-color terminal_ansi_colors palette
+    " customized by the base16 theme, but it does not support the full a 21-color base16
+    " palette. We should make sure it doesn't inherit an environment variable that says
+    " otherwise. (It _does_, however, support true color, so termguicolors will work
+    " when engaging in vimception within gvim.)
     let $BASE16_THEME = ""
   else
+    " In terminal vim we want to use the terminal palette, so we disable termguicolors
+    " and let the base16 theme know that it should use the 256-color terminal palette.
     if has('termguicolors')
       set notermguicolors
     endif
@@ -503,6 +506,9 @@ else
   endif
 endif
 execute "colorscheme" s:base16_theme
+if !&termguicolors && exists('g:terminal_ansi_colors')
+  unlet g:terminal_ansi_colors
+endif
 
 "" solarized {{{2
 "colorscheme solarized
