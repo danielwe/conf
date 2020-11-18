@@ -9,10 +9,10 @@ sudo apt install cuda  # or just cuda-drivers
 # gpu-manager needs to believe it's being instructed by prime-select to boot on intel
 echo 'off' | sudo tee "/etc/prime-discrete"
 
-# module options to enable fine-grained power management
+# module options to enable runtime D3 power management
 echo \
 '# Enable fine-grained runtime D3 power control
-options nvidia "NVreg_DynamicPowerManagement=0x02"' \
+options nvidia "NVreg_DynamicPowerManagement=0x01"' \
   | sudo tee "/etc/modprobe.d/nvidia.conf"
 
 # Hooks to ensure consistent power control states on driver load/unload, and disable USB
@@ -58,7 +58,8 @@ sudo apt upgrade
 # If GPU is older than the Turing architecture, nvidia_drm must remain unloaded until
 # all X sessions have started for power management to be able to turn it off completely
 # when not in use, since any X session loaded after nvidia_drm will initialize some GPU
-# memory, keeping it powered on unless it support runtime D3 power management. See
+# memory, keeping it powered on unless it supports fine-grained runtime D3 power
+# management. See
 # https://download.nvidia.com/XFree86/Linux-x86_64/450.51/README/dynamicpowermanagement.html.
 # There are so many services that want to load the drivers: kernel/gpumanager, gdm,
 # xorg, nvidia-persistenced.service, ...; it seems like the most stable solution is to
@@ -70,7 +71,7 @@ sudo apt upgrade
 # consumption when not using offloading. (Note that if the nvidia driver itself is not
 # blacklisted, it will start on boot without also starting nvidia_drm. This might sound
 # desireable, but this turns out to be incredibly unstable and lead to frequent crashes
-# during boot, at list when persistence mode is disabled.)
+# during boot, at least when persistence mode is disabled.)
 
 echo '
 # Avoid loading drivers at boot
