@@ -124,11 +124,16 @@ nmap <silent> <Leader>gp <Plug>(GitGutterPrevHunk)
 " YouCompleteMe {{{3
 let g:ycm_plug_options = {
       \ 'do': join([
-      \   'CC=gcc-8 CXX=g++-8',
-      \   has('win32') ? 'py -3' : '/usr/bin/python3',
+      \   has('win32')
+      \     ? 'py -3'
+      \     : join([
+      \       'CC=$(ls /usr/bin/gcc-[0-9] | tail -n1)',
+      \       'CXX=$(ls /usr/bin/g++-[0-9] | tail -n1)',
+      \       '/usr/bin/python3',
+      \     ]),
       \   'install.py --clangd-completer > ' . expand('$HOME/ycm.log') . ' 2>&1',
-      \ ]),
-      \ }
+      \ ])
+      \}
 if s:Python3VersionMinor() < 6
   let g:ycm_plug_options['commit'] = '321700e'
 endif
