@@ -91,7 +91,7 @@ Plug 'rbonvall/vim-textobj-latex'  " define text objects for latex structures
 " IDE-like functionality {{{2
 
 " fuzzy search {{{3
-Plug 'junegunn/fzf', {'dir' : '~/local/fzf', 'do': './install --all'}
+Plug 'junegunn/fzf', {'dir' : '~/local/fzf', 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 nmap <silent> <Leader>ff :Files<CR>
 nmap <silent> <Leader>fp :Files $MYVIMRUNTIME/plugged<CR>
@@ -124,6 +124,7 @@ nmap <silent> <Leader>gp <Plug>(GitGutterPrevHunk)
 " YouCompleteMe {{{3
 let g:ycm_plug_options = {
       \ 'do': join([
+      \   'CC=gcc-8 CXX=g++-8',
       \   has('win32') ? 'py -3' : '/usr/bin/python3',
       \   'install.py --clangd-completer > ' . expand('$HOME/ycm.log') . ' 2>&1',
       \ ]),
@@ -213,7 +214,7 @@ endif
 " snippets {{{3
 Plug 'SirVer/ultisnips'                       " snippet engine
 Plug 'honza/vim-snippets'                     " snippets
- call s:DevelopOrPlug('vim-unicode-snippets')  " unicode snippets with latex triggers
+call s:DevelopOrPlug('vim-unicode-snippets')  " unicode snippets with latex triggers
 let g:UltiSnipsExpandTrigger = '<C-J>'
 let g:UltiSnipsJumpForwardTrigger = '<C-J>'
 let g:UltiSnipsJumpBackwardTrigger = '<C-K>'
@@ -239,8 +240,8 @@ if $TERM =~# "tmux" && exists("$TMUX")
         \ }
 else
   let g:slime_target = "vimterminal"
-  let g:slime_vimterminal_config = {"term_finish": "close"}
 endif
+let g:slime_vimterminal_config = {"term_finish": "close"}
 let g:slime_paste_file = tempname()
 let g:slime_python_ipython = 1
 
@@ -635,7 +636,7 @@ command! Lcd lcd %:h
 " Filetype-specific configuration {{{1
 
 " wrap {{{2
-augroup rc_wrap
+augroup rc_textwidth
   " For unwrapped prose, wrap long lines and indicate with a hanging indent (don't apply
   " to, e.g., help, since it often contains manual alignment that doesn't mix with soft
   " wrapping at all). Do the same when a nonexistent file is opened in a preview window
