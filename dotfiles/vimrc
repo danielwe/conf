@@ -139,10 +139,44 @@ if s:Python3VersionMinor() < 6
 endif
 Plug 'Valloric/YouCompleteMe', g:ycm_plug_options
 let g:ycm_key_detailed_diagnostics = ''
+let g:ycm_always_populate_location_list = 1
 let g:ycm_min_num_of_chars_for_completion = 5
-let g:ycm_max_num_identifier_candidates = 5
-let g:ycm_max_num_candidates = 15
-let g:ycm_max_num_candidates_to_detail = 0
+let g:ycm_disable_signature_help = 1
+let g:ycm_auto_hover = ''
+let g:ycm_filetype_blacklist = 
+      \ {
+      \   'tagbar': 1,
+      \   'notes': 1,
+      \   'netrw': 1,
+      \   'unite': 1,
+      \   'text': 1,
+      \   'vimwiki': 1,
+      \   'infolog': 1,
+      \   'leaderf': 1,
+      \   'mail': 1
+      \ }
+let g:ycm_language_server =
+      \ [
+      \   {
+      \     'name': 'julia',
+      \     'cmdline': [
+      \       'julia',
+      \       '--startup-file=no',
+      \       '--history-file=no',
+      \       '-e',
+      \       'using LanguageServer;
+      \        using Pkg;
+      \        import StaticLint;
+      \        import SymbolServer;
+      \        env_path = dirname(Pkg.Types.Context().env.project_file);
+      \        server = LanguageServer.LanguageServerInstance(stdin, stdout, env_path);
+      \        server.runlinter = true;
+      \        run(server);',
+      \     ],
+      \     'filetypes': ['julia'],
+      \     'project_root_files': ['Project.toml'],
+      \   }
+      \ ]
 let s:ycm_goto_filetypes = [
       \ 'c',
       \ 'cpp',
@@ -156,6 +190,7 @@ let s:ycm_goto_filetypes = [
       \ 'python',
       \ 'rust',
       \ 'typescript',
+      \ 'julia',
       \ ]
 let s:ycm_getdoc_filetypes = [
       \ 'c',
@@ -196,18 +231,19 @@ if s:ale_version_check
   let g:ale_echo_msg_warning_str = 'W'
   let g:ale_echo_msg_format = '%linter% %severity%: %s (%code%)'
 
-  " Configure LSP for supported filetypes
-  let g:ale_completion_enabled = 0
-  let g:ale_lsp_filetypes = ['julia']
-  let s:ale_lsp_filetype_pattern = join(g:ale_lsp_filetypes, ",")
-  augroup GoTo
-    execute "autocmd! FileType" s:ale_lsp_filetype_pattern
-          \ "noremap <silent> <buffer> <C-]> <Plug>(ale_go_to_definition)"
-  augroup END
-  augroup GetDoc
-    execute "autocmd! FileType" s:ale_lsp_filetype_pattern
-          \ "noremap <silent> <buffer> K <Plug>(ale_hover)"
-  augroup END
+  " Disable LSP (prefer YCM)
+  let g:ale_disable_lsp = 1
+  "let g:ale_completion_enabled = 1
+  "let g:ale_lsp_filetypes = ['julia']
+  "let s:ale_lsp_filetype_pattern = join(g:ale_lsp_filetypes, ",")
+  "augroup GoTo
+  "  execute "autocmd! FileType" s:ale_lsp_filetype_pattern
+  "        \ "noremap <silent> <buffer> <C-]> <Plug>(ale_go_to_definition)"
+  "augroup END
+  "augroup GetDoc
+  "  execute "autocmd! FileType" s:ale_lsp_filetype_pattern
+  "        \ "noremap <silent> <buffer> K <Plug>(ale_hover)"
+  "augroup END
 else
   Plug 'vim-syntastic/syntastic'
   let g:syntastic_always_populate_loc_list = 1
@@ -265,11 +301,17 @@ endif
 " julia {{{3
 Plug 'JuliaEditorSupport/julia-vim'  " julia syntax, motions and docs
 "call s:DevelopOrPlug('julia-vim')
-let g:latex_to_unicode_tab = 0       " use snippets for unicode
+let g:latex_to_unicode_file_types = ""  " don't use this plugin for unicode
+let g:julia_indent_align_import = 0     " don't use this plugin's weird indentation
+let g:julia_indent_align_brackets = 0
+let g:julia_indent_align_funcargs = 0
 augroup GetDoc
-  " Clear any GetDoc binding for julia from ycm/ale; julia-vim does it better by setting
-  " the juliadoc filetype, and uses 'keywordprg' so doesn't need explicit binding.
-  autocmd! FileType julia
+  " Set a custom LSP-based GetDoc binding for julia, or clear to use julia-vim's
+  " integration with 'keywordprg'
+  autocmd! FileType julia let b:ycm_hover = {
+        \ 'command': 'GetHover', 'syntax': 'juliadoc',
+        \ } | map <silent> <buffer> K :YcmCompleter GetHover<Cr>
+        \:wincmd P<Cr>:set syntax=juliadoc<Cr>:wincmd p<Cr>
 augroup END
 
 " latex {{{3
@@ -574,7 +616,7 @@ set fillchars=fold:\
 " Set gui specific options
 if has('vim_starting') && has('gui_running')
   if !has('win32')
-    set guifont=Ubuntu\ Mono\ 12
+    set guifont=JuliaMono\ 11
   endif
   set guioptions+=f       " Dont detach from shell.
   set guioptions+=P       " Enable autoselect using the "+-register.
@@ -654,6 +696,7 @@ augroup rc_textwidth
   execute "autocmd! FileType text,tex,bib,markdown,pandoc" s:setprosewrap
   execute "autocmd! BufNewFile * if &previewwindow |" s:setprosewrap "| endif"
   autocmd! TerminalOpen * setlocal textwidth=0
+  autocmd! FileType julia setlocal textwidth=92
 augroup END
 
 " spell {{{2
@@ -690,5 +733,5 @@ augroup END
 augroup rc_fold
   autocmd! FileType c,cpp,cuda,objc,objcpp,cs,go,java,javascript,rust,typescript
         \ setlocal foldmethod=syntax foldnestmax=2
-  autocmd! FileType julia setlocal foldmethod=syntax foldnestmax=2
+  autocmd! FileType julia setlocal foldmethod=syntax foldnestmax=1
 augroup END
