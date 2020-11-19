@@ -474,40 +474,38 @@ if exists('g:ale_lsp_filetypes')
 endif
 
 " base16 {{{2
-let g:airline_theme = 'base16_vim'
-let g:airline_base16_monotone = 1
-
-" The base16 themes seem to work best with background=light. This setting mainly affects
-" how vim selects highlighting colors from the palette.
-set background=light
-
-" Choose colorscheme. If running in a terminal and termguicolors is not set, any base16
-" theme is equivalent, and will give you the base16 theme that the terminal was set up
-" with using base16_shell (in particular, the .vimrc_background file from base16_shell
-" is unneccesary). In gvim, or with termguicolors set, the theme named below is used.
-let s:base16_theme = "base16-atelier-sulphurpool-light"
-
-if ($BASE16_THEME !=# "")
-  " The shell is set up with a 21-color base16 palette using base16_shell.
-  if has('gui_running')
-    " The gvim :terminal is provides the 16-color terminal_ansi_colors palette
-    " customized by the base16 theme, but it does not support the full a 21-color base16
-    " palette. We should make sure it doesn't inherit an environment variable that says
-    " otherwise. (It _does_, however, support true color, so termguicolors will work
-    " when engaging in vimception within gvim.)
-    let $BASE16_THEME = ""
-  else
-    " In terminal vim we want to use the terminal palette, so we disable termguicolors
-    " and let the base16 theme know that it should use the 256-color terminal palette.
+if ($BASE16_THEME !=# "") || has('gui_running') || has('termguicolors')
+  " There is a way to enable a base16 colorscheme
+  if ($BASE16_THEME !=# "") && !has('gui_running')
+    " We are in a terminal with base16-shell and merely want to inherit. Any base16
+    " theme is equivalent in this case; all they do is tell vim how to apply the
+    " terminal palette.
     if has('termguicolors')
       set notermguicolors
     endif
     let g:base16colorspace = 256
+  else
+    " We are in the gvim, or the terminal lacks base16-shell but we have termguicolors.
+    " For vimception to work we must ensure that the vim terminal does not pretend to
+    " have base16-shell (the environment variable could have been inherited if gvim was
+    " launched from a base16-enabled shell).
+    let $BASE16_THEME = ""
+    if has('termguicolors')
+      set termguicolors
+    endif
   endif
-endif
-execute "colorscheme" s:base16_theme
-if !&termguicolors && exists('g:terminal_ansi_colors')
-  unlet g:terminal_ansi_colors
+
+  " Enable the colorscheme
+  set background=light  " Highlighting in base16 themes work best with background=light
+  let g:airline_theme = 'base16_vim'
+  let g:airline_base16_monotone = 1
+  colorscheme base16-atelier-sulphurpool-light
+
+  " Clear g:terminal_ansi_colors if it's not being used, to avoid a vim terminal bug
+  if exists('g:terminal_ansi_colors')
+        \ && !(has('gui_running') || (has('termguicolors') && &termguicolors))
+    unlet g:terminal_ansi_colors
+  endif
 endif
 
 "" solarized {{{2
