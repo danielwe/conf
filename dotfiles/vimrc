@@ -541,7 +541,7 @@ if ($BASE16_THEME !=# "") || has('gui_running') || has('termguicolors')
   set background=light  " Highlighting in base16 themes work best with background=light
   let g:airline_theme = 'base16_vim'
   let g:airline_base16_monotone = 1
-  colorscheme base16-atelier-sulphurpool-light
+  colorscheme base16-atelier-sulphurpool
 
   " Clear g:terminal_ansi_colors if it's not being used, to avoid a vim terminal bug
   if exists('g:terminal_ansi_colors')
@@ -616,14 +616,15 @@ set fillchars=fold:\
 " Set gui specific options
 if has('vim_starting') && has('gui_running')
   if !has('win32')
-    set guifont=JuliaMono\ 11
+    set guifont=JuliaMono\ 13,\ Ubuntu\ Mono\ 12
   endif
   set guioptions+=f       " Dont detach from shell.
   set guioptions+=P       " Enable autoselect using the "+-register.
   set guioptions-=a       " Disable autoselect using the "*-register.
   set guioptions-=T       " Disable toolbar.
   set guioptions-=m       " Disable menubar.
-  set guioptions-=r       " Disable scrollbar.
+  set guioptions-=r       " Disable right scrollbar.
+  set guioptions-=L       " Disable left conditional scrollbar.
 endif
 
 " Avoid issues after vim-8.2.0767 with terminals presumably too old
@@ -631,7 +632,9 @@ endif
 " * https://github.com/vim/vim/issues/6111
 " * https://github.com/vim/vim/issues/6112
 " * https://github.com/vim/vim/issues/6122
-set t_TI= t_TE=
+if !has('gui_running')
+  set t_TI= t_TE=
+endif
 
 " Key mappings and commands {{{1
 
