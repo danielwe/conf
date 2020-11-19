@@ -41,19 +41,11 @@ ACTION=="unbind", SUBSYSTEM=="pci", ATTR{vendor}=="0x10de", ATTR{class}=="0x0302
 
 # VERSION SPECIFIC ISSUES
 
-# If system X server is < 1.21 and PRIME offloading is desired, install patched version.
-# See
-# https://download.nvidia.com/XFree86/Linux-x86_64/450.51/README/primerenderoffload.html
-sudo add-apt-repository ppa:aplattner/ppa
-
-# Pin repo in case its versions are lagging
-echo \
-'Package: *
-Pin: release o=LP-PPA-aplattner
-Pin-Priority: 5000' \
-  | sudo tee "/etc/apt/preferences.d/xorg-repository-pin-5000"
-
-sudo apt upgrade
+# If system X server is < 1.20.8 and PRIME offloading is desired, install patched
+# version from Aaron Plattner's ppa. See
+# https://download.nvidia.com/XFree86/Linux-x86_64/455.45.01/README/primerenderoffload.html
+#sudo add-apt-repository ppa:aplattner/ppa
+#sudo apt update && sudo apt upgrade
 
 # If GPU is older than the Turing architecture, nvidia_drm must remain unloaded until
 # all X sessions have started for power management to be able to turn it off completely
