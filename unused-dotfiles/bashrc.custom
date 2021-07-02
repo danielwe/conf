@@ -10,3 +10,7 @@ then
     [ -s "$BASE16_SHELL/profile_helper.sh" ] && \
         eval "$("$BASE16_SHELL/profile_helper.sh")"
 fi
+
+# set require variable for GPG agent
+GPG_TTY=$(tty)
+export GPG_TTY

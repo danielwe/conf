@@ -20,7 +20,7 @@ endif
 
 " Plugin development support
 function! s:DevelopOrPlug(name)
-  let devpath = expand('$HOME/packages/' . a:name)
+  let devpath = expand('$HOME/src/' . a:name)
   if isdirectory(l:devpath)
     Plug l:devpath
   else
@@ -28,12 +28,10 @@ function! s:DevelopOrPlug(name)
   endif
 endfunction
 
+
 function! s:Python3VersionMinor()
-python3 << EOF
-import sys, vim
-vim.command("let l:py_version_minor = {}".format(sys.version_info.minor))
-EOF
-  return l:py_version_minor
+  python3 import sys
+  return py3eval('sys.version_info.minor')
 endfunction
 
 call plug#begin()
@@ -54,13 +52,16 @@ nmap <silent> <Down> :Blast<CR>
 nmap <silent> <Up> :Bfirst<CR>
 nmap <silent> <Left> :Bprev<CR>
 nmap <silent> <Right> :Bnext<CR>
-nmap <silent> <C-C> :Bdelete<CR>
+nmap <silent> <C-C> :Bwipeout<CR>
 
 " tcomment {{{3
 Plug 'tomtom/tcomment_vim'  " toggle comments
 let g:tcomment_mapleader1 = "<C-/>"
 let g:tcomment_mapleader2 = "g/"
 let g:tcomment#options = {'whitespace' : 'no'}
+
+" tabular {{{3
+Plug 'godlygeek/tabular'
 
 " loupe {{{3
 Plug 'wincent/loupe'  " improve search and highlighting
@@ -88,11 +89,21 @@ Plug 'kana/vim-textobj-entire'  " define text objects for the entire buffer
 Plug 'Julian/vim-textobj-brace'  " define text objects for content between braces
 Plug 'rbonvall/vim-textobj-latex'  " define text objects for latex structures
 
+" encryption {{{3
+Plug 'jamessan/vim-gnupg'
+let g:GPGPreferSymmetric = 1
+
 " IDE-like functionality {{{2
 
 " fuzzy search {{{3
-Plug 'junegunn/fzf', {'dir' : '~/local/fzf', 'do': { -> fzf#install() } }
+let s:fzf_dir = '~/lib/fzf'
+let g:fzf_options = {
+      \ 'dir' : s:fzf_dir, 'do': { -> system(s:fzf_dir . '/install --all')}
+      \ }
+Plug 'junegunn/fzf', g:fzf_options
 Plug 'junegunn/fzf.vim'
+unlet g:fzf_options
+
 nmap <silent> <Leader>ff :Files<CR>
 nmap <silent> <Leader>fp :Files $MYVIMRUNTIME/plugged<CR>
 nmap <silent> <Leader>fb :Buffers<CR>
@@ -111,8 +122,8 @@ Plug 'tpope/vim-fugitive'                 " git status, commit, diff etc.
 Plug 'gregsexton/gitv', {'on': ['Gitv']}  " view git history
 Plug 'airblade/vim-gitgutter'             " see git diff in gutter, stage hunks
 let g:gitgutter_map_keys = 0
-nmap <silent> <Leader>gg :Gstatus<CR>
-nmap <silent> <Leader>gd :Gdiff<CR>
+nmap <silent> <Leader>gg :Git<CR>
+nmap <silent> <Leader>gd :Gdiffsplit<CR>
 nmap <silent> <Leader>gl :Gitv<CR>
 nmap <silent> <Leader>gf :Gitv!<CR>
 nmap <silent> <Leader>gh <Plug>(GitGutterPreviewHunk)
@@ -127,8 +138,8 @@ let g:ycm_plug_options = {
       \   has('win32')
       \     ? 'py -3'
       \     : join([
-      \       'CC=$(ls /usr/bin/gcc-[0-9] | tail -n1)',
-      \       'CXX=$(ls /usr/bin/g++-[0-9] | tail -n1)',
+      \       'CC=$(echo $(ls /usr/bin/gcc-[0-9] 2>/dev/null) $(ls /usr/bin/gcc-1[0-9] 2>/dev/null) | tail -n1)',
+      \       'CXX=$(echo $(ls /usr/bin/g++-[0-9] 2>/dev/null) $(ls /usr/bin/g++-1[0-9] 2>/dev/null) | tail -n1)',
       \       '/usr/bin/python3',
       \     ]),
       \   'install.py --clangd-completer > ' . expand('$HOME/ycm.log') . ' 2>&1',
@@ -143,7 +154,7 @@ let g:ycm_always_populate_location_list = 1
 let g:ycm_min_num_of_chars_for_completion = 5
 let g:ycm_disable_signature_help = 1
 let g:ycm_auto_hover = ''
-let g:ycm_filetype_blacklist = 
+let g:ycm_filetype_blacklist =
       \ {
       \   'tagbar': 1,
       \   'notes': 1,
@@ -207,16 +218,18 @@ let s:ycm_getdoc_filetypes = [
       \ 'rust',
       \ ]
 augroup GoTo
+  autocmd!
   execute "autocmd! FileType" join(s:ycm_goto_filetypes, ",")
         \ "map <silent> <buffer> <C-]> :YcmCompleter GoTo<Cr>"
 augroup END
 augroup GetDoc
+  autocmd!
   execute "autocmd! FileType" join(s:ycm_getdoc_filetypes, ",")
         \ "map <silent> <buffer> K :YcmCompleter GetDoc<Cr>"
 augroup END
 
 " ale/syntastic linter {{{3
-let s:ale_version_check = 
+let s:ale_version_check =
       \ (v:version >= 800 && (has("patch-8.0.1476") || !has("patch-8.0.1449")))
 if s:ale_version_check
   " see https://github.com/dense-analysis/ale/issues/1536 for details about bug and
@@ -255,7 +268,7 @@ endif
 " snippets {{{3
 Plug 'SirVer/ultisnips'                       " snippet engine
 Plug 'honza/vim-snippets'                     " snippets
-call s:DevelopOrPlug('vim-unicode-snippets')  " unicode snippets with latex triggers
+"call s:DevelopOrPlug('vim-unicode-snippets')  " unicode snippets with latex triggers
 let g:UltiSnipsExpandTrigger = '<C-J>'
 let g:UltiSnipsJumpForwardTrigger = '<C-J>'
 let g:UltiSnipsJumpBackwardTrigger = '<C-K>'
@@ -288,11 +301,19 @@ let g:slime_python_ipython = 1
 
 " Language/application specific plugins {{{2
 
+Plug 'sheerun/vim-polyglot'  " syntax highlighting for every language
+let g:polyglot_disabled = ["sensible", "julia"]
+
 " python {{{3
 Plug 'tmhedberg/SimpylFold'               " fold python correctly
 Plug 'Vimjas/vim-python-pep8-indent'      " indent python correctly
 if s:Python3VersionMinor() >= 6
-  Plug 'psf/black', {'branch': 'stable'}  " format code
+  " format code
+  Plug 'psf/black', {'tag': 'stable'}
+  if !exists('g:ale_fixers')
+    let g:ale_fixers = {}
+  endif
+  let g:ale_fixers.python = ['black']
 endif
 if !s:ale_version_check
   let g:syntastic_python_checkers = ['pycodestyle', 'pyflakes', 'pylint']
@@ -301,8 +322,8 @@ endif
 " julia {{{3
 Plug 'JuliaEditorSupport/julia-vim'  " julia syntax, motions and docs
 "call s:DevelopOrPlug('julia-vim')
-let g:latex_to_unicode_file_types = ""  " don't use this plugin for unicode
-let g:julia_indent_align_import = 0     " don't use this plugin's weird indentation
+let g:latex_to_unicode_file_types = ["julia", "markdown", "pandoc"]
+let g:julia_indent_align_import = 0    " don't use this plugin's weird indentation
 let g:julia_indent_align_brackets = 0
 let g:julia_indent_align_funcargs = 0
 augroup GetDoc
@@ -354,6 +375,19 @@ let g:vimtex_indent_ignored_envs = [
       \ 'fmffile',
       \]
 
+" Do grammar plugins work?
+"let g:vimtex_grammar_textidote = {'jar': '/opt/textidote/textidote.jar'}
+"let g:vimtex_grammar_vlty = {
+"      \ 'lt_directory': '~/.local/LanguageTool',
+"      \ 'lt_disable': 'WHITESPACE_RULE',
+"      \ 'lt_enable': '',
+"      \ 'lt_disablecategories': '',
+"      \ 'lt_enablecategories': '',
+"      \ 'server': 'no',
+"      \ 'shell_options': '',
+"      \ 'show_suggestions': 1,
+"      \}
+
 " Configure linters
 if !exists('g:ale_linters')
   let g:ale_linters = {}
@@ -362,11 +396,17 @@ let g:ale_linters['tex'] = ['chktex']
 let g:ale_tex_chktex_options = '-I0 -H0 -n3 -n9 -n10 -n17'
 
 " markdown/wiki {{{3
-" Pandoc suite for syntax, navigation, citations
+" Pandoc suite for syntax, navigation, citation autocompletion
 Plug 'vim-pandoc/vim-pandoc'
+let g:pandoc#modules#disabled = ["hypertext", "menu", "spell"]
+let g:pandoc#biblio#use_bibtool = 1
+let g:pandoc#biblio#sources = 'bcty'
+let g:pandoc#compiler#arguments = '--citeproc'
+let g:pandoc#keyboard#display_motions = 0
+let g:pandoc#formatting#textwidth = 88
+let g:pandoc#hypertext#use_default_mappings = 0
+
 Plug 'vim-pandoc/vim-pandoc-syntax'
-Plug 'vim-pandoc/vim-pandoc-after'
-let g:pandoc#keyboard#display_options = 0
 let g:pandoc#syntax#conceal#blacklist = [
       \ "atx",
       \ "codeblock_start",
@@ -377,13 +417,10 @@ let g:pandoc#syntax#conceal#blacklist = [
       \ ]
 let g:pandoc#syntax#conceal#cchar_overrides = {"footnote" : "^"}
 let g:pandoc#syntax#conceal#urls = 1
-let g:pandoc#formatting#textwidth = 88
-let g:pandoc#hypertext#split_open_cmd = "Drop"
-let g:pandoc#hypertext#edit_open_cmd = "Drop"
-let g:pandoc#hypertext#create_if_no_alternates_exist = 1
-let g:pandoc#biblio#use_bibtool = 1
-let g:pandoc#biblio#sources = 'bctgy'
-let g:pandoc#after#modules#enabled = ["fastfold", "ultisnips"]
+
+" Pandoc fastfold integration not used, it crashes when opening many files
+Plug 'vim-pandoc/vim-pandoc-after'
+let g:pandoc#after#modules#enabled = ["ultisnips"]
 
 " Markdown linting
 let g:ale_linter_aliases = {'pandoc': 'markdown'}
@@ -391,10 +428,56 @@ let g:ale_markdown_mdl_options = '--rules ~MD009,~MD013,~MD024,~MD036'
 
 " Markdown preview
 augroup markserv
+  autocmd!
   if executable('markserv')
     autocmd! FileType markdown,pandoc command! -buffer Markserv
-          \ botright terminal ++rows=2 markserv %:p:.
+          \ execute 'botright terminal ++rows=2 markserv' fnameescape(expand("%:p:."))
   endif
+augroup END
+
+" wiki.vim
+Plug 'lervag/wiki.vim'
+let g:wiki_root = '~/Documents/notatbank'
+let g:wiki_filetypes = ['md']
+let g:wiki_map_create_page = 'AppendTimestampIfNew'
+let g:wiki_tags_format_pattern = '\v%(^|\s)\zs#\i{2,}%(\/|\i)*'
+let g:wiki_tags_scan_num_lines = 3
+let g:wiki_zotero_root = '~/Zotero'
+let g:wiki_link_toggles = {'md': 'WikiToggleMd','wiki': 'WikiToggleWiki'}
+
+function! AppendTimestampIfNew(name) abort
+ let l:path = wiki#get_root() . '/' . a:name
+ if filereadable(l:path)
+   return a:name
+ endif
+ return a:name . ' ' . strftime("%Y%m%d%H%M")
+endfunction
+
+function! WikiToggleWiki(url, text) abort dict
+  return wiki#link#md#template(a:url . '.md', empty(a:text) ? a:url : a:text)
+endfunction
+
+function! WikiToggleMd(url, text) abort dict
+  let l:url = substitute(a:url, '\.md$', '', '')
+  return wiki#link#wiki#template(l:url, a:text)
+endfunction
+
+" Cusomize global mappings
+nmap <silent> <Leader>wn <plug>(wiki-fzf-pages)
+
+" Check lists
+Plug 'lervag/lists.vim'
+let g:lists_filetypes = ['md']
+
+" <c-s> is not a terminal friendly mapping
+augroup wikimappings
+ autocmd!
+ for s:ft in g:wiki_filetypes
+   execute 'autocmd BufRead,BufNewFile *.' . s:ft
+         \ 'nmap <silent><buffer> <c-t> <plug>(lists-toggle)'
+   execute 'autocmd BufRead,BufNewFile *.' . s:ft
+         \ 'imap <silent><buffer> <c-t> <plug>(lists-toggle)'
+ endfor
 augroup END
 
 " Searching
@@ -406,34 +489,54 @@ let g:nv_use_short_pathnames = 1
 let g:nv_keymap = {'ctrl-h': 'split', 'ctrl-v': 'vertical split', 'ctrl-t': 'tabedit'}
 let g:nv_create_note_window = 'Drop'
 
-" Tagging
+" Percent encoding/decoding
+call s:DevelopOrPlug('vim-percent')
+nmap <silent> <expr> <Leader>ne percent#op#encode()
+vmap <silent> <expr> <Leader>ne percent#op#encode()
+nmap <silent> <expr> <Leader>nd percent#op#decode()
+vmap <silent> <expr> <Leader>nd percent#op#decode()
+
+" Tag search and link completion
 call s:DevelopOrPlug('vim-nvtags')
+let g:nvtags_extensions = ['md']
 let g:nvtags_tagline_prefix = 'Tags'
-let g:nvtags_globs = ['*.md']
+let g:nvtags_globs = ['*.md', '!maler/*']
+let g:nvtags_label_scan_num_lines = 1
 nmap <silent> <Leader>na :NVTagsAll!<CR>
 nmap <silent> <Leader>nu :NVTagsHere!<CR>
 vmap <silent> <Leader>nu <Esc>:execute 'NVTags!' @*<CR>
 nmap <silent> <Leader>nt :NTHere<CR>
 vmap <silent> <Leader>nt <Esc>:execute 'NT' @*<CR>
+nmap <silent> <Leader>nb :NVBacklinks<CR>
+nmap <silent> <Leader>nB :NVMentions<CR>
 
-" Jump to note index
-nmap <silent> <Leader>nr :execute 'edit' g:nv_search_paths[0] . '/README.md'<CR>:Cd<CR>
+"" Jump to note index
+"nmap <silent> <Leader>nr :execute 'edit' g:nv_search_paths[0] . '/README.md'<CR>:Cd<CR>
+"
+"" Create new note with timestamp as filename
+function! s:timestamp() abort
+    return strftime("%Y%m%d%H%M")
+endfunction
 
-" Create new note with timestamp as filename
-nmap <silent> <Leader>nn :execute 'edit'
-      \ g:nv_search_paths[0] . '/' . strftime("%Y%m%d%H%M%S") . '.md'<CR>:Cd<CR>
+imap <silent> <expr> <c-d> <SID>timestamp()
 
-" toml {{{3
-Plug 'cespare/vim-toml'  " add toml syntax
+"function! s:CreateTimestampedNote()
+" let l:timestamp = s:timestamp()
+" execute 'edit' g:nv_search_paths[0] . '/innboks/' . l:timestamp . '.md'
+" execute 'cd' g:nv_search_paths[0]
+" call append(0, "# " . l:timestamp)
+"endfunction
+"
+"nmap <silent> <Leader>nn :call <SID>CreateTimestampedNote()<CR>
 
-" lilypond {{{3
-if !has('win32')
-  let s:lilypond_vim_dir = split(expand('/usr/share/lilypond/*/vim/'))[-1]
-  if isdirectory(s:lilypond_vim_dir)
-    let g:lilypond_enabled = 1
-    set rtp+=s:lilypond_vim_dir
-  endif
-endif
+" Set note filename from note title
+function! s:set_filename_from_title() abort
+ let l:title = nvtags#link#firstATXH1(getline(1, g:nvtags_label_scan_num_lines))
+ let l:cleantitle = substitute(l:title, '\v[*\/<>:|?#^\[\]$]+', '', 'g')
+ execute 'Move' expand("%:h") . '/' . fnameescape(l:cleantitle) . '.md'
+endfunction
+
+nmap <silent> <Leader>nf :call <SID>set_filename_from_title()<CR>
 
 " Display options: colorschemes, status lines etc. {{{2
 
@@ -442,19 +545,33 @@ Plug 'vim-airline/vim-airline'
 "call s:DevelopOrPlug('vim-airline')
 Plug 'vim-airline/vim-airline-themes'
 "call s:DevelopOrPlug('vim-airline-themes')
+
 let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#show_tab_type = 0
+" truncate filename in tabline to max 20 characters
+let g:airline#extensions#tabline#fnamemod =
+      \ ':p:.:s?\v^(.*\/)=([^/]{6})[^/]{3,}([^/]{11})$?\1\2...\3?'
+let g:airline_powerline_fonts = 1
+let g:airline_left_sep = ''  "' '
+let g:airline_left_alt_sep = ''  "' '
+let g:airline_right_sep = ''  "' '
+let g:airline_right_alt_sep = ''  "' '
+
+" everforest {{{3
+Plug 'sainnhe/everforest'  " everforest colorscheme
+let g:everforest_background = 'hard'
+let g:everforest_better_performance = 1
+let g:everforest_diagnostic_text_highlight = 1
+let g:everforest_diagnostic_line_highlight = 1
 
 " base16 {{{3
-Plug 'chriskempson/base16-vim'  " base16 colorschemes
+"Plug 'chriskempson/base16-vim'  " base16 colorschemes
 "call s:DevelopOrPlug('base16-vim')
 
 " Colorizer {{{3
 Plug 'chrisbra/Colorizer'  " apply color to rgb sequences
 
 " Currently unused plugins {{{2
-
-"" CCTree {{{3
-"Plug 'hari-rangarajan/CCTree', {'for': ['c', 'cpp', 'java']}  " show C call tree
 
 "" LanguageClient {{{3
 "if v:version >= 800
@@ -463,10 +580,6 @@ Plug 'chrisbra/Colorizer'  " apply color to rgb sequences
 "  let g:LanguageClient_diagnosticsList = "location"
 "  let g:LanguageClient_selectionUI = "quickfix"
 "endif
-
-
-"" julia {{{3
-"Plug 'AtsushiSakai/julia.vim'  " julia linter
 
 "" markdown/wiki {{{3
 "Plug 'iamcco/markdown-preview.nvim', {'do': 'cd app & yarn install'}
@@ -478,9 +591,6 @@ Plug 'chrisbra/Colorizer'  " apply color to rgb sequences
 "let g:instant_markdown_autostart = 0
 "let g:instant_markdown_mathjax = 1
 "" let g:instant_markdown_python = 1
-
-"" solarized {{{3
-"Plug 'altercation/vim-colors-solarized'
 
 " }}}2
 
@@ -502,8 +612,10 @@ if !exists('g:ycm_semantic_triggers')
   let g:ycm_semantic_triggers = {}
 endif
 augroup ycm_triggers
+  autocmd!
   autocmd! VimEnter * let g:ycm_semantic_triggers.tex = g:vimtex#re#youcompleteme
-        \| let g:ycm_semantic_triggers.pandoc = '@'
+        \| let g:ycm_semantic_triggers.pandoc = nvtags#triggers#ycm('pandoc')
+        \| let g:ycm_semantic_triggers.markdown = nvtags#triggers#ycm('markdown')
 augroup END
 
 if exists('g:ale_lsp_filetypes')
@@ -515,45 +627,52 @@ if exists('g:ale_lsp_filetypes')
   endfor
 endif
 
-" base16 {{{2
-if ($BASE16_THEME !=# "") || has('gui_running') || has('termguicolors')
-  " There is a way to enable a base16 colorscheme
-  if ($BASE16_THEME !=# "") && !has('gui_running')
-    " We are in a terminal with base16-shell and merely want to inherit. Any base16
-    " theme is equivalent in this case; all they do is tell vim how to apply the
-    " terminal palette.
-    if has('termguicolors')
-      set notermguicolors
-    endif
-    let g:base16colorspace = 256
-  else
-    " We are in the gvim, or the terminal lacks base16-shell but we have termguicolors.
-    " For vimception to work we must ensure that the vim terminal does not pretend to
-    " have base16-shell (the environment variable could have been inherited if gvim was
-    " launched from a base16-enabled shell).
-    let $BASE16_THEME = ""
-    if has('termguicolors')
-      set termguicolors
-    endif
+" everforest {{{2
+if has('termguicolors')
+  if $TERM =~# "tmux-256color" && exists("$TMUX")
+    let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+    let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
   endif
-
-  " Enable the colorscheme
-  set background=light  " Highlighting in base16 themes work best with background=light
-  let g:airline_theme = 'base16_vim'
-  let g:airline_base16_monotone = 1
-  colorscheme base16-atelier-sulphurpool
-
-  " Clear g:terminal_ansi_colors if it's not being used, to avoid a vim terminal bug
-  if exists('g:terminal_ansi_colors')
-        \ && !(has('gui_running') || (has('termguicolors') && &termguicolors))
-    unlet g:terminal_ansi_colors
-  endif
+  set termguicolors
 endif
+set background=dark
+let g:airline_theme = 'everforest'
+colorscheme everforest
 
-"" solarized {{{2
-"colorscheme solarized
-"call togglebg#map("<F5>")
-"let g:airline_theme = 'solarized'
+" base16 {{{2
+"if ($BASE16_THEME !=# "") || has('gui_running') || has('termguicolors')
+"  " There is a way to enable a base16 colorscheme
+"  if ($BASE16_THEME !=# "") && !has('gui_running')
+"    " We are in a terminal with base16-shell and merely want to inherit. Any base16
+"    " theme is equivalent in this case; all they do is tell vim how to apply the
+"    " terminal palette.
+"    if has('termguicolors')
+"      set notermguicolors
+"    endif
+"    let g:base16colorspace = 256
+"  else
+"    " We are in gvim, or the terminal lacks base16-shell but we have termguicolors. For
+"    " vimception to work we must ensure that the vim terminal does not pretend to have
+"    " base16-shell (the environment variable could have been inherited if gvim was
+"    " launched from a base16-enabled shell).
+"    let $BASE16_THEME = ""
+"    if has('termguicolors')
+"      set termguicolors
+"    endif
+"  endif
+"
+"  " Enable the colorscheme
+"  set background=light  " Highlighting in base16 themes work best with background=light
+"  let g:airline_theme = 'base16_vim'
+"  let g:airline_base16_monotone = 1
+"  colorscheme base16-atelier-sulphurpool
+"
+"  " Clear g:terminal_ansi_colors if it's not being used, to avoid a vim terminal bug
+"  if exists('g:terminal_ansi_colors')
+"        \ && !(has('gui_running') || (has('termguicolors') && &termguicolors))
+"    unlet g:terminal_ansi_colors
+"  endif
+"endif
 
 " General settings {{{1
 
@@ -563,6 +682,12 @@ set showcmd                               " Show partial commands in the status 
 set wildmode=longest:full,full            " Set autocomplete command behavior.
 set completeopt=menuone,preview,noselect  " Set completion options.
 set mouse=a                               " Enable mouse in terminal (all modes).
+if $TERM =~# "tmux" && &ttymouse == "xterm"  " Enable proper mouse handling in tmux
+  set ttymouse=sgr
+endif
+set isfname-=#                            " Adjust which characters are valid in file
+set isfname-=$                            " names (affects gf)
+set isfname+=@-@  " Denotes an actual '@' (just @ denotes alphabetic characters)
 
 " Enable persistent undo
 set undofile
@@ -583,6 +708,7 @@ set preserveindent        " Mimic existing indent structure when manually adjust
 set nojoinspaces          " Don't have <S-J> (joining) insert double spaces.
 set formatoptions=cql1j   " Set auto-format options.
 augroup rc_formatoptions  " Bring out the big guns to override ftplugins.
+  autocmd!
   autocmd! FileType * setlocal fo-=r fo-=o
 augroup END
 
@@ -609,14 +735,14 @@ set colorcolumn=+1,+2,+3  " Highlight columns after textwidth.
 set showmatch             " Show matching brackets.
 set conceallevel=2        " Enable conceal when defined
 
-" Set whitespace characters in list mode and folds
+" Set whitespace characters in list mode and fill characters in display elements
 set listchars=eol:$,tab:\|_,space:.,extends:>,precedes:<,conceal:*,nbsp:~
-set fillchars=fold:\ 
+set fillchars=fold:\ ,vert:\|
 
 " Set gui specific options
 if has('vim_starting') && has('gui_running')
   if !has('win32')
-    set guifont=JuliaMono\ 13,\ Ubuntu\ Mono\ 12
+    set guifont=FiraCode\ Nerd\ Font\ 12,\ JuliaMono\ 12,\ Ubuntu\ Mono\ 12
   endif
   set guioptions+=f       " Dont detach from shell.
   set guioptions+=P       " Enable autoselect using the "+-register.
@@ -632,9 +758,9 @@ endif
 " * https://github.com/vim/vim/issues/6111
 " * https://github.com/vim/vim/issues/6112
 " * https://github.com/vim/vim/issues/6122
-if !has('gui_running')
-  set t_TI= t_TE=
-endif
+"if !has('gui_running')
+"  set t_TI= t_TE=
+"endif
 
 " Key mappings and commands {{{1
 
@@ -645,7 +771,7 @@ noremap gk k
 noremap gj j
 
 " Navigate windows easily: map ; to <C-W> (see :h CTRL-W)
-nnoremap ; <C-W>
+nmap ; <C-W>
 
 " Toggle folds with <Space>
 nnoremap <expr> <Space> foldlevel('.') ? 'za' : '\<Space>'
@@ -655,7 +781,7 @@ nmap <silent> <Leader><Space> :set list!<CR>
 
 " Hit <Leader>, to Drop $MYVIMRC, and <Leader>. to source it and reload current buffer
 nmap <silent> <Leader>, :Drop $MYVIMRC<CR>
-if !exists('*s:LoadRc')
+if !exists('*s:LoadRc()')
   function! s:LoadRc()
     source $MYVIMRC
     if has('gui_running') && filereadable($MYGVIMRC)
@@ -664,7 +790,7 @@ if !exists('*s:LoadRc')
     silent! edit
   endfunction
 endif
-nmap <silent> <Leader>. :call <SID>LoadRc()<CR>
+nmap <silent> <expr> <Leader>. <SID>LoadRc()
 
 " Enable mouse scrolling in vim terminal
 function! ExitTerminalNormal()
@@ -691,6 +817,7 @@ command! Lcd lcd %:h
 
 " wrap {{{2
 augroup rc_textwidth
+  autocmd!
   " For unwrapped prose, wrap long lines and indicate with a hanging indent (don't apply
   " to, e.g., help, since it often contains manual alignment that doesn't mix with soft
   " wrapping at all). Do the same when a nonexistent file is opened in a preview window
@@ -704,11 +831,12 @@ augroup END
 
 " spell {{{2
 augroup rc_spell
-  autocmd! FileType markdown,pandoc,tex,gitcommit setlocal spell spelllang=en,nb
+  autocmd! FileType markdown,pandoc,tex,gitcommit setlocal spelllang=en,nb spell
 augroup END
 
 " compile {{{2
 augroup rc_compile
+  autocmd!
   if exists('g:lilypond_enabled') && g:lilypond_enabled
     autocmd! FileType lilypond nmap <silent> <buffer> <LocalLeader>ll :!lilypond %<CR>
   endif
@@ -716,6 +844,7 @@ augroup END
 
 " autoindent {{{2
 augroup rc_autoindent
+  autocmd!
   autocmd! FileType c,cpp,cuda,objc,objcpp,go,java,javascript,rust,typescript
         \ setlocal cindent cinoptions=t0,(0,u0,U1,w1,Ws,m1
 augroup END
@@ -726,6 +855,7 @@ augroup END
 " noexpandtab will give hideous mixed indents (unless shiftwidth happens to equal
 " tabstop, but editing behavior should not depend on a display setting like tabstop).
 augroup rc_indentunit
+  autocmd!
   autocmd! FileType vim,sh,javascript,typescript,tex,bib,markdown,pandoc
         \ setlocal shiftwidth=2 expandtab
   autocmd! FileType c,cpp,cuda,go setlocal shiftwidth=0 noexpandtab
@@ -734,7 +864,8 @@ augroup END
 
 " folding {{{2
 augroup rc_fold
+  autocmd!
   autocmd! FileType c,cpp,cuda,objc,objcpp,cs,go,java,javascript,rust,typescript
         \ setlocal foldmethod=syntax foldnestmax=2
-  autocmd! FileType julia setlocal foldmethod=syntax foldnestmax=1
+  autocmd! FileType julia setlocal foldmethod=syntax foldnestmax=2
 augroup END

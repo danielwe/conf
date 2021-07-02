@@ -184,4 +184,8 @@
         "editor.tabSize": 2,
     },
     "workbench.sideBar.location": "left",
+    "telemetry.enableTelemetry": false,
+    "markdown-links.autoStart": true,
+    "markdown.extension.math.enabled": false,
+    "markdownTags.autorefresh": true,
 }
